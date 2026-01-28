@@ -1,4 +1,4 @@
-import { CodeGenType } from "../../common/enums/code-gen-type.enum";
+import { CodeGenType } from "@/common";
 
 /**
  * 图片资源类型

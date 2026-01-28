@@ -1,8 +1,8 @@
-import { Injectable, Logger, StreamableFile } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Response } from "express";
 import * as fs from "fs";
 import * as path from "path";
-import * as archiver from "archiver";
+import archiver from "archiver";
 import { BusinessException } from "../../common/business.exception";
 
 /**

@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { CodeGenType } from "../../common/enums/code-gen-type.enum";
 import { HtmlCodeParser } from "./html-code-parser";
 import { MultiFileCodeParser } from "./multi-file-code-parser";
 import { HtmlCodeResult, MultiFileCodeResult } from "./code-parser.interface";
+import { CodeGenType } from "@/common";
 
 /**
  * 代码解析执行器

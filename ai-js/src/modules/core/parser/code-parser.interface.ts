@@ -1,5 +1,3 @@
-import { CodeGenType } from "../../common/enums/code-gen-type.enum";
-
 /**
  * HTML 代码解析结果
  */

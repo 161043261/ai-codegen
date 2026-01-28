@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
-import { CodeGenType } from "../../common/enums/code-gen-type.enum";
 import { HtmlCodeFileSaver } from "./html-code-file-saver";
 import { MultiFileCodeFileSaver } from "./multi-file-code-file-saver";
 import {
   HtmlCodeResult,
   MultiFileCodeResult,
 } from "../parser/code-parser.interface";
+import { CodeGenType } from "@/common";
 
 /**
  * 代码文件保存执行器
