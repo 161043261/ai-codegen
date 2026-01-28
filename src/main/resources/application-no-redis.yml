@@ -1,0 +1,12 @@
+# 无 Redis 配置（使用本地缓存和内存 Session）
+# 激活方式：spring.profiles.active=local,no-redis
+spring:
+  redis:
+    enabled: false
+  session:
+    store-type: none
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+      - org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration
