@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger, Inject, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
@@ -17,9 +17,14 @@ import { PageResponse } from "../../common/base-response";
 import { UserService } from "../user/user.service";
 import { UserVO } from "../user/vo/user.vo";
 import { CodeGenType } from "../../common/enums/code-gen-type.enum";
+import { ChatHistoryService } from "../chat-history/chat-history.service";
+import { ScreenshotService } from "../builder/screenshot.service";
+import { StorageService } from "../storage/storage.service";
 
 @Injectable()
 export class AppService {
+  private readonly logger = new Logger(AppService.name);
+
   // 应用生成根目录（与 Java 版本一致）
   private readonly codeOutputRootDir = path.join(
     process.cwd(),
@@ -31,6 +36,10 @@ export class AppService {
     @InjectRepository(App)
     private appRepository: Repository<App>,
     private userService: UserService,
+    @Inject(forwardRef(() => ChatHistoryService))
+    private chatHistoryService: ChatHistoryService,
+    private screenshotService: ScreenshotService,
+    private storageService: StorageService,
   ) {}
 
   /**
@@ -72,7 +81,7 @@ export class AppService {
   }
 
   /**
-   * 删除应用
+   * 删除应用（级联删除聊天历史）
    */
   async deleteApp(id: string, userId: string): Promise<boolean> {
     const app = await this.getById(id);
@@ -82,6 +91,15 @@ export class AppService {
 
     if (app.userId !== userId) {
       throw BusinessException.noAuth("无权限删除此应用");
+    }
+
+    // 先删除关联的对话历史
+    try {
+      await this.chatHistoryService.deleteByAppId(id);
+    } catch (error) {
+      this.logger.error(
+        `删除应用关联的对话历史失败：${(error as Error).message}`,
+      );
     }
 
     app.isDelete = 1;
@@ -130,22 +148,88 @@ export class AppService {
     app.deployedTime = new Date();
 
     await this.appRepository.save(app);
+
+    // 构建部署 URL（与 Java 版本一致）
+    const appDeployUrl = `/static/app/${deployKey}/index.html`;
+
+    // 异步生成截图并更新应用封面
+    this.generateAppScreenshotAsync(dto.id, appDeployUrl);
+
     return deployKey;
   }
 
   /**
-   * 下载应用代码
+   * 异步生成应用截图并更新封面
    */
-  async downloadApp(
-    appId: string,
-  ): Promise<{ filename: string; content: string | Buffer }> {
+  private generateAppScreenshotAsync(appId: string, appUrl: string): void {
+    setImmediate(async () => {
+      try {
+        // 构建完整 URL（本地服务）
+        const baseUrl = process.env.APP_BASE_URL || "http://localhost:8123";
+        const fullUrl = `${baseUrl}${appUrl}`;
+
+        this.logger.log(`开始生成应用截图: ${fullUrl}`);
+
+        // 生成截图
+        const screenshotPath =
+          await this.screenshotService.generateAndSaveScreenshot(fullUrl);
+
+        // 读取截图文件并上传
+        const screenshotBuffer = fs.readFileSync(screenshotPath);
+        const uploadResult = await this.storageService.uploadFile(
+          {
+            buffer: screenshotBuffer,
+            originalname: `app_${appId}_cover.png`,
+            mimetype: "image/png",
+            size: screenshotBuffer.length,
+          } as Express.Multer.File,
+          "images",
+        );
+
+        // 更新应用封面
+        await this.appRepository.update(appId, { cover: uploadResult.url });
+
+        // 清理临时截图文件
+        if (fs.existsSync(screenshotPath)) {
+          fs.unlinkSync(screenshotPath);
+        }
+
+        this.logger.log(
+          `应用截图生成成功: appId=${appId}, cover=${uploadResult.url}`,
+        );
+      } catch (error) {
+        this.logger.error(
+          `生成应用截图失败: appId=${appId}, error=${(error as Error).message}`,
+        );
+      }
+    });
+  }
+
+  /**
+   * 下载应用代码
+   * 返回项目源码目录路径
+   */
+  async getAppDownloadPath(appId: string, userId: string): Promise<string> {
     const app = await this.getById(appId);
     if (!app) {
       throw BusinessException.notFound("应用不存在");
     }
 
-    // 目前数据库不存储代码，返回提示
-    throw BusinessException.operationError("应用代码不存在");
+    // 权限校验
+    if (app.userId !== userId) {
+      throw BusinessException.noAuth("无权限下载该应用代码");
+    }
+
+    const codeGenType = app.codeGenType || "html";
+    const sourceDirName = `${codeGenType}_${appId}`;
+    const sourceDirPath = path.join(this.codeOutputRootDir, sourceDirName);
+
+    // 检查代码目录是否存在
+    if (!fs.existsSync(sourceDirPath)) {
+      throw BusinessException.notFound("应用代码不存在，请先生成代码");
+    }
+
+    return sourceDirPath;
   }
 
   /**
@@ -280,12 +364,21 @@ export class AppService {
   }
 
   /**
-   * 管理员删除应用
+   * 管理员删除应用（级联删除聊天历史）
    */
   async adminDeleteApp(id: string): Promise<boolean> {
     const app = await this.getById(id);
     if (!app) {
       throw BusinessException.notFound("应用不存在");
+    }
+
+    // 先删除关联的对话历史
+    try {
+      await this.chatHistoryService.deleteByAppId(id);
+    } catch (error) {
+      this.logger.error(
+        `删除应用关联的对话历史失败：${(error as Error).message}`,
+      );
     }
 
     app.isDelete = 1;

@@ -15,6 +15,7 @@ import { Observable, Subject } from "rxjs";
 import { AppService } from "./app.service";
 import { AiCodeGeneratorService } from "../ai/ai-code-generator.service";
 import { ChatHistoryService } from "../chat-history/chat-history.service";
+import { ProjectDownloadService } from "../builder/project-download.service";
 import {
   AppAddDto,
   AppUpdateDto,
@@ -33,6 +34,7 @@ import { UserRole } from "../../common/enums/user-role.enum";
 import { DeleteRequestDto } from "../../common/dto/page.dto";
 import { BusinessException } from "../../common/business.exception";
 import { MessageType } from "../chat-history/entities/chat-history.entity";
+import { RateLimit, RateLimitType } from "../ratelimit";
 
 interface MessageEvent {
   data: string;
@@ -46,6 +48,7 @@ export class AppController {
     private readonly appService: AppService,
     private readonly aiCodeGeneratorService: AiCodeGeneratorService,
     private readonly chatHistoryService: ChatHistoryService,
+    private readonly projectDownloadService: ProjectDownloadService,
   ) {}
 
   /**
@@ -54,6 +57,12 @@ export class AppController {
    */
   @Get("chat/gen/code")
   @Sse()
+  @RateLimit({
+    type: RateLimitType.USER,
+    limit: 5,
+    windowSeconds: 60,
+    message: "AI 对话请求过于频繁，请稍后再试",
+  })
   @ApiOperation({ summary: "AI 对话生成代码（SSE流式）" })
   chatGenCode(
     @Query("appId") appId: string,
@@ -194,21 +203,21 @@ export class AppController {
 
   @Get("download/:appId")
   @ApiOperation({ summary: "下载应用代码" })
-  async downloadApp(@Param("appId") appId: string, @Res() res: Response) {
-    const { filename, content } = await this.appService.downloadApp(appId);
+  async downloadApp(
+    @Param("appId") appId: string,
+    @Res() res: Response,
+    @CurrentUser("id") userId: string,
+  ) {
+    // 获取项目源码路径（包含权限校验）
+    const projectPath = await this.appService.getAppDownloadPath(appId, userId);
+    const downloadFileName = appId;
 
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${encodeURIComponent(filename)}"`,
+    // 使用 ProjectDownloadService 进行压缩下载
+    await this.projectDownloadService.downloadProjectAsZip(
+      projectPath,
+      downloadFileName,
+      res,
     );
-
-    if (typeof content === "string") {
-      res.setHeader("Content-Type", "text/html; charset=utf-8");
-      res.send(content);
-    } else {
-      res.setHeader("Content-Type", "application/zip");
-      res.send(content);
-    }
   }
 
   @Post("my/list/page/vo")

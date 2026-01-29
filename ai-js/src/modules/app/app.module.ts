@@ -6,6 +6,7 @@ import { App } from "./entities/app.entity";
 import { UserModule } from "../user/user.module";
 import { AiModule } from "../ai/ai.module";
 import { ChatHistoryModule } from "../chat-history/chat-history.module";
+import { BuilderModule } from "../builder/builder.module";
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ChatHistoryModule } from "../chat-history/chat-history.module";
     UserModule,
     forwardRef(() => AiModule),
     forwardRef(() => ChatHistoryModule),
+    BuilderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
