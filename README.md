@@ -1,4 +1,4 @@
-# AI 零代码应用生成平台
+# AI Codegen
 
 ```bash
 git fetch origin
