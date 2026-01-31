@@ -34,7 +34,7 @@ public class DirReadTool extends BaseTool {
 
   private static final Set<String> IGNORED_EXTENSIONS = Set.of(".cache", ".lock", ".log", ".tmp");
 
-  @Tool("读取目录, 获取指定目录下所有文件和子目录")
+  @Tool("读取指定路径的目录, 获取指定目录下所有文件和子目录")
   public String readDir(
       @P("目录的相对路径, 如果为空则是项目根目录") String relativeDirpath, @ToolMemoryId Long appId) {
     try {

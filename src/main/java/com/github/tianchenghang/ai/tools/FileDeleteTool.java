@@ -24,11 +24,8 @@ public class FileDeleteTool extends BaseTool {
         path = projectRoot.resolve(relativeFilepath);
       }
 
-      if (!Files.exists(path)) {
-        return "文件不存在, 无需删除: " + relativeFilepath;
-      }
-      if (!Files.isRegularFile(path)) {
-        return "不是文件, 无法删除: " + relativeFilepath;
+      if (!Files.exists(path) || !Files.isRegularFile(path)) {
+        return "文件不存在, 或不是文件, 无法删除: " + relativeFilepath;
       }
       var filename = path.getFileName().toString();
       if (isImportantFile(filename)) {
