@@ -4,8 +4,8 @@
     <div class="header-bar">
       <div class="header-left">
         <h1 class="app-name">{{ appInfo?.appName || '网站生成器' }}</h1>
-        <a-tag v-if="appInfo?.codeGenType" color="blue" class="code-gen-type-tag">
-          {{ formatCodeGenType(appInfo.codeGenType) }}
+        <a-tag v-if="appInfo?.codegenType" color="blue" class="code-gen-type-tag">
+          {{ formatCodeGenType(appInfo.codegenType) }}
         </a-tag>
       </div>
       <div class="header-right">
@@ -594,8 +594,8 @@ const handleError = (error: unknown, aiMessageIndex: number) => {
 // 更新预览
 const updatePreview = () => {
   if (appId.value) {
-    const codeGenType = appInfo.value?.codeGenType || CodeGenTypeEnum.HTML
-    const newPreviewUrl = getStaticPreviewUrl(codeGenType, appId.value)
+    const codegenType = appInfo.value?.codegenType || CodeGenTypeEnum.HTML
+    const newPreviewUrl = getStaticPreviewUrl(codegenType, appId.value)
     previewUrl.value = newPreviewUrl
     previewReady.value = true
   }

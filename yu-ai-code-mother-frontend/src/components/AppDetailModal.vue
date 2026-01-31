@@ -13,8 +13,8 @@
         </div>
         <div class="info-item">
           <span class="info-label">生成类型：</span>
-          <a-tag v-if="app?.codeGenType" color="blue">
-            {{ formatCodeGenType(app.codeGenType) }}
+          <a-tag v-if="app?.codegenType" color="blue">
+            {{ formatCodeGenType(app.codegenType) }}
           </a-tag>
           <span v-else>未知类型</span>
         </div>
