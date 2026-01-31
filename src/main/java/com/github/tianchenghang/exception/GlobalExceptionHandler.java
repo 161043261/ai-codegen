@@ -1,23 +1,20 @@
 package com.github.tianchenghang.exception;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import cn.hutool.json.JSONUtil;
 import com.github.tianchenghang.common.BaseResponse;
 import com.github.tianchenghang.common.ResultUtil;
 import java.io.IOException;
 import java.util.Map;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-  private static final Logger logger = getLogger(GlobalExceptionHandler.class);
-
   public BaseResponse<?> businessExceptionHandler(BusinessException e) {
-    logger.error("business exception:", e);
+    log.error("business exception: ", e);
     if (handleSseError(e.getCode(), e.getMessage())) {
       return null;
     }
@@ -57,7 +54,7 @@ public class GlobalExceptionHandler {
         response.getWriter().flush();
         return true;
       } catch (IOException e) {
-        logger.error("Failed to write SSE error response:", e);
+        log.error("Failed to write SSE error response: ", e);
         return true;
       }
     }

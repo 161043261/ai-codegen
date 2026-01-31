@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @Getter
 public enum CodegenType {
-  HTML("Vanilla HTML", "html"),
-  MULTI_FILE("Vanilla Multiple Files", "multi_files"),
+  HTML("Vanilla HTML", "vanilla_html"),
+  MULTI_FILE("Multiple Files", "multiple_files"),
   VUE_PROJECT("Vue App", "vue_app"),
   REACT_PROJECT("React App", "react_app");
 

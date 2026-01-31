@@ -1,7 +1,5 @@
 package com.github.tianchenghang.monitor;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
@@ -9,12 +7,12 @@ import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.annotation.Resource;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class AiModelMetricsCollector {
-  private static final Logger log = getLogger(AiModelMetricsCollector.class);
   @Resource private MeterRegistry meterRegistry;
   private final ConcurrentMap<String, Counter> requestCountersCache = new ConcurrentHashMap<>();
   private final ConcurrentMap<String, Counter> errorCountersCache = new ConcurrentHashMap<>();

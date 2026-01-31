@@ -627,13 +627,13 @@ const downloadCode = async () => {
     }
     // 获取文件名
     const contentDisposition = response.headers.get('Content-Disposition')
-    const fileName = contentDisposition?.match(/filename="(.+)"/)?.[1] || `app-${appId.value}.zip`
+    const filename = contentDisposition?.match(/filename="(.+)"/)?.[1] || `app-${appId.value}.zip`
     // 下载文件
     const blob = await response.blob()
     const downloadUrl = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = downloadUrl
-    link.download = fileName
+    link.download = filename
     link.click()
     // 清理
     URL.revokeObjectURL(downloadUrl)
