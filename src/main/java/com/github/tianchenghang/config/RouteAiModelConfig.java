@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Scope;
 
 @Configuration
 @ConfigurationProperties(prefix = "langchain4j.open-ai.routing-chat-model")
-public class RoutingAiModelConfig {
+public class RouteAiModelConfig {
 
   private String baseUrl;
 
@@ -27,7 +27,7 @@ public class RoutingAiModelConfig {
 
   @Bean
   @Scope("prototype")
-  public ChatModel routingChatModelPrototype() {
+  public ChatModel routeChatModelPrototype() {
     return OpenAiChatModel.builder()
         .apiKey(apiKey)
         .modelName(modelName)

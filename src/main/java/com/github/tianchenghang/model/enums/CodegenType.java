@@ -5,10 +5,9 @@ import lombok.Getter;
 
 @Getter
 public enum CodegenType {
-  HTML("Vanilla HTML", "vanilla_html"),
-  MULTI_FILE("Multiple Files", "multiple_files"),
-  VUE_PROJECT("Vue App", "vue_app"),
-  REACT_PROJECT("React App", "react_app");
+  VANILLA_HTML("Vanilla HTML", "vanilla_html"),
+  MULTI_FILES("Multiple Files", "multiple_files"),
+  VITE_PROJECT("Vite Project", "vite_project");
 
   private final String text;
   private final String value;

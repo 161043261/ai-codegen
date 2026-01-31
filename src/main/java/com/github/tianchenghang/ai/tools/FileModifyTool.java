@@ -1,5 +1,6 @@
 package com.github.tianchenghang.ai.tools;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONObject;
 import com.github.tianchenghang.constants.AppConstant;
 import dev.langchain4j.agent.tool.P;
@@ -62,22 +63,23 @@ public class FileModifyTool extends BaseTool {
   @Override
   public String generateToolExecuteResult(JSONObject arguments) {
     var relativeFilepath = arguments.getStr("relativeFilepath");
+    var suffix = FileUtil.getSuffix(relativeFilepath);
     var oldContent = arguments.getStr("oldContent");
     var newContent = arguments.getStr("newContent");
     return String.format(
         """
-      调用工具: %s %s;
+        调用工具: %s %s;
 
-      修改前:
-      ```
-      %s
-      ```
+        修改前:
+        ```%s
+        %s
+        ```
 
-      修改后
-      ```
-      %s
-      ```
-      """,
-        getDisplayName(), relativeFilepath, oldContent, newContent);
+        修改后
+        ```%s
+        %s
+        ```
+        """,
+        getDisplayName(), relativeFilepath, suffix, oldContent, suffix, newContent);
   }
 }
