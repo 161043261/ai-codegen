@@ -11,9 +11,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 public class JsonConfig {
 
   @Bean
-  public ObjectMapper jacksonObjectMapper(
-    Jackson2ObjectMapperBuilder build
-  ) {
+  public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder build) {
     var objectMapper = build.createXmlMapper(false).build();
     var module = new SimpleModule();
     module.addSerializer(Long.class, ToStringSerializer.instance);

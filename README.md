@@ -1,5 +1,10 @@
 # AI 零代码应用生成平台
 
+```bash
+git fetch origin
+git checkout -b dev origin/dev
+```
+
 .git/hooks/pre-commit
 
 ```bash

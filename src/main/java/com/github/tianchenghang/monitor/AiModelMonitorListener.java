@@ -6,6 +6,5 @@ public class AiModelMonitorListener {
   private static final String REQUEST_START_TIME_KEY = "request-start-time";
   private static final String MONITOR_CONTEXT_KEY = "monitor-context";
 
-  @Resource
-  private AiModelMetricsCollector aiModelMetricsCollector;
+  @Resource private AiModelMetricsCollector aiModelMetricsCollector;
 }

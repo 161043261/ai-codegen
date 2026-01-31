@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class ReasoningStreamingChatModelConfig {
   @Resource
-//  private AiModelMonitorListener aiModelMonitorListener;
+  //  private AiModelMonitorListener aiModelMonitorListener;
 
   private String baseUrl;
 
