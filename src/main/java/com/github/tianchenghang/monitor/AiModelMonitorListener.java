@@ -4,16 +4,26 @@ import dev.langchain4j.model.chat.listener.ChatModelListener;
 import dev.langchain4j.model.chat.listener.ChatModelRequestContext;
 import dev.langchain4j.model.chat.listener.ChatModelResponseContext;
 import jakarta.annotation.Resource;
-import org.springframework.stereotype.Component;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
 @Component
 public class AiModelMonitorListener implements ChatModelListener {
   private static final String REQUEST_START_TIME_KEY = "request-start-time";
   private static final String MONITOR_CONTEXT_KEY = "monitor-context";
+
+  static enum AiModelStatus {
+    started,
+    success,
+  }
+
+  static enum TokenType {
+    input,
+    output,
+    total,
+  }
 
   @Resource private AiModelMetricsCollector aiModelMetricsCollector;
 
@@ -25,7 +35,7 @@ public class AiModelMonitorListener implements ChatModelListener {
     var appId = monitorContext.getAppId();
     requestContext.attributes().put(MONITOR_CONTEXT_KEY, monitorContext);
     var modelName = requestContext.chatRequest().modelName();
-    aiModelMetricsCollector.recordRequest(userId, appId, modelName, AiModelStatus.STARTED.name());
+    aiModelMetricsCollector.recordRequest(userId, appId, modelName, AiModelStatus.started.name());
   }
 
   @Override
@@ -35,7 +45,7 @@ public class AiModelMonitorListener implements ChatModelListener {
     var userId = monitorContext.getUserId();
     var appId = monitorContext.getAppId();
     var modelName = responseContext.chatResponse().modelName();
-    aiModelMetricsCollector.recordRequest(userId, appId, modelName, AiModelStatus.SUCCESS.name());
+    aiModelMetricsCollector.recordRequest(userId, appId, modelName, AiModelStatus.success.name());
     recordResponseTime(attributes, userId, appId, modelName);
     recordTokenUsage(responseContext, userId, appId, modelName);
   }
@@ -52,11 +62,11 @@ public class AiModelMonitorListener implements ChatModelListener {
     var tokenUsage = responseContext.chatResponse().tokenUsage();
     if (tokenUsage != null) {
       aiModelMetricsCollector.recordTokenUsage(
-          userId, appId, modelName, TokenType.INPUT.name(), tokenUsage.inputTokenCount());
+          userId, appId, modelName, TokenType.input.name(), tokenUsage.inputTokenCount());
       aiModelMetricsCollector.recordTokenUsage(
-          userId, appId, modelName, TokenType.OUTPUT.name(), tokenUsage.outputTokenCount());
+          userId, appId, modelName, TokenType.output.name(), tokenUsage.outputTokenCount());
       aiModelMetricsCollector.recordTokenUsage(
-          userId, appId, modelName, TokenType.TOTAL.name(), tokenUsage.totalTokenCount());
+          userId, appId, modelName, TokenType.total.name(), tokenUsage.totalTokenCount());
     }
   }
 }

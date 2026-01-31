@@ -14,25 +14,26 @@ create table if not exists user
   edit_time     datetime     default CURRENT_TIMESTAMP not null comment 'edit time',
   create_time   datetime     default CURRENT_TIMESTAMP not null comment 'create time',
   update_time   datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
-  is_deleted    tinyint      default 0                 not null comment 'deleted',
+  is_delete    tinyint      default 0                 not null comment 'deleted',
   UNIQUE KEY uk_user_account (user_account),
   INDEX idx_username (username)
 ) comment 'user' collate = utf8mb4_unicode_ci;
 
 create table app
 (
-  id          bigint auto_increment comment 'id' primary key,
-  app_name    varchar(256)                       null comment 'app name',
-  app_cover   varchar(512)                       null comment 'app cover',
-  init_prompt text                               null comment 'init prompt',
-  deploy_key  varchar(64)                        null comment 'deploy key',
-  deploy_time varchar(64)                        null comment 'deploy time',
-  priority    int      default 0                 not null comment 'priority',
-  user_id     bigint                             not null comment 'creator user id',
-  edit_time   datetime default CURRENT_TIMESTAMP not null comment 'edit time',
-  create_time datetime default CURRENT_TIMESTAMP not null comment 'create time',
-  update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
-  is_deleted  tinyint  default CURRENT_TIMESTAMP not null comment 'is deleted, default 0, 1 as deleted',
+  id           bigint auto_increment comment 'id' primary key,
+  app_name     varchar(256)                       null comment 'app name',
+  app_cover    varchar(512)                       null comment 'app cover',
+  init_prompt  text                               null comment 'init prompt',
+  codegen_type varchar(64)                        null comment 'codegen type',
+  deploy_key   varchar(64)                        null comment 'deploy key',
+  deploy_time  varchar(64)                        null comment 'deploy time',
+  priority     int      default 0                 not null comment 'priority',
+  user_id      bigint                             not null comment 'creator user id',
+  edit_time    datetime default CURRENT_TIMESTAMP not null comment 'edit time',
+  create_time  datetime default CURRENT_TIMESTAMP not null comment 'create time',
+  update_time  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
+  is_delete   tinyint  default CURRENT_TIMESTAMP not null comment 'is deleted, default 0, 1 as deleted',
   UNIQUE KEY uk_deploy_key (deploy_key),
   INDEX idx_app_name (app_name),
   INDEX idx_user_id (user_id)
@@ -47,7 +48,7 @@ create table chat_history
   user_id      bigint                             not null comment 'creator user id',
   create_time  datetime default CURRENT_TIMESTAMP not null comment 'create time',
   update_time  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment 'update time',
-  is_deleted   tinyint  default 0                 not null comment 'is deleted, default 0, 1 as deleted',
+  is_delete   tinyint  default 0                 not null comment 'is deleted, default 0, 1 as deleted',
   INDEX idx_app_id (app_id),
   INDEX idx_create_time (create_time),
   INDEX idx_app_id_create_time (app_id, create_time)

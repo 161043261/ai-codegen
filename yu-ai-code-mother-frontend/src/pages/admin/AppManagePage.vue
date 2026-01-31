@@ -10,7 +10,7 @@
       </a-form-item>
       <a-form-item label="生成类型">
         <a-select
-          v-model:value="searchParams.codeGenType"
+          v-model:value="searchParams.codegenType"
           placeholder="选择生成类型"
           style="width: 150px"
         >
@@ -48,16 +48,16 @@
             <div class="prompt-text">{{ record.initPrompt }}</div>
           </a-tooltip>
         </template>
-        <template v-else-if="column.dataIndex === 'codeGenType'">
-          {{ formatCodeGenType(record.codeGenType) }}
+        <template v-else-if="column.dataIndex === 'codegenType'">
+          {{ formatCodeGenType(record.codegenType) }}
         </template>
         <template v-else-if="column.dataIndex === 'priority'">
           <a-tag v-if="record.priority === 99" color="gold">精选</a-tag>
           <span v-else>{{ record.priority || 0 }}</span>
         </template>
-        <template v-else-if="column.dataIndex === 'deployedTime'">
-          <span v-if="record.deployedTime">
-            {{ formatTime(record.deployedTime) }}
+        <template v-else-if="column.dataIndex === 'deployTime'">
+          <span v-if="record.deployTime">
+            {{ formatTime(record.deployTime) }}
           </span>
           <span v-else class="text-gray">未部署</span>
         </template>
@@ -123,7 +123,7 @@ const columns = [
   },
   {
     title: '生成类型',
-    dataIndex: 'codeGenType',
+    dataIndex: 'codegenType',
     width: 100,
   },
   {
@@ -133,7 +133,7 @@ const columns = [
   },
   {
     title: '部署时间',
-    dataIndex: 'deployedTime',
+    dataIndex: 'deployTime',
     width: 160,
   },
   {

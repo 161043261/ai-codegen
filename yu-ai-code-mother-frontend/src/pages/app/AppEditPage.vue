@@ -60,9 +60,9 @@
             <div class="form-tip">初始提示词不可修改</div>
           </a-form-item>
 
-          <a-form-item label="生成类型" name="codeGenType">
+          <a-form-item label="生成类型" name="codegenType">
             <a-input
-              :value="formatCodeGenType(formData.codeGenType)"
+              :value="formatCodeGenType(formData.codegenType)"
               placeholder="生成类型"
               disabled
             />
@@ -102,7 +102,7 @@
             {{ formatTime(appInfo?.updateTime) }}
           </a-descriptions-item>
           <a-descriptions-item label="部署时间">
-            {{ appInfo?.deployedTime ? formatTime(appInfo.deployedTime) : '未部署' }}
+            {{ appInfo?.deployTime ? formatTime(appInfo.deployTime) : '未部署' }}
           </a-descriptions-item>
           <a-descriptions-item label="访问链接">
             <a-button v-if="appInfo?.deployKey" type="link" @click="openPreview" size="small">
@@ -144,7 +144,7 @@ const formData = reactive({
   cover: '',
   priority: 0,
   initPrompt: '',
-  codeGenType: '',
+  codegenType: '',
   deployKey: '',
 })
 
@@ -190,7 +190,7 @@ const fetchAppInfo = async () => {
       formData.cover = appInfo.value.cover || ''
       formData.priority = appInfo.value.priority || 0
       formData.initPrompt = appInfo.value.initPrompt || ''
-      formData.codeGenType = appInfo.value.codeGenType || ''
+      formData.codegenType = appInfo.value.codegenType || ''
       formData.deployKey = appInfo.value.deployKey || ''
     } else {
       message.error('获取应用信息失败')
@@ -262,8 +262,8 @@ const goToChat = () => {
 
 // 打开预览
 const openPreview = () => {
-  if (appInfo.value?.codeGenType && appInfo.value?.id) {
-    const url = getStaticPreviewUrl(appInfo.value.codeGenType, String(appInfo.value.id))
+  if (appInfo.value?.codegenType && appInfo.value?.id) {
+    const url = getStaticPreviewUrl(appInfo.value.codegenType, String(appInfo.value.id))
     window.open(url, '_blank')
   }
 }
