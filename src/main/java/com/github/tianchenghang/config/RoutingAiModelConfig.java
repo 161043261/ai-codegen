@@ -1,23 +1,15 @@
 package com.github.tianchenghang.config;
 
-import com.github.tianchenghang.monitor.AiModelMonitorListener;
-import dev.langchain4j.model.chat.StreamingChatModel;
-import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
-import jakarta.annotation.Resource;
-import lombok.Data;
+import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.openai.OpenAiChatModel;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
-import java.util.List;
-
 @Configuration
-@ConfigurationProperties(prefix = "langchain4j.open-ai.reasoning-streaming-chat-model")
-@Data
-public class ReasoningStreamingChatModelConfig {
-  @Resource
-  private AiModelMonitorListener aiModelMonitorListener;
+@ConfigurationProperties(prefix = "langchain4j.open-ai.routing-chat-model")
+public class RoutingAiModelConfig {
 
   private String baseUrl;
 
@@ -35,16 +27,15 @@ public class ReasoningStreamingChatModelConfig {
 
   @Bean
   @Scope("prototype")
-  public StreamingChatModel reasoningStreamingChatModelPrototype() {
-    return OpenAiStreamingChatModel.builder()
+  public ChatModel routingChatModelPrototype() {
+    return OpenAiChatModel.builder()
       .apiKey(apiKey)
-      .baseUrl(baseUrl)
       .modelName(modelName)
+      .baseUrl(baseUrl)
       .maxTokens(maxTokens)
       .temperature(temperature)
       .logRequests(logRequests)
       .logResponses(logResponses)
-      .listeners(List.of(aiModelMonitorListener))
       .build();
   }
 }
