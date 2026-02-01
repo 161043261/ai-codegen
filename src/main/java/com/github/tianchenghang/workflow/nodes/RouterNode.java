@@ -31,7 +31,7 @@ public class RouterNode {
           }
           context.setCurrentStep("AI 路由");
           context.setCodegenType(codegenType);
-          return WorkflowContext.saveContext(context);
+          return WorkflowContext.setContext(context);
         });
   }
 }

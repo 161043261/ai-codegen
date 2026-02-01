@@ -19,7 +19,7 @@ public class PromptEnhanceNode {
           context.setCurrentStep("提示词增强");
           context.setEnhancedPrompt(originalPrompt);
           log.info("提示词增强完成, 增强后提示词长度: {} 字符", originalPrompt.length());
-          return WorkflowContext.saveContext(context);
+          return WorkflowContext.setContext(context);
         });
   }
 }

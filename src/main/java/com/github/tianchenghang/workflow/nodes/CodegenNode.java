@@ -34,7 +34,7 @@ public class CodegenNode {
           log.info("代码生成完成, 生成目录: {}", generatedCodeDir);
           context.setCurrentStep("代码生成");
           context.setGeneratedCodeDir(generatedCodeDir);
-          return WorkflowContext.saveContext(context);
+          return WorkflowContext.setContext(context);
         });
   }
 

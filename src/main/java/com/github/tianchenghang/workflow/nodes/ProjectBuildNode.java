@@ -33,13 +33,13 @@ public class ProjectBuildNode {
               throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Vite 项目构建失败");
             }
           } catch (Exception e) {
-            log.error("Vue 项目构建异常: {}", e.getMessage(), e);
+            log.error("Vite 项目构建异常: {}", e.getMessage(), e);
             buildResultDir = generatedCodeDir;
           }
           context.setCurrentStep("项目构建");
           context.setBuildResultDir(buildResultDir);
           log.info("项目构建节点完成, 输出目录: {}", buildResultDir);
-          return WorkflowContext.saveContext(context);
+          return WorkflowContext.setContext(context);
         });
   }
 }

@@ -46,7 +46,7 @@ public class CodeQualityCheckNode {
           }
           context.setCurrentStep("代码质量检查");
           context.setCodeQualityResult(codeQualityResult);
-          return WorkflowContext.saveContext(context);
+          return WorkflowContext.setContext(context);
         });
   }
 

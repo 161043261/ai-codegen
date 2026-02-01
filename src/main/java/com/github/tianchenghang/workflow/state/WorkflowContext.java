@@ -41,7 +41,7 @@ public class WorkflowContext implements Serializable {
     return (WorkflowContext) state.data().get(WORKFLOW_CONTEXT_KEY);
   }
 
-  public static Map<String, Object> saveContext(WorkflowContext context) {
+  public static Map<String, Object> setContext(WorkflowContext context) {
     return Map.of(WORKFLOW_CONTEXT_KEY, context);
   }
 }
