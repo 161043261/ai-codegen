@@ -2,26 +2,70 @@ package com.github.tianchenghang.utils;
 
 import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.tianchenghang.exception.BusinessException;
 import com.github.tianchenghang.exception.ErrorCode;
 import io.github.bonigarcia.wdm.WebDriverManager;
+
+import java.io.File;
 import java.time.Duration;
 import java.util.Objects;
+import java.util.UUID;
+
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 @Slf4j
-public class WebScreenshotUtil {
+public class WebPageScreenshotUtil {
   private static final WebDriver webDriver;
 
   static {
     final int DEFAULT_WIDTH = 1600;
     final int DEFAULT_HEIGHT = 900;
     webDriver = initChromeDriver(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+  }
+
+  @PreDestroy
+  public void destroy() {
+    webDriver.quit();
+  }
+
+  public static String saveWebPageScreenshot(String webUrl) {
+    if (StrUtil.isBlank(webUrl)) {
+      log.error("网页截图失败, url 为空");
+      return null;
+    }
+    try {
+      var rootPath =
+        System.getProperty("user.dir")
+          + "/tmp/screenshots/"
+          + UUID.randomUUID().toString().substring(0, 8);
+      FileUtil.mkdir(rootPath);
+      final var IMAGE_SUFFIX = ".png";
+var imageOutputPath = rootPath + File.separator + RandomUtil.randomNumbers(5) + IMAGE_SUFFIX;
+      webDriver.get(webUrl);
+      waitForDocumentComplete(webDriver);
+      var screenshotBytes = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
+      saveImage(screenshotBytes, imageOutputPath);
+      final var COMPRESS_SUFFIX = "_compressed.jpg";
+      var compressedImageOutputPath =
+        rootPath + File.separator + RandomUtil.randomNumbers(5) + COMPRESS_SUFFIX;
+      compressImage(imageOutputPath, compressedImageOutputPath);
+      log.info("网页截图成功: {}", compressedImageOutputPath);
+      FileUtil.del(imageOutputPath);
+      return compressedImageOutputPath;
+    } catch (Exception e) {
+      log.error("网页截图失败: {}", webUrl, e);
+      return null;
+    }
   }
 
   private static WebDriver initChromeDriver(int width, int height) {
@@ -67,7 +111,7 @@ public class WebScreenshotUtil {
 
   private static void compressImage(String originImagePath, String compressedImagePath) {
     // 压缩质量 30%
-    final float COMPRESSION_QUALITY = 0.3f;
+    final var COMPRESSION_QUALITY = 0.3f;
     try {
       ImgUtil.compress(
           FileUtil.file(originImagePath), FileUtil.file(compressedImagePath), COMPRESSION_QUALITY);
@@ -78,7 +122,7 @@ public class WebScreenshotUtil {
   }
 
   // 等待页面加载完成
-  private static void waitForPageLoad(WebDriver webDriver) {
+  private static void waitForDocumentComplete(WebDriver webDriver) {
     try {
       // 创建等待页面加载对象
       var wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
