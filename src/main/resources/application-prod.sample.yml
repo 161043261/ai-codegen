@@ -1,0 +1,63 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://<Your IP>:3306/ai-codegen
+    username: root
+    password: "0406"
+  data:
+    redis:
+      host: <Your IP>
+      port: 6379
+      database: 0
+      password:
+      ttl: 3600 # 缓存过期时间
+langchain4j:
+  open-ai:
+    chat-model:
+      base-url: https://api.deepseek.com
+      api-key: <Your API Key>
+      model-name: deepseek-chat
+      max-tokens: 8192
+      log-requests: true
+      log-responses: true
+    streaming-chat-model:
+      base-url: https://api.deepseek.com
+      api-key: <Your API Key>
+      model-name: deepseek-chat
+      max-tokens: 8192
+      log-requests: true
+      log-responses: true
+    reasoning-streaming-chat-model:
+      base-url: https://api.deepseek.com
+      api-key: <Your API Key>
+      model-name: deepseek-reasoner
+      max-tokens: 8192
+      temperature: 0.1
+      log-requests: true
+      log-responses: true
+    route-chat-model:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api-key: <Your API Key>
+      model-name: qwen-turbo
+      max-tokens: 100
+      log-requests: true
+      log-responses: true
+storage:
+  local:
+    path: ./uploads
+    base-url: http://<Your IP>/api/static
+dashscope:
+  api-key: <Your API Key>
+  image-model: wan2.2-t2i-flash
+pexels:
+  api-key: <Your API Key>
+mybatis-flex:
+  configuration:
+    log-impl: ''
+knife4j:
+  basic:
+    enable: true
+    username: root
+    password: pass
+code:
+  deploy-host: http://<Your IP>/dist
