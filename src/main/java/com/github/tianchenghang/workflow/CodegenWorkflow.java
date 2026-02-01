@@ -10,6 +10,7 @@ import com.github.tianchenghang.exception.ErrorCode;
 import com.github.tianchenghang.model.enums.CodegenType;
 import com.github.tianchenghang.workflow.nodes.*;
 import com.github.tianchenghang.workflow.state.WorkflowContext;
+import java.io.IOException;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.bsc.langgraph4j.CompiledGraph;
@@ -17,6 +18,7 @@ import org.bsc.langgraph4j.GraphRepresentation;
 import org.bsc.langgraph4j.GraphStateException;
 import org.bsc.langgraph4j.prebuilt.MessagesState;
 import org.bsc.langgraph4j.prebuilt.MessagesStateGraph;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.core.publisher.Flux;
 
 @Slf4j
@@ -30,7 +32,7 @@ public class CodegenWorkflow {
     public static final String PROJECT_BUILD = "project-build";
   }
 
-  public static class SseEvents {
+  public static class EventNames {
     public static final String WORKFLOW_START = "workflow-start";
     public static final String STEP_COMPLETE = "step-complete";
     public static final String WORKFLOW_COMPLETE = "workflow-complete";
@@ -109,7 +111,7 @@ public class CodegenWorkflow {
                           .build();
                   sink.next(
                       formatSseEvent(
-                          SseEvents.WORKFLOW_START,
+                          EventNames.WORKFLOW_START,
                           Map.of("message", "代码生成工作流: 开始执行", "original_prompt", originalPrompt)));
                   var graph = workflow.getGraph(GraphRepresentation.Type.MERMAID);
                   log.info("代码生成工作流图:\n{}", graph.content());
@@ -118,11 +120,11 @@ public class CodegenWorkflow {
                       workflow.stream(
                           Map.of(WorkflowContext.WORKFLOW_CONTEXT_KEY, initialContext))) {
                     log.info("代码生成工作流: 第 {} 步完成", stepNumber);
-                    WorkflowContext currentContext = WorkflowContext.getContext(step.state());
+                    var currentContext = WorkflowContext.getContext(step.state());
                     if (currentContext != null) {
                       sink.next(
                           formatSseEvent(
-                              SseEvents.STEP_COMPLETE,
+                              EventNames.STEP_COMPLETE,
                               Map.of(
                                   "step_number",
                                   stepNumber,
@@ -134,19 +136,70 @@ public class CodegenWorkflow {
                   }
                   sink.next(
                       formatSseEvent(
-                          SseEvents.WORKFLOW_COMPLETE, Map.of("message", "代码生成工作流执行完成")));
+                          EventNames.WORKFLOW_COMPLETE, Map.of("message", "代码生成工作流执行完成")));
                   log.info("代码生成工作流: 执行完成");
                   sink.complete();
                 } catch (Exception e) {
                   log.error("代码生成工作流: 执行失败 {}", e.getMessage(), e);
                   sink.next(
                       formatSseEvent(
-                          SseEvents.WORKFLOW_ERROR,
+                          EventNames.WORKFLOW_ERROR,
                           Map.of("error", e.getMessage(), "message", "代码生成工作流: 执行失败")));
                   sink.error(e);
                 }
               });
         });
+  }
+
+  public SseEmitter executeWorkflowWithSse(String originalPrompt) {
+    var emitter = new SseEmitter(30 * 60 * 1000L);
+    Thread.startVirtualThread(
+        () -> {
+          try {
+            var workflow = createWorkflow();
+            var initialContext =
+                WorkflowContext.builder()
+                    .originalPrompt(originalPrompt)
+                    .currentStep("代码生成工作流: 初始化")
+                    .build();
+            sendSseEvent(
+                emitter,
+                EventNames.WORKFLOW_START,
+                Map.of("message", "代码生成工作流: 开始执行", "original_prompt", originalPrompt));
+            var graph = workflow.getGraph(GraphRepresentation.Type.MERMAID);
+            log.info("代码生成工作流图:\n{}", graph.content());
+            log.info("代码生成工作流: 开始执行");
+            int stepNumber = 1;
+            for (var step :
+                workflow.stream(Map.of(WorkflowContext.WORKFLOW_CONTEXT_KEY, initialContext))) {
+              log.info("代码生成工作流: 第 {} 步完成", stepNumber);
+              var currentContext = WorkflowContext.getContext(step.state());
+              if (currentContext != null) {
+                sendSseEvent(
+                    emitter,
+                    EventNames.STEP_COMPLETE,
+                    Map.of(
+                        "step_number",
+                        stepNumber,
+                        "current_step",
+                        currentContext.getCurrentStep()));
+                log.info("代码生成工作流: 当前上下文 {}", currentContext);
+              }
+              stepNumber++;
+            }
+            sendSseEvent(emitter, EventNames.STEP_COMPLETE, Map.of("message", "代码生成工作流: 执行完成"));
+            log.info("代码生成工作流: 执行完成");
+            emitter.complete();
+          } catch (Exception e) {
+            log.error("代码生成工作流: 执行失败: {}", e.getMessage(), e);
+            sendSseEvent(
+                emitter,
+                EventNames.WORKFLOW_ERROR,
+                Map.of("error", e.getMessage(), "message", "代码生成工作流: 执行失败"));
+            emitter.completeWithError(e);
+          }
+        });
+    return emitter;
   }
 
   private String formatSseEvent(String eventType, Object data) {
@@ -156,6 +209,14 @@ public class CodegenWorkflow {
     } catch (Exception e) {
       log.error("格式化 SSE 事件失败: {}", e.getMessage(), e);
       return "event: error\ndata: {\"error\":\"格式化 SSE 事件失败\"}\n\n";
+    }
+  }
+
+  private void sendSseEvent(SseEmitter emitter, String eventType, Object data) {
+    try {
+      emitter.send(SseEmitter.event().name(eventType).data(data));
+    } catch (IOException e) {
+      log.error("发送 SSE 事件失败: {}", e.getMessage(), e);
     }
   }
 
