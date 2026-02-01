@@ -11,16 +11,16 @@ public class SimpleTextStreamHandler {
       ChatHistoryService chatHistoryService,
       long appId,
       User loginUser) {
-    var aiResponseStringBuilder = new StringBuilder();
+    var aiResponseBuilder = new StringBuilder();
     return originalFlux
         .map(
             chunk -> {
-              aiResponseStringBuilder.append(chunk);
+              aiResponseBuilder.append(chunk);
               return chunk;
             })
         .doOnComplete(
             () -> {
-              var aiResponse = aiResponseStringBuilder.toString();
+              var aiResponse = aiResponseBuilder.toString();
               chatHistoryService.addChatMessage(
                   appId, aiResponse, ChatHistoryMessageType.AI.getValue(), loginUser.getId());
             })

@@ -24,17 +24,17 @@ public class JsonMessageStreamHandler {
       ChatHistoryService chatHistoryService,
       long appId,
       User loginUser) {
-    var charHistoryStringBuilder = new StringBuilder();
+    var charHistoryBuilder = new StringBuilder();
     var executedToolIds = new HashSet<String>();
     return originalFlux
         .map(
             chuck -> {
-              return handleJsonMessageChunk(chuck, charHistoryStringBuilder, executedToolIds);
+              return handleJsonMessageChunk(chuck, charHistoryBuilder, executedToolIds);
             })
         .filter(StrUtil::isNotEmpty)
         .doOnComplete(
             () -> {
-              var aiResponse = charHistoryStringBuilder.toString();
+              var aiResponse = charHistoryBuilder.toString();
               chatHistoryService.addChatMessage(
                   appId, aiResponse, ChatHistoryMessageType.AI.getValue(), loginUser.getId());
             })

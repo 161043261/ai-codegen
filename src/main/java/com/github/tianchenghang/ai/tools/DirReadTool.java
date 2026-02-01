@@ -48,8 +48,8 @@ public class DirReadTool extends BaseTool {
       if (!targetDir.exists() || !targetDir.isDirectory()) {
         return "目录不存在, 或不是目录: " + relativeDirpath;
       }
-      var builder = new StringBuilder();
-      builder.append("目录结构:\n");
+      var dirStructureBuilder = new StringBuilder();
+      dirStructureBuilder.append("目录结构:\n");
       var allFiles = FileUtil.loopFiles(targetDir, file -> !shouldIgnore(file.getName()));
       allFiles.stream()
           .sorted(
@@ -65,9 +65,9 @@ public class DirReadTool extends BaseTool {
               file -> {
                 int depth = getRelativeDepth(targetDir, file);
                 String indent = "  ".repeat(depth);
-                builder.append(indent).append(file.getName());
+                dirStructureBuilder.append(indent).append(file.getName());
               });
-      return builder.toString();
+      return dirStructureBuilder.toString();
     } catch (Exception e) {
       var errorMessage = String.format("读取目录失败: %s, 错误: %s", relativeDirpath, e.getMessage());
       log.error(errorMessage, e);
