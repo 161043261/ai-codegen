@@ -83,7 +83,7 @@ public class CodegenWorkflow {
     log.info("代码生成工作流图:\n{}", graph.content());
     log.info("代码生成工作流: 开始执行");
     WorkflowContext finalContext = null;
-    int stepNumber = 1;
+    var stepNumber = 1;
     for (var step : workflow.stream(Map.of(WorkflowContext.WORKFLOW_CONTEXT_KEY, initialContext))) {
       log.info("代码生成工作流: 第 {} 步完成", stepNumber);
       var currentContext = WorkflowContext.getContext(step.state());
@@ -115,7 +115,7 @@ public class CodegenWorkflow {
                           Map.of("message", "代码生成工作流: 开始执行", "original_prompt", originalPrompt)));
                   var graph = workflow.getGraph(GraphRepresentation.Type.MERMAID);
                   log.info("代码生成工作流图:\n{}", graph.content());
-                  int stepNumber = 1;
+                  var stepNumber = 1;
                   for (var step :
                       workflow.stream(
                           Map.of(WorkflowContext.WORKFLOW_CONTEXT_KEY, initialContext))) {
@@ -169,7 +169,7 @@ public class CodegenWorkflow {
             var graph = workflow.getGraph(GraphRepresentation.Type.MERMAID);
             log.info("代码生成工作流图:\n{}", graph.content());
             log.info("代码生成工作流: 开始执行");
-            int stepNumber = 1;
+            var stepNumber = 1;
             for (var step :
                 workflow.stream(Map.of(WorkflowContext.WORKFLOW_CONTEXT_KEY, initialContext))) {
               log.info("代码生成工作流: 第 {} 步完成", stepNumber);
