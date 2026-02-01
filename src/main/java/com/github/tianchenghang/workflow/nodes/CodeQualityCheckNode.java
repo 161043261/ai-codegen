@@ -17,7 +17,7 @@ import org.bsc.langgraph4j.prebuilt.MessagesState;
 
 @Slf4j
 public class CodeQualityCheckNode {
-  public AsyncNodeAction<MessagesState<String>> create() {
+  public static AsyncNodeAction<MessagesState<String>> create() {
     return node_async(
         state -> {
           var context = WorkflowContext.getContext(state);
