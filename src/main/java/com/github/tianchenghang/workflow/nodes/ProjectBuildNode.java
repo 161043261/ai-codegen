@@ -38,7 +38,7 @@ public class ProjectBuildNode {
           }
           context.setCurrentStep("项目构建");
           context.setBuildResultDir(buildResultDir);
-          log.info("项目构建节点完成, 输出目录: {}", buildResultDir);
+          log.info("项目构建完成, 输出目录: {}", buildResultDir);
           return WorkflowContext.setContext(context);
         });
   }

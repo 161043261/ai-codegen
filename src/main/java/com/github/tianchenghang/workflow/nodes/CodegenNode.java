@@ -31,7 +31,7 @@ public class CodegenNode {
           var generatedCodeDir =
               String.format(
                   "%s/%s_%s", AppConstant.CODE_OUTPUT_ROOT_DIR, codegenType.getValue(), appId);
-          log.info("代码生成完成, 生成目录: {}", generatedCodeDir);
+          log.info("代码生成完成, 输出目录: {}", generatedCodeDir);
           context.setCurrentStep("代码生成");
           context.setGeneratedCodeDir(generatedCodeDir);
           return WorkflowContext.setContext(context);

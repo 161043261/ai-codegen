@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class PageRequest {
 
-  static enum SortOrder {
-    ascend,
-    descend
+  public static class SortOrder {
+    public static final String ASC = "ASC";
+    public static final String DESC = "DESC";
   }
 
   private int pageNum = 1;
@@ -16,5 +16,5 @@ public class PageRequest {
 
   private String sortField;
 
-  private String sortOrder = SortOrder.descend.name(); // ascend
+  private String sortOrder = SortOrder.ASC; // ASC
 }

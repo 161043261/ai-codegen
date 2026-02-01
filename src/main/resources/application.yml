@@ -91,3 +91,5 @@ management:
   endpoint:
     health:
       show-details: always
+codegen:
+  deploy-host: http://<Your IP>/dist

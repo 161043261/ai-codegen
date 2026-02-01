@@ -20,7 +20,7 @@ public class ToolManager {
       toolkits.put(tool.getToolName(), tool);
       log.info("注册工具: {} -> {}", tool.getToolName(), tool.getDisplayName());
     }
-    log.info("工具注册完成, 注册 {} 个工具", toolkits.size());
+    log.info("工具注册成功, 共 {} 个工具", toolkits.size());
   }
 
   public BaseTool getTool(String toolName) {

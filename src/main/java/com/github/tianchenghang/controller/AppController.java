@@ -49,7 +49,7 @@ public class AppController {
   public Flux<ServerSentEvent<String>> chatForCodegen(
       @RequestParam Long appId, @RequestParam String message, HttpServletRequest request) {
     if (appId == null || appId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "appId 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目 ID 错误");
     }
     if (StrUtil.isBlank(message)) {
       throw new BusinessException(ErrorCode.BAD_REQUEST, "提示词为空");
@@ -76,7 +76,7 @@ public class AppController {
     }
     var appId = appDeployRequest.getAppId();
     if (appId == null || appId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "appId 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目 ID 错误");
     }
     var loginUser = userService.getLoginUser(request);
     var deployUrl = appService.deployApp(appId, loginUser);
@@ -87,22 +87,22 @@ public class AppController {
   public void downloadApp(
       @PathVariable Long appId, HttpServletRequest request, HttpServletResponse response) {
     if (appId == null || appId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "appId 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目 ID 错误");
     }
     var appEntity = appService.getById(appId);
     if (appEntity == null) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "app 不存在");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目不存在");
     }
     var loginUser = userService.getLoginUser(request);
     if (!appEntity.getUserId().equals(loginUser.getId())) {
-      throw new BusinessException(ErrorCode.NO_PERMISSION, "没有下载权限");
+      throw new BusinessException(ErrorCode.NO_PERMISSION, "无下载权限");
     }
     var codegenType = appEntity.getCodegenType();
     var sourceDirname = codegenType + "_" + appId;
     var sourceDirpath = AppConstant.CODE_OUTPUT_ROOT_DIR + File.separator + sourceDirname;
     var sourceDir = new File(sourceDirpath);
     if (!sourceDir.exists() || !sourceDir.isDirectory()) {
-      throw new BusinessException(ErrorCode.NOT_FOUND, "app 不存在");
+      throw new BusinessException(ErrorCode.NOT_FOUND, "项目不存在");
     }
     var downloadFilename = String.valueOf(appId);
     projectDownloadService.downloadProjectAsZip(sourceDirpath, downloadFilename, response);

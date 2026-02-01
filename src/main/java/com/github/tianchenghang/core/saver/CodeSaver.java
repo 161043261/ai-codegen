@@ -34,7 +34,7 @@ public abstract class CodeSaver<T> {
 
   protected String buildUniqueDir(Long appId) {
     if (appId == null) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "保存代码异常: appId 为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "保存代码异常: 项目 ID 为空");
     }
     var codegenType = getCodegenType().getValue();
     var uniqueDirname = StrUtil.format("{}_{}", codegenType, appId);
