@@ -134,7 +134,7 @@ public class WebPageScreenshotUtil {
       Thread.sleep(3000);
       log.info("页面加载完成");
     } catch (Exception e) {
-      log.error("等待页面加载错误: ", e);
+      log.error("等待页面加载时发生错误: ", e);
     }
   }
 }

@@ -1,4 +1,3 @@
 package com.github.tianchenghang.core;
 
-public class AiCodegenFacade {
-}
+public class AiCodegenFacade {}

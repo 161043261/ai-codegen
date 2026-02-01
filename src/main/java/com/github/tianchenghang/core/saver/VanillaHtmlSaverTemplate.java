@@ -1,4 +1,3 @@
 package com.github.tianchenghang.core.saver;
 
-public class VanillaHtmlSaverTemplate {
-}
+public class VanillaHtmlSaverTemplate {}

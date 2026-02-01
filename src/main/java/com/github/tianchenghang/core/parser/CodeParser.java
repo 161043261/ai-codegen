@@ -1,4 +1,5 @@
 package com.github.tianchenghang.core.parser;
 
-public class CodeParser {
+public interface CodeParser<T> {
+  T parseCode(String codeContent);
 }
