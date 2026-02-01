@@ -7,13 +7,11 @@ import cn.hutool.core.util.StrUtil;
 import com.github.tianchenghang.exception.BusinessException;
 import com.github.tianchenghang.exception.ErrorCode;
 import io.github.bonigarcia.wdm.WebDriverManager;
-
+import jakarta.annotation.PreDestroy;
 import java.io.File;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.UUID;
-
-import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
@@ -45,19 +43,19 @@ public class WebPageScreenshotUtil {
     }
     try {
       var rootPath =
-        System.getProperty("user.dir")
-          + "/tmp/screenshots/"
-          + UUID.randomUUID().toString().substring(0, 8);
+          System.getProperty("user.dir")
+              + "/tmp/screenshots/"
+              + UUID.randomUUID().toString().substring(0, 8);
       FileUtil.mkdir(rootPath);
       final var IMAGE_SUFFIX = ".png";
-var imageOutputPath = rootPath + File.separator + RandomUtil.randomNumbers(5) + IMAGE_SUFFIX;
+      var imageOutputPath = rootPath + File.separator + RandomUtil.randomNumbers(5) + IMAGE_SUFFIX;
       webDriver.get(webUrl);
       waitForDocumentComplete(webDriver);
       var screenshotBytes = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
       saveImage(screenshotBytes, imageOutputPath);
       final var COMPRESS_SUFFIX = "_compressed.jpg";
       var compressedImageOutputPath =
-        rootPath + File.separator + RandomUtil.randomNumbers(5) + COMPRESS_SUFFIX;
+          rootPath + File.separator + RandomUtil.randomNumbers(5) + COMPRESS_SUFFIX;
       compressImage(imageOutputPath, compressedImageOutputPath);
       log.info("网页截图成功: {}", compressedImageOutputPath);
       FileUtil.del(imageOutputPath);
