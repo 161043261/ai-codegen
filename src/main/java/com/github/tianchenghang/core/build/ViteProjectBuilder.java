@@ -16,7 +16,7 @@ public class ViteProjectBuilder {
               try {
                 buildProject(projectPath);
               } catch (Exception e) {
-                log.error("异步构建 Vite 项目时发生错误: {}", e.getMessage(), e);
+                log.error("异步构建 Vite 项目异常: {}", e.getMessage(), e);
               }
             });
   }
@@ -41,7 +41,7 @@ public class ViteProjectBuilder {
       log.error("npm run build 失败: {}", projectPath);
       return false;
     }
-    log.info("Vite 项目构建成功: {}", projectPath);
+    log.info("Vite 项目构建成功, dist 目录: {}", projectPath);
     return true;
   }
 

@@ -28,13 +28,13 @@ public abstract class CodeSaver<T> {
 
   protected void validateInput(T result) {
     if (result == null) {
-      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "保存代码时发生错误: result 为空");
+      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "保存代码异常: result 为空");
     }
   }
 
   protected String buildUniqueDir(Long appId) {
     if (appId == null) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "保存代码时发生错误: appId 为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "保存代码异常: appId 为空");
     }
     var codegenType = getCodegenType().getValue();
     var uniqueDirname = StrUtil.format("{}_{}", codegenType, appId);

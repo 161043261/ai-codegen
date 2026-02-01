@@ -20,7 +20,7 @@ import reactor.core.publisher.Flux;
 
 @Service
 @Slf4j
-public class AiCodegenService {
+public class AiCodegenFacade {
   @Resource private AiCodegenServiceFactory aiCodegenServiceFactory;
   @Resource private ViteProjectBuilder viteProjectBuilder;
 

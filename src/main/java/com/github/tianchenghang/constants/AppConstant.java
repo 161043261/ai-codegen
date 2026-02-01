@@ -2,7 +2,7 @@ package com.github.tianchenghang.constants;
 
 public interface AppConstant {
 
-  Integer GOOD_APP_PRIORITY = 99;
+  Integer AWESOME_APP_PRIORITY = 99;
 
   Integer DEFAULT_APP_PRIORITY = 0;
 

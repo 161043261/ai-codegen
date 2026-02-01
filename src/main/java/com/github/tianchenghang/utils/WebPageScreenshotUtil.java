@@ -81,7 +81,7 @@ public class WebPageScreenshotUtil {
       // 设置窗口大小
       options.addArguments(String.format("--window-size=%d,%d", width, height));
       // 禁用扩展
-      options.addArguments("--disable-extensions");
+      options.addArguments("--disable-workflow");
       // 设置用户代理
       options.addArguments(
           "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
@@ -134,7 +134,7 @@ public class WebPageScreenshotUtil {
       Thread.sleep(3000);
       log.info("页面加载完成");
     } catch (Exception e) {
-      log.error("等待页面加载时发生错误: ", e);
+      log.error("等待页面加载异常: ", e);
     }
   }
 }
