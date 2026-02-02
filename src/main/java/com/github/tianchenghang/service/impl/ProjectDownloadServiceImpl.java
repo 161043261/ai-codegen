@@ -57,7 +57,8 @@ public class ProjectDownloadServiceImpl implements ProjectDownloadService {
     FileFilter filter = file -> isPathAllowed(projectDir.toPath(), file.toPath());
     try {
       ZipUtil.zip(response.getOutputStream(), StandardCharsets.UTF_8, false, filter, projectDir);
-      log.info("Project directory compression succeeded: {} -> {}.zip", projectPath, downloadFileName);
+      log.info(
+          "Project directory compression succeeded: {} -> {}.zip", projectPath, downloadFileName);
     } catch (IOException e) {
       log.error("Project directory compression failed: {}", e.getMessage(), e);
     }

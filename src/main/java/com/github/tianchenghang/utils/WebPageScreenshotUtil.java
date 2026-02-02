@@ -94,7 +94,8 @@ public class WebPageScreenshotUtil {
       return driver;
     } catch (Exception e) {
       log.error("Failed to initialize Chrome browser: ", e);
-      throw new BusinessException(ErrorCode.OPERATION_FAILED, "Failed to initialize Chrome browser");
+      throw new BusinessException(
+          ErrorCode.OPERATION_FAILED, "Failed to initialize Chrome browser");
     }
   }
 

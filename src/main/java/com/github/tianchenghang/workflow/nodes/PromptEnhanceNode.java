@@ -18,7 +18,9 @@ public class PromptEnhanceNode {
           var originalPrompt = context.getOriginalPrompt();
           context.setCurrentStep("Prompt Enhancement");
           context.setEnhancedPrompt(originalPrompt);
-          log.info("Prompt enhancement completed, enhanced prompt length: {} characters", originalPrompt.length());
+          log.info(
+              "Prompt enhancement completed, enhanced prompt length: {} characters",
+              originalPrompt.length());
           return WorkflowContext.setContext(context);
         });
   }

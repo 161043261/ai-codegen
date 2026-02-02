@@ -44,7 +44,9 @@ public class FileModifyTool extends BaseTool {
       log.info("File modified successfully: {}", path.toAbsolutePath());
       return "File modified successfully: " + relativeFilepath;
     } catch (IOException e) {
-      var errorMessage = String.format("File modification failed: %s, error: %s", relativeFilepath, e.getMessage());
+      var errorMessage =
+          String.format(
+              "File modification failed: %s, error: %s", relativeFilepath, e.getMessage());
       log.error(errorMessage, e);
       return errorMessage;
     }

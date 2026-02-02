@@ -16,13 +16,20 @@
 [INFO] Copying 8 resources from src\main\resources to target\classes
 [INFO] 
 [INFO] --- compiler:3.14.0:compile (default-compile) @ ai-codegen ---
-[INFO] Nothing to compile - all classes are up to date.
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 122 source files with javac [debug parameters release 21] to target\classes
+[WARNING] /C:/Users/larkhang/github/forks/yu-ai-code-mother/src/main/java/com/github/tianchenghang/ai/AiCodegenServiceFactory.java:[75,43] ×îºóÒ»¸ö²ÎÊýÊ¹ÓÃÁË²»×¼È·µÄ±äÁ¿ÀàÐÍµÄ varargs ·½·¨µÄ·Ç varargs µ÷ÓÃ; 
+  ¶ÔÓÚ varargs µ÷ÓÃ, Ó¦Ê¹ÓÃ java.lang.Object
+  ¶ÔÓÚ·Ç varargs µ÷ÓÃ, Ó¦Ê¹ÓÃ java.lang.Object[], ÕâÑùÒ²¿ÉÒÔÒÖÖÆ´Ë¾¯¸æ
+[INFO] /C:/Users/larkhang/github/forks/yu-ai-code-mother/src/main/java/com/github/tianchenghang/mybatis_codegen/MybatisCodegen.java: C:\Users\larkhang\github\forks\yu-ai-code-mother\src\main\java\com\github\tianchenghang\mybatis_codegen\MybatisCodegen.javaÊ¹ÓÃÁËÎ´¾­¼ì²é»ò²»°²È«µÄ²Ù×÷¡£
+[INFO] /C:/Users/larkhang/github/forks/yu-ai-code-mother/src/main/java/com/github/tianchenghang/mybatis_codegen/MybatisCodegen.java: ÓÐ¹ØÏêÏ¸ÐÅÏ¢, ÇëÊ¹ÓÃ -Xlint:unchecked ÖØÐÂ±àÒë¡£
 [INFO] 
 [INFO] --- resources:3.3.1:testResources (default-testResources) @ ai-codegen ---
 [INFO] skip non existing resourceDirectory C:\Users\larkhang\github\forks\yu-ai-code-mother\src\test\resources
 [INFO] 
 [INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ ai-codegen ---
-[INFO] Nothing to compile - all classes are up to date.
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 21] to target\test-classes
 [INFO] 
 [INFO] <<< spring-boot:3.5.4:run (default-cli) < test-compile @ ai-codegen <<<
 [INFO] 
@@ -44,46 +51,46 @@ SLF4J(I): Actual provider is of type [ch.qos.logback.classic.spi.LogbackServiceP
 
  :: Spring Boot ::                (v3.5.4)
 
-2026-02-02T09:51:02.606+08:00  INFO 20724 --- [ai-codegen] [           main] com.github.tianchenghang.App             : Starting App using Java 21.0.2 with PID 20724 (C:\Users\larkhang\github\forks\yu-ai-code-mother\target\classes started by larkhang in C:\Users\larkhang\github\forks\yu-ai-code-mother)
-2026-02-02T09:51:02.608+08:00  INFO 20724 --- [ai-codegen] [           main] com.github.tianchenghang.App             : The following 1 profile is active: "local"
-2026-02-02T09:51:04.124+08:00  INFO 20724 --- [ai-codegen] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8123 (http)
-2026-02-02T09:51:04.135+08:00  INFO 20724 --- [ai-codegen] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-02-02T09:51:04.135+08:00  INFO 20724 --- [ai-codegen] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.43]
-2026-02-02T09:51:04.200+08:00  INFO 20724 --- [ai-codegen] [           main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
-2026-02-02T09:51:04.201+08:00  INFO 20724 --- [ai-codegen] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1540 ms
+2026-02-02T12:54:14.262+08:00  INFO 69188 --- [ai-codegen] [           main] com.github.tianchenghang.App             : Starting App using Java 21.0.2 with PID 69188 (C:\Users\larkhang\github\forks\yu-ai-code-mother\target\classes started by larkhang in C:\Users\larkhang\github\forks\yu-ai-code-mother)
+2026-02-02T12:54:14.263+08:00  INFO 69188 --- [ai-codegen] [           main] com.github.tianchenghang.App             : The following 1 profile is active: "local"
+2026-02-02T12:54:16.493+08:00  INFO 69188 --- [ai-codegen] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8123 (http)
+2026-02-02T12:54:16.506+08:00  INFO 69188 --- [ai-codegen] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-02T12:54:16.506+08:00  INFO 69188 --- [ai-codegen] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.43]
+2026-02-02T12:54:16.679+08:00  INFO 69188 --- [ai-codegen] [           main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-02-02T12:54:16.679+08:00  INFO 69188 --- [ai-codegen] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2370 ms
   __  __       _           _   _       _____ _           
  |  \/  |_   _| |__   __ _| |_(_)___  |  ___| | _____  __
  | |\/| | | | | '_ \ / _` | __| / __| | |_  | |/ _ \ \/ /
  | |  | | |_| | |_) | (_| | |_| \__ \ |  _| | |  __/>  < 
  |_|  |_|\__, |_.__/ \__,_|\__|_|___/ |_|   |_|\___/_/\_\
          |___/ v1.11.1 https://mybatis-flex.com
-2026-02-02T09:51:04.969+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : æ³¨å†Œå·¥å…·: ReadDir -> è¯»å–ç›®å½•
-2026-02-02T09:51:04.970+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : æ³¨å†Œå·¥å…·: Exit -> é€€å‡º
-2026-02-02T09:51:04.970+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : æ³¨å†Œå·¥å…·: FileDelete -> æ–‡ä»¶åˆ é™¤
-2026-02-02T09:51:04.970+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : æ³¨å†Œå·¥å…·: FileModify -> æ–‡ä»¶ä¿®æ”¹
-2026-02-02T09:51:04.970+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : æ³¨å†Œå·¥å…·: FileRead -> æ–‡ä»¶è¯»å–
-2026-02-02T09:51:04.970+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : æ³¨å†Œå·¥å…·: FileWrite -> æ–‡ä»¶å†™å…¥
-2026-02-02T09:51:04.970+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : å·¥å…·æ³¨å†ŒæˆåŠŸ, å…± 6 ä¸ªå·¥å…·
-2026-02-02T09:51:05.003+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.t.local_storage.LocalStorageManager  : æœ¬åœ°å­˜å‚¨è·¯å¾„: ./uploads
-2026-02-02T09:51:05.003+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.t.local_storage.LocalStorageManager  : æœ¬åœ°å­˜å‚¨åŸºç¡€ url: http://localhost:8123/api/static
-2026-02-02T09:51:05.054+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.t.r.limiter.LocalRateLimiter         : Redis ä¸å¯ç”¨, ä½¿ç”¨æœ¬åœ°é™æµå™¨
-2026-02-02T09:51:05.059+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.t.ai.AiCodegenServiceFactory         : ä¸º appId: 0 åˆ›å»ºæ–°çš„ AI æœåŠ¡å®žä¾‹
-2026-02-02T09:51:05.095+08:00  INFO 20724 --- [ai-codegen] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-02-02T09:51:05.154+08:00  INFO 20724 --- [ai-codegen] [           main] i.opentelemetry.api.GlobalOpenTelemetry  : AutoConfiguredOpenTelemetrySdk found on classpath but automatic configuration is disabled. To enable, run your JVM with -Dotel.java.global-autoconfigure.enabled=true
-2026-02-02T09:51:06.411+08:00  INFO 20724 --- [ai-codegen] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-02-02T09:51:06.481+08:00  INFO 20724 --- [ai-codegen] [           main] c.g.tianchenghang.config.CacheConfig     : Redis is disabled, use Caffeine local cache
-2026-02-02T09:51:06.590+08:00  INFO 20724 --- [ai-codegen] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
-2026-02-02T09:51:06.612+08:00  INFO 20724 --- [ai-codegen] [           main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
-2026-02-02T09:51:07.233+08:00  INFO 20724 --- [ai-codegen] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
-2026-02-02T09:51:07.319+08:00  INFO 20724 --- [ai-codegen] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8123 (http) with context path '/api'
-2026-02-02T09:51:07.328+08:00  INFO 20724 --- [ai-codegen] [           main] com.github.tianchenghang.App             : Started App in 5.129 seconds (process running for 5.448)
-2026-02-02T09:54:43.407+08:00  INFO 20724 --- [ai-codegen] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2026-02-02T09:54:43.411+08:00  INFO 20724 --- [ai-codegen] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2026-02-02T09:54:43.416+08:00  INFO 20724 --- [ai-codegen] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-02-02T09:54:43.421+08:00  INFO 20724 --- [ai-codegen] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-02-02T12:54:17.565+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : Registering tool: ReadDir -> Read Directory
+2026-02-02T12:54:17.566+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : Registering tool: Exit -> Exit
+2026-02-02T12:54:17.566+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : Registering tool: FileDelete -> File Delete
+2026-02-02T12:54:17.566+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : Registering tool: FileModify -> File Modify
+2026-02-02T12:54:17.566+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : Registering tool: FileRead -> File Read
+2026-02-02T12:54:17.566+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : Registering tool: FileWrite -> File Write
+2026-02-02T12:54:17.566+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.tianchenghang.ai.tools.ToolManager   : Tool registration completed, total 6 tools
+2026-02-02T12:54:17.638+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.t.local_storage.LocalStorageManager  : Local storage path: ./uploads
+2026-02-02T12:54:17.638+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.t.local_storage.LocalStorageManager  : Local storage base URL: http://localhost:8123/api/static
+2026-02-02T12:54:17.692+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.t.r.limiter.LocalRateLimiter         : Redis unavailable, using local rate limiter
+2026-02-02T12:54:17.698+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.t.ai.AiCodegenServiceFactory         : Creating new AI service instance for app ID: 0
+2026-02-02T12:54:17.740+08:00  INFO 69188 --- [ai-codegen] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-02T12:54:17.822+08:00  INFO 69188 --- [ai-codegen] [           main] i.opentelemetry.api.GlobalOpenTelemetry  : AutoConfiguredOpenTelemetrySdk found on classpath but automatic configuration is disabled. To enable, run your JVM with -Dotel.java.global-autoconfigure.enabled=true
+2026-02-02T12:54:21.708+08:00  INFO 69188 --- [ai-codegen] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-02T12:54:22.210+08:00  INFO 69188 --- [ai-codegen] [           main] c.g.tianchenghang.config.CacheConfig     : Redis is disabled, use Caffeine local cache
+2026-02-02T12:54:22.534+08:00  INFO 69188 --- [ai-codegen] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2026-02-02T12:54:22.561+08:00  INFO 69188 --- [ai-codegen] [           main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-02-02T12:54:23.110+08:00  INFO 69188 --- [ai-codegen] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2026-02-02T12:54:23.192+08:00  INFO 69188 --- [ai-codegen] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8123 (http) with context path '/api'
+2026-02-02T12:54:23.202+08:00  INFO 69188 --- [ai-codegen] [           main] com.github.tianchenghang.App             : Started App in 9.358 seconds (process running for 9.769)
+2026-02-02T12:54:49.425+08:00  INFO 69188 --- [ai-codegen] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-02T12:54:49.430+08:00  INFO 69188 --- [ai-codegen] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-02-02T12:54:49.435+08:00  INFO 69188 --- [ai-codegen] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-02-02T12:54:49.442+08:00  INFO 69188 --- [ai-codegen] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  03:45 min
-[INFO] Finished at: 2026-02-02T09:54:43+08:00
+[INFO] Total time:  45.760 s
+[INFO] Finished at: 2026-02-02T12:54:49+08:00
 [INFO] ------------------------------------------------------------------------

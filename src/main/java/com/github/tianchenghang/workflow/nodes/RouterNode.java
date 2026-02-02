@@ -23,10 +23,15 @@ public class RouterNode {
           try {
             var routeService = SpringContextUtil.getBean(AiCodegenTypeRouteService.class);
             codegenType = routeService.routeCodegenType(context.getOriginalPrompt());
-            log.info("AI routing completed, selected codegen type: {} ({})", codegenType.getValue(), codegenType.getText());
+            log.info(
+                "AI routing completed, selected codegen type: {} ({})",
+                codegenType.getValue(),
+                codegenType.getText());
           } catch (Exception e) {
             log.error(
-                "AI routing failed: {}, using default codegen type {}", e.getMessage(), CodegenType.VANILLA_HTML.getText());
+                "AI routing failed: {}, using default codegen type {}",
+                e.getMessage(),
+                CodegenType.VANILLA_HTML.getText());
             codegenType = CodegenType.VANILLA_HTML;
           }
           context.setCurrentStep("AI Router");

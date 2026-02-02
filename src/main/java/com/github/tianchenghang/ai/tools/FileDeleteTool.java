@@ -15,7 +15,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileDeleteTool extends BaseTool {
   @Tool("Delete file at the specified path")
-  public String deleteFile(@P("Relative file path") String relativeFilepath, @ToolMemoryId Long appId) {
+  public String deleteFile(
+      @P("Relative file path") String relativeFilepath, @ToolMemoryId Long appId) {
     try {
       var path = Paths.get(relativeFilepath);
       if (!path.isAbsolute()) {
@@ -35,7 +36,8 @@ public class FileDeleteTool extends BaseTool {
       log.info("File deleted successfully: {}", path.toAbsolutePath());
       return "File deleted successfully: " + relativeFilepath;
     } catch (IOException e) {
-      var errorMessage = String.format("File deletion failed: %s, error: %s", relativeFilepath, e.getMessage());
+      var errorMessage =
+          String.format("File deletion failed: %s, error: %s", relativeFilepath, e.getMessage());
       log.error(errorMessage, e);
       return errorMessage;
     }

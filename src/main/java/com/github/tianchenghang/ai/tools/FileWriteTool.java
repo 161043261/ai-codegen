@@ -42,7 +42,8 @@ public class FileWriteTool extends BaseTool {
       log.info("File written successfully: {}", path.toAbsolutePath());
       return "File written successfully: " + relativeFilepath;
     } catch (IOException e) {
-      var errorMessage = String.format("File write failed: %s, error: %s", relativeFilepath, e.getMessage());
+      var errorMessage =
+          String.format("File write failed: %s, error: %s", relativeFilepath, e.getMessage());
       log.error(errorMessage, e);
       return errorMessage;
     }

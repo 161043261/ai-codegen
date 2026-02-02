@@ -30,7 +30,8 @@ public class ProjectBuildNode {
               buildResultDir = generatedCodeDir + File.separator + "dist";
               log.info("Vite project built successfully, dist directory: {}", buildResultDir);
             } else {
-              throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Vite project build failed");
+              throw new BusinessException(
+                  ErrorCode.INTERNAL_SERVER_ERROR, "Vite project build failed");
             }
           } catch (Exception e) {
             log.error("Vite project build exception: {}", e.getMessage(), e);

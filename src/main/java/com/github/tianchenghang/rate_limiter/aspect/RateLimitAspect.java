@@ -77,7 +77,8 @@ public class RateLimitAspect {
 
       default:
         {
-          throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Unsupported rate limit type");
+          throw new BusinessException(
+              ErrorCode.INTERNAL_SERVER_ERROR, "Unsupported rate limit type");
         }
     }
     return keyBuilder.toString();

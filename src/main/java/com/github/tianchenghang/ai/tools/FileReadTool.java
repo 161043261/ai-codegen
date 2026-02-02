@@ -16,7 +16,8 @@ import org.springframework.stereotype.Component;
 public class FileReadTool extends BaseTool {
 
   @Tool("Read file content from the specified path")
-  public String readFile(@P("Relative file path") String relativeFilepath, @ToolMemoryId Long appId) {
+  public String readFile(
+      @P("Relative file path") String relativeFilepath, @ToolMemoryId Long appId) {
     try {
       var path = Paths.get(relativeFilepath);
       if (!path.isAbsolute()) {
@@ -29,7 +30,8 @@ public class FileReadTool extends BaseTool {
       }
       return Files.readString(path);
     } catch (IOException e) {
-      var errorMessage = String.format("File read failed: %s, error: %s", relativeFilepath, e.getMessage());
+      var errorMessage =
+          String.format("File read failed: %s, error: %s", relativeFilepath, e.getMessage());
       log.error(errorMessage, e);
       return errorMessage;
     }

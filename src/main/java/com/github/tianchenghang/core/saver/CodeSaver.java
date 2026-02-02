@@ -28,7 +28,8 @@ public abstract class CodeSaver<T> {
 
   protected void validateInput(T result) {
     if (result == null) {
-      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Code saving error: result is null");
+      throw new BusinessException(
+          ErrorCode.INTERNAL_SERVER_ERROR, "Code saving error: result is null");
     }
   }
 

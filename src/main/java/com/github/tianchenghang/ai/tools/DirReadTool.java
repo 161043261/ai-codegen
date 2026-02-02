@@ -36,7 +36,8 @@ public class DirReadTool extends BaseTool {
 
   @Tool("Read directory at the specified path, get all files and subdirectories")
   public String readDir(
-      @P("Relative directory path, empty for project root") String relativeDirpath, @ToolMemoryId Long appId) {
+      @P("Relative directory path, empty for project root") String relativeDirpath,
+      @ToolMemoryId Long appId) {
     try {
       var path = Paths.get(relativeDirpath == null ? "" : relativeDirpath);
       if (!path.isAbsolute()) {
@@ -69,7 +70,8 @@ public class DirReadTool extends BaseTool {
               });
       return dirStructureBuilder.toString();
     } catch (Exception e) {
-      var errorMessage = String.format("Failed to read directory: %s, error: %s", relativeDirpath, e.getMessage());
+      var errorMessage =
+          String.format("Failed to read directory: %s, error: %s", relativeDirpath, e.getMessage());
       log.error(errorMessage, e);
       return errorMessage;
     }

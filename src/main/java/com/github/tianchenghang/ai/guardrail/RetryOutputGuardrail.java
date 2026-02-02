@@ -15,7 +15,9 @@ public class RetryOutputGuardrail implements OutputGuardrail {
       return reprompt("Response is too short", "Please regenerate complete content");
     }
     if (containsSensitiveContent(response)) {
-      return reprompt("Contains sensitive information", "Please regenerate content without sensitive information");
+      return reprompt(
+          "Contains sensitive information",
+          "Please regenerate content without sensitive information");
     }
     return success();
   }

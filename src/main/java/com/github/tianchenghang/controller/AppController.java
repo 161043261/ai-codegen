@@ -45,7 +45,11 @@ public class AppController {
   @Resource private ProjectDownloadService projectDownloadService;
 
   @GetMapping(value = "/chat/codegen", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-  @RateLimit(limitType = RateLimitType.USER, rate = 5, rateInterval = 60, message = "AI chat request rate limit exceeded")
+  @RateLimit(
+      limitType = RateLimitType.USER,
+      rate = 5,
+      rateInterval = 60,
+      message = "AI chat request rate limit exceeded")
   public Flux<ServerSentEvent<String>> chatForCodegen(
       @RequestParam Long appId, @RequestParam String message, HttpServletRequest request) {
     if (appId == null || appId <= 0) {

@@ -80,7 +80,8 @@ public class AiCodegenServiceFactory {
                         "Error: no tool called " + toolExecutionRequest.name()))
             .maxSequentialToolsInvocations(20) // Maximum 20 sequential tool invocations
             .inputGuardrails(new PromptSafeInputGuardrail()) // Input guardrail
-            // .outputGuardrails(new RetryOutputGuardrail()) // Output guardrail, not used for streaming output
+            // .outputGuardrails(new RetryOutputGuardrail()) // Output guardrail, not used for
+            // streaming output
             .build();
       }
       case VANILLA_HTML, MULTI_FILES -> {

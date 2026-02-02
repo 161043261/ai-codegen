@@ -61,7 +61,8 @@ public class CodegenWorkflow {
               NodeIds.CODE_QUALITY_CHECK,
               edge_async(this::routeAfterQualityCheck),
               Map.of(
-                  Conditions.BUILD, NodeIds.PROJECT_BUILD, // Code quality check passed, build required
+                  Conditions.BUILD,
+                      NodeIds.PROJECT_BUILD, // Code quality check passed, build required
                   Conditions.SKIP_BUILD, END, // Code quality check passed, skip build
                   Conditions.FAILED, NodeIds.CODEGEN // Code quality check failed, regenerate
                   ))
@@ -112,7 +113,11 @@ public class CodegenWorkflow {
                   sink.next(
                       formatSseEvent(
                           EventNames.WORKFLOW_START,
-                          Map.of("message", "Codegen workflow: starting execution", "original_prompt", originalPrompt)));
+                          Map.of(
+                              "message",
+                              "Codegen workflow: starting execution",
+                              "original_prompt",
+                              originalPrompt)));
                   var graph = workflow.getGraph(GraphRepresentation.Type.MERMAID);
                   log.info("Codegen workflow graph:\n{}", graph.content());
                   var stepNumber = 1;
@@ -136,7 +141,8 @@ public class CodegenWorkflow {
                   }
                   sink.next(
                       formatSseEvent(
-                          EventNames.WORKFLOW_COMPLETE, Map.of("message", "Codegen workflow completed")));
+                          EventNames.WORKFLOW_COMPLETE,
+                          Map.of("message", "Codegen workflow completed")));
                   log.info("Codegen workflow: execution completed");
                   sink.complete();
                 } catch (Exception e) {
@@ -144,7 +150,11 @@ public class CodegenWorkflow {
                   sink.next(
                       formatSseEvent(
                           EventNames.WORKFLOW_ERROR,
-                          Map.of("error", e.getMessage(), "message", "Codegen workflow: execution failed")));
+                          Map.of(
+                              "error",
+                              e.getMessage(),
+                              "message",
+                              "Codegen workflow: execution failed")));
                   sink.error(e);
                 }
               });
@@ -165,7 +175,11 @@ public class CodegenWorkflow {
             sendSseEvent(
                 emitter,
                 EventNames.WORKFLOW_START,
-                Map.of("message", "Codegen workflow: starting execution", "original_prompt", originalPrompt));
+                Map.of(
+                    "message",
+                    "Codegen workflow: starting execution",
+                    "original_prompt",
+                    originalPrompt));
             var graph = workflow.getGraph(GraphRepresentation.Type.MERMAID);
             log.info("Codegen workflow graph:\n{}", graph.content());
             log.info("Codegen workflow: starting execution");
@@ -187,7 +201,10 @@ public class CodegenWorkflow {
               }
               stepNumber++;
             }
-            sendSseEvent(emitter, EventNames.STEP_COMPLETE, Map.of("message", "Codegen workflow: execution completed"));
+            sendSseEvent(
+                emitter,
+                EventNames.STEP_COMPLETE,
+                Map.of("message", "Codegen workflow: execution completed"));
             log.info("Codegen workflow: execution completed");
             emitter.complete();
           } catch (Exception e) {

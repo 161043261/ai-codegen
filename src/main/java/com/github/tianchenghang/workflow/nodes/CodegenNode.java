@@ -23,7 +23,10 @@ public class CodegenNode {
           var userMessage = buildUserMessage(context);
           var codegenType = context.getCodegenType();
           var aiCodegenFacade = SpringContextUtil.getBean(AiCodegenFacade.class);
-          log.info("Executing code generation, type: {} ({})", codegenType.getValue(), codegenType.getText());
+          log.info(
+              "Executing code generation, type: {} ({})",
+              codegenType.getValue(),
+              codegenType.getText());
           var appId = 0L;
           var codeStream =
               aiCodegenFacade.generateAndSaveCodeStream(userMessage, codegenType, appId);

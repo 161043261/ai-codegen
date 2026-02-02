@@ -14,7 +14,8 @@ public class CodeParserExecutor {
       case MULTI_FILES -> multiFilesCodeParser.parseCode(codeContent);
       default ->
           throw new BusinessException(
-              ErrorCode.INTERNAL_SERVER_ERROR, "Unsupported codegen type: " + codegenType.getValue());
+              ErrorCode.INTERNAL_SERVER_ERROR,
+              "Unsupported codegen type: " + codegenType.getValue());
     };
   }
 }

@@ -111,7 +111,10 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
     if (!ok) {
       throw new BusinessException(ErrorCode.OPERATION_FAILED);
     }
-    log.info("Code generation succeeded, appId: {}, type: {}", appEntity.getId(), codegenType.getValue());
+    log.info(
+        "Code generation succeeded, appId: {}, type: {}",
+        appEntity.getId(),
+        codegenType.getValue());
     return appEntity.getId();
   }
 
@@ -145,11 +148,14 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
     if (codegenTypeEnum == CodegenType.VITE_PROJECT) {
       var ok = viteProjectBuilder.buildProject(sourceDirpath);
       if (!ok) {
-        throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Vite project build failed, please retry");
+        throw new BusinessException(
+            ErrorCode.INTERNAL_SERVER_ERROR, "Vite project build failed, please retry");
       }
       var distDir = new File(sourceDirpath, "dist");
       if (!distDir.exists()) {
-        throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Vite project built successfully, but dist directory not found");
+        throw new BusinessException(
+            ErrorCode.INTERNAL_SERVER_ERROR,
+            "Vite project built successfully, but dist directory not found");
       }
       sourceDir = distDir;
     }
@@ -157,7 +163,8 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
     try {
       FileUtil.copyContent(sourceDir, new File(deployDirpath), true);
     } catch (Exception e) {
-      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Project deployment failed: " + e.getMessage());
+      throw new BusinessException(
+          ErrorCode.INTERNAL_SERVER_ERROR, "Project deployment failed: " + e.getMessage());
     }
     var updateApp = new AppEntity();
     updateApp.setId(appId);
@@ -165,7 +172,8 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
     updateApp.setDeployTime(LocalDateTime.now());
     var ok = this.updateById(updateApp);
     if (!ok) {
-      throw new BusinessException(ErrorCode.OPERATION_FAILED, "Failed to update project deployment info");
+      throw new BusinessException(
+          ErrorCode.OPERATION_FAILED, "Failed to update project deployment info");
     }
     var appDeployUrl = String.format("%s/%s/", deployHost, deployKey);
     generateAppScreenshotAsync(appId, appDeployUrl);
@@ -183,7 +191,8 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
           updateApp.setAppCover(screenshotUrl);
           var updated = this.updateById(updateApp);
           if (!updated) {
-            throw new BusinessException(ErrorCode.OPERATION_FAILED, "Failed to update project cover");
+            throw new BusinessException(
+                ErrorCode.OPERATION_FAILED, "Failed to update project cover");
           }
         });
   }
