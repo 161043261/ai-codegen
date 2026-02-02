@@ -5,7 +5,7 @@ import com.github.tianchenghang.ai.AiCodegenServiceFactory;
 import com.github.tianchenghang.ai.model.message.AiResponseMessage;
 import com.github.tianchenghang.ai.model.message.ToolExecuteMessage;
 import com.github.tianchenghang.constants.AppConstant;
-import com.github.tianchenghang.core.build.ViteProjectBuilder;
+import com.github.tianchenghang.core.builder.ViteProjectBuilder;
 import com.github.tianchenghang.core.parser.CodeParserExecutor;
 import com.github.tianchenghang.core.saver.CodeSaverExecutor;
 import com.github.tianchenghang.exception.BusinessException;

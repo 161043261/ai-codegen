@@ -37,10 +37,10 @@ public class ChatHistory implements Serializable {
   @Column("user_id")
   private Long userId;
 
-  @Column("createTime")
+  @Column("create_time")
   private LocalDateTime createTime;
 
-  @Column("updateTime")
+  @Column("update_time")
   private LocalDateTime updateTime;
 
   @Column(value = "is_delete", isLogicDelete = true)

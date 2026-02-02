@@ -9,7 +9,7 @@ import com.github.tianchenghang.ai.AiCodegenTypeRouteServiceFactory;
 import com.github.tianchenghang.common.PageRequest;
 import com.github.tianchenghang.constants.AppConstant;
 import com.github.tianchenghang.core.AiCodegenFacade;
-import com.github.tianchenghang.core.build.ViteProjectBuilder;
+import com.github.tianchenghang.core.builder.ViteProjectBuilder;
 import com.github.tianchenghang.core.handler.StreamHandlerExecutor;
 import com.github.tianchenghang.exception.BusinessException;
 import com.github.tianchenghang.exception.ErrorCode;
@@ -44,7 +44,8 @@ import reactor.core.publisher.Flux;
 @Service
 @Slf4j
 public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements AppService {
-  @Value("${codegen.deploy-host:http://127.0.0.1}")
+
+  @Value("${codegen.deploy-host:http://localhost}")
   private String deployHost;
 
   @Resource private UserService userService;

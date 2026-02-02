@@ -13,8 +13,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
+@Service
 public class ProjectDownloadServiceImpl implements ProjectDownloadService {
   private static final Set<String> IGNORED_NAMES =
       Set.of(
@@ -24,7 +26,7 @@ public class ProjectDownloadServiceImpl implements ProjectDownloadService {
           ".idea",
           ".mvn",
           ".vscode",
-          "build",
+          "builder",
           "dist",
           "node_modules",
           "target");

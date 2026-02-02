@@ -23,8 +23,10 @@ import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 @Slf4j
+@Service
 public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatHistory>
     implements ChatHistoryService {
   @Resource @Lazy private AppService appService;

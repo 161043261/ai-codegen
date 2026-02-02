@@ -54,8 +54,7 @@ public class AppEntity implements Serializable {
   @Column("create_time")
   private LocalDateTime createTime;
 
-  /** 更新时间 */
-  @Column("update-Time")
+  @Column("update_time")
   private LocalDateTime updateTime;
 
   @Column(value = "is_delete", isLogicDelete = true)

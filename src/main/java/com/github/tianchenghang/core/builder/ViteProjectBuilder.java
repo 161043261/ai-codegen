@@ -1,11 +1,13 @@
-package com.github.tianchenghang.core.build;
+package com.github.tianchenghang.core.builder;
 
 import cn.hutool.core.util.RuntimeUtil;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 public class ViteProjectBuilder {
 
   public void buildProjectAsync(String projectPath) {
@@ -38,7 +40,7 @@ public class ViteProjectBuilder {
       return false;
     }
     if (!executeNpmBuild(projectDir)) {
-      log.error("npm run build 失败: {}", projectPath);
+      log.error("npm run builder 失败: {}", projectPath);
       return false;
     }
     log.info("Vite 项目构建成功, dist 目录: {}", projectPath);
@@ -52,8 +54,8 @@ public class ViteProjectBuilder {
   }
 
   private boolean executeNpmBuild(File projectDir) {
-    log.info("执行 npm run build...");
-    var command = String.format("%s run build", buildCommand("npm"));
+    log.info("执行 npm run builder...");
+    var command = String.format("%s run builder", buildCommand("npm"));
     return executeCommand(projectDir, command, 300); // 5min 超时
   }
 

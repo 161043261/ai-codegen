@@ -10,7 +10,7 @@ public class MybatisCodegen {
   private static final String[] TABLE_NAMES = {"chat_history"};
 
   public static void main(String[] args) {
-    var dict = YamlUtil.loadByPath("application.yml");
+    var dict = YamlUtil.loadByPath("application-local.yml");
     var dataSourceConfig = (Map<String, Object>) dict.getByPath("spring.datasource");
     var url = String.valueOf(dataSourceConfig.get("url"));
     var username = String.valueOf(dataSourceConfig.get("username"));
@@ -19,7 +19,7 @@ public class MybatisCodegen {
     dataSource.setJdbcUrl(url);
     dataSource.setUsername(username);
     dataSource.setPassword(password);
-    var globalConfig = new GlobalConfig();
+    var globalConfig = createGlobalConfig();
     var generator = new Generator(dataSource, globalConfig);
     generator.generate();
   }

@@ -6,8 +6,10 @@ import com.github.tianchenghang.model.entity.User;
 import com.github.tianchenghang.model.enums.CodegenType;
 import com.github.tianchenghang.service.ChatHistoryService;
 import jakarta.annotation.Resource;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
+@Component
 public class StreamHandlerExecutor {
 
   @Resource private JsonMessageStreamHandler jsonMessageStreamHandler;

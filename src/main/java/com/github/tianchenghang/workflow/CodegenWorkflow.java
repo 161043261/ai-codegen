@@ -29,7 +29,7 @@ public class CodegenWorkflow {
     public static final String ROUTER = "router";
     public static final String CODEGEN = "codegen";
     public static final String CODE_QUALITY_CHECK = "code-quality-check";
-    public static final String PROJECT_BUILD = "project-build";
+    public static final String PROJECT_BUILD = "project-builder";
   }
 
   public static class EventNames {
@@ -40,8 +40,8 @@ public class CodegenWorkflow {
   }
 
   public static class Conditions {
-    public static final String BUILD = "build";
-    public static final String SKIP_BUILD = "skip-build";
+    public static final String BUILD = "builder";
+    public static final String SKIP_BUILD = "skip-builder";
     public static final String FAILED = "failed";
   }
 

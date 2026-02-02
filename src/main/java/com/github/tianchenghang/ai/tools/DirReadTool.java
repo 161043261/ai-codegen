@@ -24,7 +24,7 @@ public class DirReadTool extends BaseTool {
           ".mvn",
           ".vite",
           ".vscode",
-          "build",
+          "builder",
           "coverage",
           "dist",
           "node_modules",

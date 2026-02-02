@@ -23,3 +23,8 @@ git add -u
 echo "Code formatting completed."
 exit 0
 ```
+
+
+```bash
+mvn spring-boot:run
+```

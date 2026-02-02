@@ -19,8 +19,10 @@ import jakarta.annotation.Resource;
 import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Slf4j
+@Configuration
 public class AiCodegenServiceFactory {
 
   @Resource(name = "openAiChatModel")
@@ -53,7 +55,7 @@ public class AiCodegenServiceFactory {
   }
 
   private AiCodegenService createAiCodegenService(long appId, CodegenType codegenType) {
-    log.info("为 appId: {} 创建新的 AI 服务实例", appId);
+    log.info("为应用 ID: {} 创建新的 AI 服务实例", appId);
     var chatMemory =
         MessageWindowChatMemory.builder()
             .id(appId)

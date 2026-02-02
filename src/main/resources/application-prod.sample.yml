@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://<Your IP>:3306/ai-codegen
+    url: jdbc:mysql://<Your IP>:3306/ai_codegen
     username: root
     password: "0406"
   data:
@@ -15,21 +15,21 @@ langchain4j:
   open-ai:
     chat-model:
       base-url: https://api.deepseek.com
-      api-key: <Your API Key>
+      api-key: sk-f11463299be841d396dc83157c014c71
       model-name: deepseek-chat
       max-tokens: 8192
       log-requests: true
       log-responses: true
     streaming-chat-model:
       base-url: https://api.deepseek.com
-      api-key: <Your API Key>
+      api-key: sk-f11463299be841d396dc83157c014c71
       model-name: deepseek-chat
       max-tokens: 8192
       log-requests: true
       log-responses: true
     reasoning-streaming-chat-model:
       base-url: https://api.deepseek.com
-      api-key: <Your API Key>
+      api-key: sk-f11463299be841d396dc83157c014c71
       model-name: deepseek-reasoner
       max-tokens: 8192
       temperature: 0.1
@@ -37,7 +37,7 @@ langchain4j:
       log-responses: true
     route-chat-model:
       base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
-      api-key: <Your API Key>
+      api-key: sk-094322dd7ffb4185a1fd25806de73c91
       model-name: qwen-turbo
       max-tokens: 100
       log-requests: true
@@ -46,11 +46,6 @@ storage:
   local:
     path: ./uploads
     base-url: http://<Your IP>/api/static
-dashscope:
-  api-key: <Your API Key>
-  image-model: wan2.2-t2i-flash
-pexels:
-  api-key: <Your API Key>
 mybatis-flex:
   configuration:
     log-impl: ''
