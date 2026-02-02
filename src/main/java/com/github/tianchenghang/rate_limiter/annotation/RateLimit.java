@@ -10,18 +10,18 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RateLimit {
 
-  // 限流键前缀
+  // Rate limit key prefix
   String key() default "";
 
-  // 速率, 每个时间窗口允许的请求数
+  // Rate, number of requests allowed per time window
   int rate() default 10;
 
-  // 时间窗口, 单位 s
+  // Time window in seconds
   int rateInterval() default 1;
 
-  // 限流类型
+  // Rate limit type
   RateLimitType limitType() default RateLimitType.USER;
 
-  // 限流提示信息
-  String message() default "请求过于频繁";
+  // Rate limit message
+  String message() default "Request rate limit exceeded";
 }

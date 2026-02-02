@@ -9,13 +9,13 @@ public class RetryOutputGuardrail implements OutputGuardrail {
   public OutputGuardrailResult validate(AiMessage responseFromLLM) {
     var response = responseFromLLM.text();
     if (response == null || response.trim().isEmpty()) {
-      return reprompt("响应内容为空", "请重新生成完整内容");
+      return reprompt("Response is empty", "Please regenerate complete content");
     }
     if (response.trim().length() < 10) {
-      return reprompt("响应内容过短", "请重新生成完整内容");
+      return reprompt("Response is too short", "Please regenerate complete content");
     }
     if (containsSensitiveContent(response)) {
-      return reprompt("包含敏感信息", "请重新生成内容, 避免包含敏感信息");
+      return reprompt("Contains sensitive information", "Please regenerate content without sensitive information");
     }
     return success();
   }

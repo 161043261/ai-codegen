@@ -14,11 +14,11 @@ public class PromptEnhanceNode {
     return node_async(
         state -> {
           var context = WorkflowContext.getContext(state);
-          log.info("执行节点: 提示词增强");
+          log.info("Executing node: Prompt Enhancement");
           var originalPrompt = context.getOriginalPrompt();
-          context.setCurrentStep("提示词增强");
+          context.setCurrentStep("Prompt Enhancement");
           context.setEnhancedPrompt(originalPrompt);
-          log.info("提示词增强完成, 增强后提示词长度: {} 字符", originalPrompt.length());
+          log.info("Prompt enhancement completed, enhanced prompt length: {} characters", originalPrompt.length());
           return WorkflowContext.setContext(context);
         });
   }

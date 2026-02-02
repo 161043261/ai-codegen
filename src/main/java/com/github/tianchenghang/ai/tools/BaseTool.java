@@ -8,7 +8,7 @@ public abstract class BaseTool {
   public abstract String getDisplayName();
 
   public String generateToolResponse() {
-    return String.format("\n\n使用工具: %s\n\n", getDisplayName());
+    return String.format("\n\nUsing tool: %s\n\n", getDisplayName());
   }
 
   public abstract String generateToolExecuteResult(JSONObject arguments);

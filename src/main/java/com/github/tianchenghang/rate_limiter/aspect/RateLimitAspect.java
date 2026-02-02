@@ -37,7 +37,7 @@ public class RateLimitAspect {
     }
 
     switch (rateLimit.limitType()) {
-      // 接口级别限流
+      // API level rate limiting
       case API:
         {
           var signature = (MethodSignature) joinPoint.getSignature();
@@ -50,7 +50,7 @@ public class RateLimitAspect {
           break;
         }
 
-      // 用户级别限流
+      // User level rate limiting
       case USER:
         {
           try {
@@ -68,7 +68,7 @@ public class RateLimitAspect {
           break;
         }
 
-      // IP 级别限流
+      // IP level rate limiting
       case IP:
         {
           keyBuilder.append("ip:").append(getClientIp());
@@ -77,7 +77,7 @@ public class RateLimitAspect {
 
       default:
         {
-          throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "不支持的限流类型");
+          throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Unsupported rate limit type");
         }
     }
     return keyBuilder.toString();

@@ -26,7 +26,7 @@ public class AiCodegenFacade {
 
   public File generateAndSaveCode(String userMessage, CodegenType codegenType, Long appId) {
     if (codegenType == null) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "代码生成类型为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Codegen type is empty");
     }
     var aiCodegenService = aiCodegenServiceFactory.getAiCodegenService(appId, codegenType);
     return switch (codegenType) {
@@ -39,7 +39,7 @@ public class AiCodegenFacade {
         yield CodeSaverExecutor.executeSaver(result, CodegenType.MULTI_FILES, appId);
       }
       default -> {
-        var errorMessage = "不支持的代码生成类型: " + codegenType.getValue();
+        var errorMessage = "Unsupported codegen type: " + codegenType.getValue();
         throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, errorMessage);
       }
     };
@@ -48,7 +48,7 @@ public class AiCodegenFacade {
   public Flux<String> generateAndSaveCodeStream(
       String userMessage, CodegenType codegenType, Long appId) {
     if (codegenType == null) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "代码生成类型为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Codegen type is empty");
     }
     var aiCodegenService = aiCodegenServiceFactory.getAiCodegenService(appId, codegenType);
     return switch (codegenType) {
@@ -65,7 +65,7 @@ public class AiCodegenFacade {
         yield processTokenStream(tokenStream, appId);
       }
       default -> {
-        var errorMessage = "不支持的代码生成类型: " + codegenType.getValue();
+        var errorMessage = "Unsupported codegen type: " + codegenType.getValue();
         throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, errorMessage);
       }
     };
@@ -82,9 +82,9 @@ public class AiCodegenFacade {
                 var completeCode = codeBuilder.toString();
                 var parsedResult = CodeParserExecutor.executeParser(completeCode, codegenType);
                 var saveDir = CodeSaverExecutor.executeSaver(parsedResult, codegenType, appId);
-                log.info("代码保存成功: {}", saveDir.getAbsolutePath());
+                log.info("Code saved successfully: {}", saveDir.getAbsolutePath());
               } catch (Exception e) {
-                log.error("代码保存失败: {}", e.getMessage(), e);
+                log.error("Code save failed: {}", e.getMessage(), e);
               }
             });
   }
@@ -112,7 +112,7 @@ public class AiCodegenFacade {
               .onError(
                   (error) -> {
                     error.printStackTrace();
-                    log.error("代码保存失败: {}", error.getMessage(), error);
+                    log.error("Code save failed: {}", error.getMessage(), error);
                     sink.error(error);
                   })
               .start();

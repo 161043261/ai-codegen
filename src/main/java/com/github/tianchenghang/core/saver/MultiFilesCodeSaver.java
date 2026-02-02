@@ -23,7 +23,7 @@ public class MultiFilesCodeSaver extends CodeSaver<MultiFilesResult> {
   protected void validateInput(MultiFilesResult result) {
     super.validateInput(result);
     if (StrUtil.isBlank(result.getHtmlCode())) {
-      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "HTML 代码为空");
+      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "HTML code is empty");
     }
   }
 }

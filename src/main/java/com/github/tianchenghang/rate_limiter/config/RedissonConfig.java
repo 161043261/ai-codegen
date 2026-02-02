@@ -28,7 +28,7 @@ public class RedissonConfig {
 
   @Bean
   public RedissonClient redissonClient() {
-    log.info("创建 redis 连接: {}:{}", redisHost, redisPort);
+    log.info("Creating Redis connection: {}:{}", redisHost, redisPort);
     var config = new Config();
     var address = String.format("redis://%s:%s", redisHost, redisPort);
     var singleServerConfig =

@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class FileDeleteTool extends BaseTool {
-  @Tool("删除指定路径的文件")
-  public String deleteFile(@P("文件的相对路径") String relativeFilepath, @ToolMemoryId Long appId) {
+  @Tool("Delete file at the specified path")
+  public String deleteFile(@P("Relative file path") String relativeFilepath, @ToolMemoryId Long appId) {
     try {
       var path = Paths.get(relativeFilepath);
       if (!path.isAbsolute()) {
@@ -25,17 +25,17 @@ public class FileDeleteTool extends BaseTool {
       }
 
       if (!Files.exists(path) || !Files.isRegularFile(path)) {
-        return "文件不存在, 或不是文件, 无法删除: " + relativeFilepath;
+        return "File not found or not a file, cannot delete: " + relativeFilepath;
       }
       var filename = path.getFileName().toString();
       if (isImportantFile(filename)) {
-        return "文件不允许删除: " + relativeFilepath;
+        return "File deletion not allowed: " + relativeFilepath;
       }
       Files.delete(path);
-      log.info("文件删除成功: {}", path.toAbsolutePath());
-      return "文件删除成功: " + relativeFilepath;
+      log.info("File deleted successfully: {}", path.toAbsolutePath());
+      return "File deleted successfully: " + relativeFilepath;
     } catch (IOException e) {
-      var errorMessage = String.format("文件删除失败: %s, 错误: %s", relativeFilepath, e.getMessage());
+      var errorMessage = String.format("File deletion failed: %s, error: %s", relativeFilepath, e.getMessage());
       log.error(errorMessage, e);
       return errorMessage;
     }
@@ -76,12 +76,12 @@ public class FileDeleteTool extends BaseTool {
 
   @Override
   public String getDisplayName() {
-    return "文件删除";
+    return "File Delete";
   }
 
   @Override
   public String generateToolExecuteResult(JSONObject arguments) {
     var relativeFilepath = arguments.getStr("relativeFilepath");
-    return String.format("调用工具: %s %s", getDisplayName(), relativeFilepath);
+    return String.format("Invoke tool: %s %s", getDisplayName(), relativeFilepath);
   }
 }

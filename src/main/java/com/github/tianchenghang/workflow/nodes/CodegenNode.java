@@ -19,20 +19,20 @@ public class CodegenNode {
     return node_async(
         state -> {
           var context = WorkflowContext.getContext(state);
-          log.info("执行节点: 代码生成");
+          log.info("Executing node: Code Generation");
           var userMessage = buildUserMessage(context);
           var codegenType = context.getCodegenType();
           var aiCodegenFacade = SpringContextUtil.getBean(AiCodegenFacade.class);
-          log.info("执行代码生成, 类型: {} ({})", codegenType.getValue(), codegenType.getText());
+          log.info("Executing code generation, type: {} ({})", codegenType.getValue(), codegenType.getText());
           var appId = 0L;
           var codeStream =
               aiCodegenFacade.generateAndSaveCodeStream(userMessage, codegenType, appId);
-          codeStream.blockLast(Duration.ofMinutes(10)); // 最多等待 10min
+          codeStream.blockLast(Duration.ofMinutes(10)); // Wait up to 10 minutes
           var generatedCodeDir =
               String.format(
                   "%s/%s_%s", AppConstant.CODE_OUTPUT_ROOT_DIR, codegenType.getValue(), appId);
-          log.info("代码生成完成, 输出目录: {}", generatedCodeDir);
-          context.setCurrentStep("代码生成");
+          log.info("Code generation completed, output directory: {}", generatedCodeDir);
+          context.setCurrentStep("Code Generation");
           context.setGeneratedCodeDir(generatedCodeDir);
           return WorkflowContext.setContext(context);
         });
@@ -56,18 +56,18 @@ public class CodegenNode {
 
   private static String buildBugfixPrompt(CodeQualityResult codeQualityResult) {
     var errorInfo = new StringBuilder();
-    errorInfo.append("\n\n生成的代码存在以下问题, 请修复:\n");
+    errorInfo.append("\n\nThe generated code has the following issues, please fix:\n");
     codeQualityResult
         .getErrors()
         .forEach(error -> errorInfo.append("- ").append(error).append("\n"));
     if (codeQualityResult.getSuggestions() != null
         && !codeQualityResult.getSuggestions().isEmpty()) {
-      errorInfo.append("\n修复建议:\n");
+      errorInfo.append("\nFix suggestions:\n");
       codeQualityResult
           .getSuggestions()
           .forEach(suggestion -> errorInfo.append("- ").append(suggestion).append("\n"));
     }
-    errorInfo.append("\n请根据上述问题和修复建议重新生成代码");
+    errorInfo.append("\nPlease regenerate code based on the above issues and suggestions");
     return errorInfo.toString();
   }
 }

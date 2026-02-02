@@ -17,19 +17,19 @@ public class RouterNode {
     return node_async(
         state -> {
           var context = WorkflowContext.getContext(state);
-          log.info("执行节点: AI 路由");
+          log.info("Executing node: AI Router");
 
           CodegenType codegenType;
           try {
             var routeService = SpringContextUtil.getBean(AiCodegenTypeRouteService.class);
             codegenType = routeService.routeCodegenType(context.getOriginalPrompt());
-            log.info("AI 路由完成, 选择代码生成类型: {} ({})", codegenType.getValue(), codegenType.getText());
+            log.info("AI routing completed, selected codegen type: {} ({})", codegenType.getValue(), codegenType.getText());
           } catch (Exception e) {
             log.error(
-                "AI 路由失败: {}, 使用默认代码生成类型 {}", e.getMessage(), CodegenType.VANILLA_HTML.getText());
+                "AI routing failed: {}, using default codegen type {}", e.getMessage(), CodegenType.VANILLA_HTML.getText());
             codegenType = CodegenType.VANILLA_HTML;
           }
-          context.setCurrentStep("AI 路由");
+          context.setCurrentStep("AI Router");
           context.setCodegenType(codegenType);
           return WorkflowContext.setContext(context);
         });

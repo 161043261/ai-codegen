@@ -19,7 +19,7 @@ public class ProjectBuildNode {
     return node_async(
         state -> {
           var context = WorkflowContext.getContext(state);
-          log.info("执行节点: 项目构建");
+          log.info("Executing node: Project Build");
           var generatedCodeDir = context.getGeneratedCodeDir();
           // var codegenType = context.getCodegenType();
           String buildResultDir;
@@ -28,17 +28,17 @@ public class ProjectBuildNode {
             var ok = viteBuilder.buildProject(generatedCodeDir);
             if (ok) {
               buildResultDir = generatedCodeDir + File.separator + "dist";
-              log.info("Vite 项目构建成功, dist 目录: {}", buildResultDir);
+              log.info("Vite project built successfully, dist directory: {}", buildResultDir);
             } else {
-              throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Vite 项目构建失败");
+              throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Vite project build failed");
             }
           } catch (Exception e) {
-            log.error("Vite 项目构建异常: {}", e.getMessage(), e);
+            log.error("Vite project build exception: {}", e.getMessage(), e);
             buildResultDir = generatedCodeDir;
           }
-          context.setCurrentStep("项目构建");
+          context.setCurrentStep("Project Build");
           context.setBuildResultDir(buildResultDir);
-          log.info("项目构建完成, 输出目录: {}", buildResultDir);
+          log.info("Project build completed, output directory: {}", buildResultDir);
           return WorkflowContext.setContext(context);
         });
   }

@@ -41,28 +41,28 @@ public class PromptSafeInputGuardrail implements InputGuardrail {
           Pattern.compile("(?i)(?:act|behave|pretend)\\s+(?:as|like)\\s+(?:if|you\\s+are)"),
           Pattern.compile("(?i)system\\s*:\\s*you\\s+are"),
           Pattern.compile("(?i)new\\s+(?:commands?|instructions?|prompts?)\\s*:"),
-          Pattern.compile("(?i)\\{\\{.*\\}\\}"), // 模板注入
-          Pattern.compile("(?i)<\\|.*\\|>") // 特殊标记注入
+          Pattern.compile("(?i)\\{\\{.*\\}\\}"), // Template injection
+          Pattern.compile("(?i)<\\|.*\\|>") // Special marker injection
           );
 
   @Override
   public InputGuardrailResult validate(UserMessage userMessage) {
     var input = userMessage.singleText();
     if (input.length() > 1000) {
-      return fatal("输入内容超过 1000 字符");
+      return fatal("Input exceeds 1000 characters");
     }
     if (input.trim().isEmpty()) {
-      return fatal("输入内容为空");
+      return fatal("Input is empty");
     }
     var lowerInput = input.toLowerCase();
     for (var sensitiveWord : SENSITIVE_WORDS) {
       if (lowerInput.contains(sensitiveWord.toLowerCase())) {
-        return fatal("输入内容包含敏感词");
+        return fatal("Input contains sensitive words");
       }
     }
     for (var pattern : INJECTION_PATTERNS) {
       if (pattern.matcher(input).find()) {
-        return fatal("检测到非法输入");
+        return fatal("Illegal input detected");
       }
     }
     return success();

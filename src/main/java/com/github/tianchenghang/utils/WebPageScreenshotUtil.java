@@ -38,7 +38,7 @@ public class WebPageScreenshotUtil {
 
   public static String saveWebPageScreenshot(String webUrl) {
     if (StrUtil.isBlank(webUrl)) {
-      log.error("网页截图失败, url 为空");
+      log.error("Web screenshot failed, URL is empty");
       return null;
     }
     try {
@@ -57,11 +57,11 @@ public class WebPageScreenshotUtil {
       var compressedImageOutputPath =
           rootPath + File.separator + RandomUtil.randomNumbers(5) + COMPRESS_SUFFIX;
       compressImage(imageOutputPath, compressedImageOutputPath);
-      log.info("网页截图成功: {}", compressedImageOutputPath);
+      log.info("Web screenshot succeeded: {}", compressedImageOutputPath);
       FileUtil.del(imageOutputPath);
       return compressedImageOutputPath;
     } catch (Exception e) {
-      log.error("网页截图失败: {}", webUrl, e);
+      log.error("Web screenshot failed: {}", webUrl, e);
       return null;
     }
   }
@@ -70,31 +70,31 @@ public class WebPageScreenshotUtil {
     try {
       WebDriverManager.chromedriver().setup();
       var options = new ChromeOptions();
-      // 无头模式
+      // Headless mode
       options.addArguments("--headless");
-      // 禁用 gpu
+      // Disable GPU
       options.addArguments("--disable-gpu");
-      // 禁用沙盒模式
+      // Disable sandbox mode
       options.addArguments("--no-sandbox");
-      // 禁用共享内存
+      // Disable shared memory
       options.addArguments("--disable-dev-shm-usage");
-      // 设置窗口大小
+      // Set window size
       options.addArguments(String.format("--window-size=%d,%d", width, height));
-      // 禁用扩展
+      // Disable extensions
       options.addArguments("--disable-workflow");
-      // 设置用户代理
+      // Set user agent
       options.addArguments(
           "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
-      // 创建驱动
+      // Create driver
       var driver = new ChromeDriver(options);
-      // 设置页面加载超时
+      // Set page load timeout
       driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-      // 设置隐式等待
+      // Set implicit wait
       driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
       return driver;
     } catch (Exception e) {
-      log.error("初始化 chrome 浏览器失败: ", e);
-      throw new BusinessException(ErrorCode.OPERATION_FAILED, "初始化 chrome 浏览器失败");
+      log.error("Failed to initialize Chrome browser: ", e);
+      throw new BusinessException(ErrorCode.OPERATION_FAILED, "Failed to initialize Chrome browser");
     }
   }
 
@@ -102,39 +102,39 @@ public class WebPageScreenshotUtil {
     try {
       FileUtil.writeBytes(imageBytes, imagePath);
     } catch (Exception e) {
-      log.error("保存图片失败: {}", imagePath, e);
-      throw new BusinessException(ErrorCode.OPERATION_FAILED, "保存图片失败");
+      log.error("Failed to save image: {}", imagePath, e);
+      throw new BusinessException(ErrorCode.OPERATION_FAILED, "Failed to save image");
     }
   }
 
   private static void compressImage(String originImagePath, String compressedImagePath) {
-    // 压缩质量 30%
+    // Compression quality 30%
     final var COMPRESSION_QUALITY = 0.3f;
     try {
       ImgUtil.compress(
           FileUtil.file(originImagePath), FileUtil.file(compressedImagePath), COMPRESSION_QUALITY);
     } catch (Exception e) {
-      log.error("压缩图片失败: {} -> {}", originImagePath, compressedImagePath, e);
-      throw new BusinessException(ErrorCode.OPERATION_FAILED, "压缩图片失败");
+      log.error("Failed to compress image: {} -> {}", originImagePath, compressedImagePath, e);
+      throw new BusinessException(ErrorCode.OPERATION_FAILED, "Failed to compress image");
     }
   }
 
-  // 等待页面加载完成
+  // Wait for page load completion
   private static void waitForDocumentComplete(WebDriver webDriver) {
     try {
-      // 创建等待页面加载对象
+      // Create page load wait object
       var wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
-      // 等待 document.readyState == complete
+      // Wait for document.readyState == complete
       wait.until(
           driver ->
               Objects.equals(
                   ((JavascriptExecutor) driver).executeScript("return document.readyState"),
                   "complete"));
-      // 确保动态内容加载完成
+      // Ensure dynamic content is loaded
       Thread.sleep(3000);
-      log.info("页面加载完成");
+      log.info("Page load completed");
     } catch (Exception e) {
-      log.error("等待页面加载异常: ", e);
+      log.error("Page load wait exception: ", e);
     }
   }
 }

@@ -10,7 +10,7 @@ spring:
       port: 6379
       database: 0
       password:
-      ttl: 3600 # 缓存过期时间
+      ttl: 3600 # Cache TTL
 langchain4j:
   open-ai:
     chat-model:

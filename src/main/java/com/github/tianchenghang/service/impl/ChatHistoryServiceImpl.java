@@ -34,20 +34,20 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
   @Override
   public boolean addChatMessage(Long appId, String message, String messageType, Long userId) {
     if (appId == null || appId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目 ID 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Invalid project ID");
     }
     if (StrUtil.isBlank(message)) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "消息内容为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Message content is empty");
     }
     if (StrUtil.isBlank(messageType)) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "消息类型为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Message type is empty");
     }
     if (userId == null || userId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "userId 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Invalid userId");
     }
     var messageTypeEnum = ChatHistoryMessageType.getEnumByValue(messageType);
     if (messageTypeEnum == null) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "不支持的消息类型");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Unsupported message type");
     }
     var chatHistory =
         ChatHistory.builder()
@@ -62,7 +62,7 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
   @Override
   public boolean deleteByAppId(Long appId) {
     if (appId == null || appId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目 ID 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Invalid project ID");
     }
     var queryWrapper = QueryWrapper.create().eq("app_id", appId);
     return this.remove(queryWrapper);
@@ -72,22 +72,22 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
   public Page<ChatHistory> listAppChatHistoryByPage(
       Long appId, int pageSize, LocalDateTime lastCreateTime, User loginUser) {
     if (appId == null || appId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目 ID 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Invalid project ID");
     }
     if (pageSize <= 0 || pageSize > 50) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "分页大小必须在 1 到 50 范围内");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Page size must be between 1 and 50");
     }
     if (loginUser == null) {
-      throw new BusinessException(ErrorCode.UNAUTHORIZED, "用户未登录");
+      throw new BusinessException(ErrorCode.UNAUTHORIZED, "User not logged in");
     }
     var appEntity = appService.getById(appId);
     if (appEntity == null) {
-      throw new BusinessException(ErrorCode.NOT_FOUND, "项目不存在");
+      throw new BusinessException(ErrorCode.NOT_FOUND, "Project not found");
     }
     var isAdmin = UserConstant.ADMIN_ROLE.equals(loginUser.getUserRole());
     var isCreator = appEntity.getUserId().equals(loginUser.getId());
     if (!isAdmin || !isCreator) {
-      throw new BusinessException(ErrorCode.NO_PERMISSION, "无对话历史查看权限");
+      throw new BusinessException(ErrorCode.NO_PERMISSION, "No permission to view chat history");
     }
     var queryRequest = new ChatHistoryQueryRequest();
     queryRequest.setAppId(appId);
@@ -119,10 +119,10 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
         }
         loadedCount++;
       }
-      log.info("项目 ID: {}, 加载历史消息成功, 共 {} 条消息", appId, loadedCount);
+      log.info("Project ID: {}, loaded {} historical messages successfully", appId, loadedCount);
       return loadedCount;
     } catch (Exception e) {
-      log.error("项目 ID: {}, 加载历史消息失败: {}", appId, e.getMessage(), e);
+      log.error("Project ID: {}, failed to load historical messages: {}", appId, e.getMessage(), e);
       return 0;
     }
   }

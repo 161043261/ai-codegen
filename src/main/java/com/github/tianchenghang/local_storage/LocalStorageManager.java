@@ -24,18 +24,18 @@ public class LocalStorageManager {
 
   @PostConstruct
   public void init() {
-    log.info("本地存储路径: {}", storagePath);
-    log.info("本地存储基础 url: {}", storageBaseUrl);
+    log.info("Local storage path: {}", storagePath);
+    log.info("Local storage base URL: {}", storageBaseUrl);
     var storageDir = new File(storagePath);
     if (!storageDir.exists()) {
       storageDir.mkdirs();
-      log.info("创建本地存储目录: {}", storageDir.getAbsolutePath());
+      log.info("Creating local storage directory: {}", storageDir.getAbsolutePath());
     }
   }
 
   public String uploadFile(String key, File file) {
     if (file == null || !file.exists()) {
-      log.error("文件为空, 或文件不存在: {}", file.getAbsolutePath());
+      log.error("File is empty or not found: {}", file.getAbsolutePath());
       return null;
     }
     try {
@@ -44,10 +44,10 @@ public class LocalStorageManager {
       Files.createDirectories(targetPath.getParent());
       Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
       var url = StrUtil.removeSuffix(storageBaseUrl, "/") + "/" + normalizedKey;
-      log.error("文件保存到本地成功: {} -> {}", file.getName(), url);
+      log.error("File saved to local storage: {} -> {}", file.getName(), url);
       return url;
     } catch (IOException e) {
-      log.error("文件保存到本地失败: {}", file.getName(), e);
+      log.error("Failed to save file to local storage: {}", file.getName(), e);
       return null;
     }
   }
@@ -58,7 +58,7 @@ public class LocalStorageManager {
       var targetPath = Paths.get(storagePath, normalizedKey);
       return Files.deleteIfExists(targetPath);
     } catch (IOException e) {
-      log.error("本地文件删除失败: {}", key, e);
+      log.error("Failed to delete local file: {}", key, e);
       return false;
     }
   }

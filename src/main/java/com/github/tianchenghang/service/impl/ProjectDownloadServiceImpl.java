@@ -37,19 +37,19 @@ public class ProjectDownloadServiceImpl implements ProjectDownloadService {
   public void downloadProjectAsZip(
       String projectPath, String downloadFileName, HttpServletResponse response) {
     if (StrUtil.isBlank(projectPath)) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目路径为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Project path is empty");
     }
     if (StrUtil.isBlank(downloadFileName)) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "下载文件名为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Download filename is empty");
     }
     var projectDir = new File(projectPath);
     if (!projectDir.exists()) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目路径不存在");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Project path not found");
     }
     if (!projectDir.isDirectory()) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目路径不是目录");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Project path is not a directory");
     }
-    log.info("开始压缩项目目录: {} -> {}.zip", projectPath, downloadFileName);
+    log.info("Starting project directory compression: {} -> {}.zip", projectPath, downloadFileName);
     response.setStatus(HttpServletResponse.SC_OK);
     response.setContentType("application/zip");
     response.addHeader(
@@ -57,9 +57,9 @@ public class ProjectDownloadServiceImpl implements ProjectDownloadService {
     FileFilter filter = file -> isPathAllowed(projectDir.toPath(), file.toPath());
     try {
       ZipUtil.zip(response.getOutputStream(), StandardCharsets.UTF_8, false, filter, projectDir);
-      log.info("压缩项目目录成功: {} -> {}.zip", projectPath, downloadFileName);
+      log.info("Project directory compression succeeded: {} -> {}.zip", projectPath, downloadFileName);
     } catch (IOException e) {
-      log.error("压缩项目目录失败: {}", e.getMessage(), e);
+      log.error("Project directory compression failed: {}", e.getMessage(), e);
     }
   }
 

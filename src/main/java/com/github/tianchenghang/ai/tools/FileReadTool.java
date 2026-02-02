@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileReadTool extends BaseTool {
 
-  @Tool("读取指定路径的文件内容")
-  public String readFile(@P("文件的相对路径") String relativeFilepath, @ToolMemoryId Long appId) {
+  @Tool("Read file content from the specified path")
+  public String readFile(@P("Relative file path") String relativeFilepath, @ToolMemoryId Long appId) {
     try {
       var path = Paths.get(relativeFilepath);
       if (!path.isAbsolute()) {
@@ -25,11 +25,11 @@ public class FileReadTool extends BaseTool {
         path = projectRoot.resolve(relativeFilepath);
       }
       if (!Files.exists(path) || !Files.isRegularFile(path)) {
-        return "文件不存在, 或不是文件: " + relativeFilepath;
+        return "File not found or not a file: " + relativeFilepath;
       }
       return Files.readString(path);
     } catch (IOException e) {
-      var errorMessage = String.format("文件读取失败: %s, 错误: %s", relativeFilepath, e.getMessage());
+      var errorMessage = String.format("File read failed: %s, error: %s", relativeFilepath, e.getMessage());
       log.error(errorMessage, e);
       return errorMessage;
     }
@@ -42,12 +42,12 @@ public class FileReadTool extends BaseTool {
 
   @Override
   public String getDisplayName() {
-    return "文件读取";
+    return "File Read";
   }
 
   @Override
   public String generateToolExecuteResult(JSONObject arguments) {
     var relativeFilepath = arguments.getStr("relativeFilepath");
-    return String.format("调用工具: %s %s", getDisplayName(), relativeFilepath);
+    return String.format("Invoke tool: %s %s", getDisplayName(), relativeFilepath);
   }
 }

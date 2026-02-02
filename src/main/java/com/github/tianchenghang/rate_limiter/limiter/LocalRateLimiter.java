@@ -30,7 +30,7 @@ public class LocalRateLimiter implements RateLimiter {
   private final Cache<String, RateLimitEntry> rateLimitCache;
 
   public LocalRateLimiter() {
-    log.info("Redis 不可用, 使用本地限流器");
+    log.info("Redis unavailable, using local rate limiter");
     this.rateLimitCache =
         Caffeine.newBuilder().maximumSize(100_000).expireAfterWrite(Duration.ofHours(1)).build();
   }

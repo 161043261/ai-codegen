@@ -24,7 +24,7 @@ public class RedisChatMemoryStoreConfig {
   @Bean
   @ConditionalOnProperty(name = "spring.redis.enabled", havingValue = "true", matchIfMissing = true)
   public ChatMemoryStore redisChatMemoryStore() {
-    log.info("使用 redis 保存对话上下文");
+    log.info("Using Redis to store chat context");
     var builder = RedisChatMemoryStore.builder().host(host).port(port).password(password).ttl(ttl);
     if (StrUtil.isNotBlank(password)) {
       builder.user("default");

@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileWriteTool extends BaseTool {
 
-  @Tool("写入文件到指定的路径")
+  @Tool("Write file to the specified path")
   public String writeFile(
-      @P("文件的相对路径") String relativeFilepath,
-      @P("写入文件的内容") String content,
+      @P("Relative file path") String relativeFilepath,
+      @P("File content to write") String content,
       @ToolMemoryId Long appId) {
     try {
 
@@ -39,10 +39,10 @@ public class FileWriteTool extends BaseTool {
           content.getBytes(),
           StandardOpenOption.CREATE,
           StandardOpenOption.TRUNCATE_EXISTING);
-      log.info("文件写入成功: {}", path.toAbsolutePath());
-      return "文件写入成功: " + relativeFilepath;
+      log.info("File written successfully: {}", path.toAbsolutePath());
+      return "File written successfully: " + relativeFilepath;
     } catch (IOException e) {
-      var errorMessage = String.format("文件写入失败: %s, 错误: %s", relativeFilepath, e.getMessage());
+      var errorMessage = String.format("File write failed: %s, error: %s", relativeFilepath, e.getMessage());
       log.error(errorMessage, e);
       return errorMessage;
     }
@@ -55,7 +55,7 @@ public class FileWriteTool extends BaseTool {
 
   @Override
   public String getDisplayName() {
-    return "文件写入";
+    return "File Write";
   }
 
   @Override
@@ -66,7 +66,7 @@ public class FileWriteTool extends BaseTool {
 
     return String.format(
         """
-      调用工具: %s %s;
+      Invoke tool: %s %s;
       ```%s
       %s
       ```

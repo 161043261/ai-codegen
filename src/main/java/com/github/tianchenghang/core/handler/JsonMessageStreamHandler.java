@@ -40,7 +40,7 @@ public class JsonMessageStreamHandler {
             })
         .doOnError(
             error -> {
-              var errorMessage = "AI 响应失败: " + error.getMessage();
+              var errorMessage = "AI response failed: " + error.getMessage();
               chatHistoryService.addChatMessage(
                   appId, errorMessage, ChatHistoryMessageType.AI.getValue(), loginUser.getId());
             });
@@ -51,7 +51,7 @@ public class JsonMessageStreamHandler {
     var streamMessage = JSONUtil.toBean(chunk, StreamMessage.class);
     var streamMessageType = StreamMessageType.getEnumByValue(streamMessage.getType());
     if (streamMessageType == null) {
-      log.error("消息类型为空");
+      log.error("Message type is empty");
       return "";
     }
     switch (streamMessageType) {
@@ -84,7 +84,7 @@ public class JsonMessageStreamHandler {
         return output;
       }
       default -> {
-        log.error("不支持的消息类型: {}", streamMessageType);
+        log.error("Unsupported message type: {}", streamMessageType);
         return "";
       }
     }

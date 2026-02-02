@@ -41,7 +41,7 @@ public class AiCodegenServiceFactory {
           .expireAfterAccess(Duration.ofMinutes(10))
           .removalListener(
               (key, value, cause) -> {
-                log.debug("AI 服务实例被移除, 缓存键: {}, 原因: {}", key, cause);
+                log.debug("AI service instance removed, cache key: {}, reason: {}", key, cause);
               })
           .build();
 
@@ -55,7 +55,7 @@ public class AiCodegenServiceFactory {
   }
 
   private AiCodegenService createAiCodegenService(long appId, CodegenType codegenType) {
-    log.info("为应用 ID: {} 创建新的 AI 服务实例", appId);
+    log.info("Creating new AI service instance for app ID: {}", appId);
     var chatMemory =
         MessageWindowChatMemory.builder()
             .id(appId)
@@ -78,9 +78,9 @@ public class AiCodegenServiceFactory {
                     ToolExecutionResultMessage.from(
                         toolExecutionRequest,
                         "Error: no tool called " + toolExecutionRequest.name()))
-            .maxSequentialToolsInvocations(20) // 最多连续调用 20 次工具
-            .inputGuardrails(new PromptSafeInputGuardrail()) // 输入护轨
-            // .outputGuardrails(new RetryOutputGuardrail()) // 输出护轨, 流式输出不使用输出护轨
+            .maxSequentialToolsInvocations(20) // Maximum 20 sequential tool invocations
+            .inputGuardrails(new PromptSafeInputGuardrail()) // Input guardrail
+            // .outputGuardrails(new RetryOutputGuardrail()) // Output guardrail, not used for streaming output
             .build();
       }
       case VANILLA_HTML, MULTI_FILES -> {
@@ -96,7 +96,7 @@ public class AiCodegenServiceFactory {
       }
       default -> {
         throw new BusinessException(
-            ErrorCode.INTERNAL_SERVER_ERROR, "不支持的代码生成类型: " + codegenType.getValue());
+            ErrorCode.INTERNAL_SERVER_ERROR, "Unsupported codegen type: " + codegenType.getValue());
       }
     };
   }

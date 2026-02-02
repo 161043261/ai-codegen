@@ -24,19 +24,19 @@ public class ScreenshotServiceImpl implements ScreenshotService {
   @Override
   public String generateAndUploadScreenshot(String webUrl) {
     if (StrUtil.isBlank(webUrl)) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "网页 url 为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Web URL is empty");
     }
-    log.info("开始生成网页截图, url: {}", webUrl);
+    log.info("Starting web screenshot generation, URL: {}", webUrl);
     var screenshotLocalPath = WebPageScreenshotUtil.saveWebPageScreenshot(webUrl);
     if (StrUtil.isBlank(screenshotLocalPath)) {
-      throw new BusinessException(ErrorCode.OPERATION_FAILED, "网页截图生成失败");
+      throw new BusinessException(ErrorCode.OPERATION_FAILED, "Web screenshot generation failed");
     }
     try {
       var fileUrl = saveScreenshot2local(screenshotLocalPath);
       if (StrUtil.isBlank(fileUrl)) {
-        throw new BusinessException(ErrorCode.OPERATION_FAILED, "网页截图保存失败");
+        throw new BusinessException(ErrorCode.OPERATION_FAILED, "Web screenshot save failed");
       }
-      log.info("网页截图保存成功, url: {}", fileUrl);
+      log.info("Web screenshot saved successfully, URL: {}", fileUrl);
       return fileUrl;
     } finally {
       cleanupTempFile(screenshotLocalPath);
@@ -49,7 +49,7 @@ public class ScreenshotServiceImpl implements ScreenshotService {
     }
     var screenshotFile = new File(localScreenshotPath);
     if (!screenshotFile.exists()) {
-      log.error("网页截图不存在: {}", localScreenshotPath);
+      log.error("Web screenshot not found: {}", localScreenshotPath);
       return null;
     }
     var filename = UUID.randomUUID().toString().substring(0, 8) + "_compressed.jpg";
@@ -66,7 +66,7 @@ public class ScreenshotServiceImpl implements ScreenshotService {
     var tempFile = new File(tempFilepath);
     if (tempFile.exists()) {
       FileUtil.del(tempFile);
-      log.info("清理临时文件成功: {}", tempFilepath);
+      log.info("Temporary file cleanup succeeded: {}", tempFilepath);
     }
   }
 }

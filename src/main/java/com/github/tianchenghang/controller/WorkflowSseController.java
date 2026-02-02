@@ -15,19 +15,19 @@ public class WorkflowSseController {
 
   @PostMapping("/execute")
   public WorkflowContext executeWorkflow(@RequestParam String prompt) {
-    log.info("同步工作流执行请求: {}", prompt);
+    log.info("Synchronous workflow execution request: {}", prompt);
     return new CodegenWorkflow().executeWorkflow(prompt);
   }
 
   @GetMapping(value = "/execute-flux", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public Flux<String> executeWorkflowWithFlux(@RequestParam String prompt) {
-    log.info("Flux 工作流执行请求: {}", prompt);
+    log.info("Flux workflow execution request: {}", prompt);
     return new CodegenWorkflow().executeWorkflowWithFlux(prompt);
   }
 
   @GetMapping(value = "/execute-sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
   public SseEmitter executeWorkflowWithSse(@RequestParam String prompt) {
-    log.info("SSE 工作流执行请求: {}", prompt);
+    log.info("SSE workflow execution request: {}", prompt);
     return new CodegenWorkflow().executeWorkflowWithSse(prompt);
   }
 }

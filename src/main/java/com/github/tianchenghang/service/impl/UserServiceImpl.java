@@ -30,32 +30,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
   @Override
   public long userRegister(String userAccount, String userPassword, String checkPassword) {
     if (StrUtil.hasBlank(userAccount, userPassword, checkPassword)) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "参数为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Parameters are empty");
     }
     if (userAccount.length() < 4) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "账号长度过短");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Account length too short");
     }
     if (userPassword.length() < 8 || checkPassword.length() < 8) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "密码长度过短");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Password length too short");
     }
     if (!userPassword.equals(checkPassword)) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "两次输入的密码不同");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Passwords do not match");
     }
     var queryWrapper = new QueryWrapper();
     queryWrapper.eq("user_account", userAccount);
     var count = this.mapper.selectCountByQuery(queryWrapper);
     if (count > 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "账号已存在");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Account already exists");
     }
     var encryptPassword = getEncryptPassword(userPassword);
     var user = new User();
     user.setUserAccount(userAccount);
     user.setUserPassword(encryptPassword);
-    user.setUsername("魔丸");
+    user.setUsername("Anonymous");
     user.setUserRole(UserRole.USER.getValue());
     var ok = this.save(user);
     if (!ok) {
-      throw new BusinessException(ErrorCode.OPERATION_FAILED, "注册失败");
+      throw new BusinessException(ErrorCode.OPERATION_FAILED, "Registration failed");
     }
     return user.getId();
   }
@@ -74,13 +74,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
   public LoginUserVo userLogin(
       String userAccount, String userPassword, HttpServletRequest request) {
     if (StrUtil.hasBlank(userAccount, userPassword)) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "参数为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Parameters are empty");
     }
     if (userAccount.length() < 4) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "账号长度过短");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Account length too short");
     }
     if (userPassword.length() < 8) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "密码长度过短");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Password length too short");
     }
     var encryptPassword = getEncryptPassword(userPassword);
     var queryWrapper = new QueryWrapper();
@@ -88,7 +88,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     queryWrapper.eq("user_password", encryptPassword);
     var user = this.mapper.selectOneByQuery(queryWrapper);
     if (user == null) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "用户不存在, 或密码错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "User not found or incorrect password");
     }
     request.getSession().setAttribute(UserConstant.LOGIN_STATE, user);
     return this.getLoginUserVo(user);
@@ -131,7 +131,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
   public boolean userLogout(HttpServletRequest request) {
     var userObj = request.getSession().getAttribute(UserConstant.LOGIN_STATE);
     if (userObj == null) {
-      throw new BusinessException(ErrorCode.OPERATION_FAILED, "用户未登录");
+      throw new BusinessException(ErrorCode.OPERATION_FAILED, "User not logged in");
     }
     request.getSession().removeAttribute(UserConstant.LOGIN_STATE);
     return true;
@@ -140,7 +140,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
   @Override
   public QueryWrapper getQueryWrapper(UserQueryRequest userQueryRequest) {
     if (userQueryRequest == null) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "请求参数为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Request parameters are empty");
     }
     var id = userQueryRequest.getId();
     var userAccount = userQueryRequest.getUserAccount();

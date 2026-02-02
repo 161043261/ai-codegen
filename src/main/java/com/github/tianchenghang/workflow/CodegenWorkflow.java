@@ -61,14 +61,14 @@ public class CodegenWorkflow {
               NodeIds.CODE_QUALITY_CHECK,
               edge_async(this::routeAfterQualityCheck),
               Map.of(
-                  Conditions.BUILD, NodeIds.PROJECT_BUILD, // 代码质量检查通过, 需要构建
-                  Conditions.SKIP_BUILD, END, // 代码质量检查通过, 跳过构建
-                  Conditions.FAILED, NodeIds.CODEGEN // 代码质量检查失败, 重新生成
+                  Conditions.BUILD, NodeIds.PROJECT_BUILD, // Code quality check passed, build required
+                  Conditions.SKIP_BUILD, END, // Code quality check passed, skip build
+                  Conditions.FAILED, NodeIds.CODEGEN // Code quality check failed, regenerate
                   ))
           .addEdge(NodeIds.PROJECT_BUILD, END)
           .compile();
     } catch (GraphStateException e) {
-      throw new BusinessException(ErrorCode.OPERATION_FAILED, "代码生成工作流: 创建失败");
+      throw new BusinessException(ErrorCode.OPERATION_FAILED, "Codegen workflow: creation failed");
     }
   }
 
@@ -77,23 +77,23 @@ public class CodegenWorkflow {
     var initialContext =
         WorkflowContext.builder()
             .originalPrompt(originalPrompt)
-            .currentStep("代码生成工作流: 初始化")
+            .currentStep("Codegen workflow: initializing")
             .build();
     var graph = workflow.getGraph(GraphRepresentation.Type.MERMAID);
-    log.info("代码生成工作流图:\n{}", graph.content());
-    log.info("代码生成工作流: 开始执行");
+    log.info("Codegen workflow graph:\n{}", graph.content());
+    log.info("Codegen workflow: starting execution");
     WorkflowContext finalContext = null;
     var stepNumber = 1;
     for (var step : workflow.stream(Map.of(WorkflowContext.WORKFLOW_CONTEXT_KEY, initialContext))) {
-      log.info("代码生成工作流: 第 {} 步完成", stepNumber);
+      log.info("Codegen workflow: step {} completed", stepNumber);
       var currentContext = WorkflowContext.getContext(step.state());
       if (currentContext != null) {
         finalContext = currentContext;
-        log.info("代码生成工作流: 当前上下文 {}", currentContext);
+        log.info("Codegen workflow: current context {}", currentContext);
       }
       stepNumber++;
     }
-    log.info("代码生成工作流: 执行完成");
+    log.info("Codegen workflow: execution completed");
     return finalContext;
   }
 
@@ -107,19 +107,19 @@ public class CodegenWorkflow {
                   var initialContext =
                       WorkflowContext.builder()
                           .originalPrompt(originalPrompt)
-                          .currentStep("代码生成工作流: 初始化")
+                          .currentStep("Codegen workflow: initializing")
                           .build();
                   sink.next(
                       formatSseEvent(
                           EventNames.WORKFLOW_START,
-                          Map.of("message", "代码生成工作流: 开始执行", "original_prompt", originalPrompt)));
+                          Map.of("message", "Codegen workflow: starting execution", "original_prompt", originalPrompt)));
                   var graph = workflow.getGraph(GraphRepresentation.Type.MERMAID);
-                  log.info("代码生成工作流图:\n{}", graph.content());
+                  log.info("Codegen workflow graph:\n{}", graph.content());
                   var stepNumber = 1;
                   for (var step :
                       workflow.stream(
                           Map.of(WorkflowContext.WORKFLOW_CONTEXT_KEY, initialContext))) {
-                    log.info("代码生成工作流: 第 {} 步完成", stepNumber);
+                    log.info("Codegen workflow: step {} completed", stepNumber);
                     var currentContext = WorkflowContext.getContext(step.state());
                     if (currentContext != null) {
                       sink.next(
@@ -130,21 +130,21 @@ public class CodegenWorkflow {
                                   stepNumber,
                                   "current_step",
                                   currentContext.getCurrentStep())));
-                      log.info("代码生成工作流: 当前上下文 {}", currentContext);
+                      log.info("Codegen workflow: current context {}", currentContext);
                     }
                     stepNumber++;
                   }
                   sink.next(
                       formatSseEvent(
-                          EventNames.WORKFLOW_COMPLETE, Map.of("message", "代码生成工作流执行完成")));
-                  log.info("代码生成工作流: 执行完成");
+                          EventNames.WORKFLOW_COMPLETE, Map.of("message", "Codegen workflow completed")));
+                  log.info("Codegen workflow: execution completed");
                   sink.complete();
                 } catch (Exception e) {
-                  log.error("代码生成工作流: 执行失败 {}", e.getMessage(), e);
+                  log.error("Codegen workflow: execution failed {}", e.getMessage(), e);
                   sink.next(
                       formatSseEvent(
                           EventNames.WORKFLOW_ERROR,
-                          Map.of("error", e.getMessage(), "message", "代码生成工作流: 执行失败")));
+                          Map.of("error", e.getMessage(), "message", "Codegen workflow: execution failed")));
                   sink.error(e);
                 }
               });
@@ -160,19 +160,19 @@ public class CodegenWorkflow {
             var initialContext =
                 WorkflowContext.builder()
                     .originalPrompt(originalPrompt)
-                    .currentStep("代码生成工作流: 初始化")
+                    .currentStep("Codegen workflow: initializing")
                     .build();
             sendSseEvent(
                 emitter,
                 EventNames.WORKFLOW_START,
-                Map.of("message", "代码生成工作流: 开始执行", "original_prompt", originalPrompt));
+                Map.of("message", "Codegen workflow: starting execution", "original_prompt", originalPrompt));
             var graph = workflow.getGraph(GraphRepresentation.Type.MERMAID);
-            log.info("代码生成工作流图:\n{}", graph.content());
-            log.info("代码生成工作流: 开始执行");
+            log.info("Codegen workflow graph:\n{}", graph.content());
+            log.info("Codegen workflow: starting execution");
             var stepNumber = 1;
             for (var step :
                 workflow.stream(Map.of(WorkflowContext.WORKFLOW_CONTEXT_KEY, initialContext))) {
-              log.info("代码生成工作流: 第 {} 步完成", stepNumber);
+              log.info("Codegen workflow: step {} completed", stepNumber);
               var currentContext = WorkflowContext.getContext(step.state());
               if (currentContext != null) {
                 sendSseEvent(
@@ -183,19 +183,19 @@ public class CodegenWorkflow {
                         stepNumber,
                         "current_step",
                         currentContext.getCurrentStep()));
-                log.info("代码生成工作流: 当前上下文 {}", currentContext);
+                log.info("Codegen workflow: current context {}", currentContext);
               }
               stepNumber++;
             }
-            sendSseEvent(emitter, EventNames.STEP_COMPLETE, Map.of("message", "代码生成工作流: 执行完成"));
-            log.info("代码生成工作流: 执行完成");
+            sendSseEvent(emitter, EventNames.STEP_COMPLETE, Map.of("message", "Codegen workflow: execution completed"));
+            log.info("Codegen workflow: execution completed");
             emitter.complete();
           } catch (Exception e) {
-            log.error("代码生成工作流: 执行失败: {}", e.getMessage(), e);
+            log.error("Codegen workflow: execution failed: {}", e.getMessage(), e);
             sendSseEvent(
                 emitter,
                 EventNames.WORKFLOW_ERROR,
-                Map.of("error", e.getMessage(), "message", "代码生成工作流: 执行失败"));
+                Map.of("error", e.getMessage(), "message", "Codegen workflow: execution failed"));
             emitter.completeWithError(e);
           }
         });
@@ -207,8 +207,8 @@ public class CodegenWorkflow {
       var jsonData = JSONUtil.toJsonStr(data);
       return "event: " + eventType + "\ndata: " + jsonData + "\n\n";
     } catch (Exception e) {
-      log.error("格式化 SSE 事件失败: {}", e.getMessage(), e);
-      return "event: error\ndata: {\"error\":\"格式化 SSE 事件失败\"}\n\n";
+      log.error("Failed to format SSE event: {}", e.getMessage(), e);
+      return "event: error\ndata: {\"error\":\"Failed to format SSE event\"}\n\n";
     }
   }
 
@@ -216,7 +216,7 @@ public class CodegenWorkflow {
     try {
       emitter.send(SseEmitter.event().name(eventType).data(data));
     } catch (IOException e) {
-      log.error("发送 SSE 事件失败: {}", e.getMessage(), e);
+      log.error("Failed to send SSE event: {}", e.getMessage(), e);
     }
   }
 
@@ -224,10 +224,10 @@ public class CodegenWorkflow {
     var context = WorkflowContext.getContext(state);
     var codeQualityResult = context.getCodeQualityResult();
     if (codeQualityResult == null || !codeQualityResult.getIsPassed()) {
-      log.error("代码质量检查失败, 重新生成代码");
+      log.error("Code quality check failed, regenerating code");
       return Conditions.FAILED;
     }
-    log.info("代码质量检查通过, 继续");
+    log.info("Code quality check passed, proceeding");
     var codegenType = context.getCodegenType();
     if (codegenType == CodegenType.VANILLA_HTML || codegenType == CodegenType.MULTI_FILES) {
       return Conditions.SKIP_BUILD;

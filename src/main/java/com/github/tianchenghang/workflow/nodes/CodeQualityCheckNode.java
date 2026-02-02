@@ -21,30 +21,30 @@ public class CodeQualityCheckNode {
     return node_async(
         state -> {
           var context = WorkflowContext.getContext(state);
-          log.info("执行节点: 代码质量检查");
+          log.info("Executing node: Code Quality Check");
           var generatedCodeDir = context.getGeneratedCodeDir();
           CodeQualityResult codeQualityResult;
           try {
             var codeContent = readAndConcatCode(generatedCodeDir);
             if (StrUtil.isBlank(codeContent)) {
-              log.warn("没有可检查的代码文件");
+              log.warn("No code files to check");
               codeQualityResult =
                   CodeQualityResult.builder()
                       .isPassed(false)
-                      .errors(List.of("没有可检查的代码文件"))
-                      .suggestions(List.of("请确保代码生成成功"))
+                      .errors(List.of("No code files to check"))
+                      .suggestions(List.of("Please ensure code generation succeeded"))
                       .build();
             } else {
               var codeQualityCheckService =
                   SpringContextUtil.getBean(CodeQualityCheckService.class);
               codeQualityResult = codeQualityCheckService.checkCodeQuality(codeContent);
-              log.info("代码质量检查完成, 是否通过: {}", codeQualityResult.getIsPassed());
+              log.info("Code quality check completed, passed: {}", codeQualityResult.getIsPassed());
             }
           } catch (Exception e) {
-            log.error("代码质量检查异常: {}", e.getMessage(), e);
+            log.error("Code quality check exception: {}", e.getMessage(), e);
             codeQualityResult = CodeQualityResult.builder().isPassed(true).build();
           }
-          context.setCurrentStep("代码质量检查");
+          context.setCurrentStep("Code Quality Check");
           context.setCodeQualityResult(codeQualityResult);
           return WorkflowContext.setContext(context);
         });
@@ -59,11 +59,11 @@ public class CodeQualityCheckNode {
     }
     var directory = new File(codeDir);
     if (!directory.exists() || !directory.isDirectory()) {
-      log.error("目录不存在, 或不是目录: {}", codeDir);
+      log.error("Directory not found or not a directory: {}", codeDir);
       return "";
     }
     var codeContent = new StringBuilder();
-    codeContent.append("项目结构和代码内容\n\n");
+    codeContent.append("Project structure and code content\n\n");
     FileUtil.walkFiles(
         directory,
         file -> {
@@ -73,7 +73,7 @@ public class CodeQualityCheckNode {
           if (isCodeFile(file)) {
             var relativePath =
                 FileUtil.subPath(directory.getAbsolutePath(), file.getAbsolutePath());
-            codeContent.append("文件: ").append(relativePath).append("\n\n");
+            codeContent.append("File: ").append(relativePath).append("\n\n");
             var fileContent = FileUtil.readUtf8String(file);
             codeContent.append(fileContent).append("\n\n");
           }

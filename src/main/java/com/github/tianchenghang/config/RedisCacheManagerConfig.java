@@ -25,15 +25,15 @@ public class RedisCacheManagerConfig {
   @Bean
   @Primary
   public CacheManager cacheManager() {
-    log.info("使用 redis 缓存管理器");
+    log.info("Using Redis cache manager");
     var objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
 
     var defaultConfig =
         RedisCacheConfiguration.defaultCacheConfig()
-            .entryTtl(Duration.ofMinutes(30)) // 默认 30min 缓存过期
-            .disableCachingNullValues() // 禁用 null 值缓存
-            // key 使用 String 序列化
+            .entryTtl(Duration.ofMinutes(30)) // Default 30 minute cache TTL
+            .disableCachingNullValues() // Disable null value caching
+            // Use String serialization for keys
             .serializeKeysWith(
                 RedisSerializationContext.SerializationPair.fromSerializer(
                     new StringRedisSerializer()));

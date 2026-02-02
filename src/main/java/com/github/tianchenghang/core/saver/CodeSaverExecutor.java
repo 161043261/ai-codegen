@@ -17,7 +17,7 @@ public class CodeSaverExecutor {
       case MULTI_FILES -> multiFilesCodeSaver.saveCode((MultiFilesResult) codeResult, appId);
       default ->
           throw new BusinessException(
-              ErrorCode.INTERNAL_SERVER_ERROR, "不支持的代码生成类型: " + codegenType);
+              ErrorCode.INTERNAL_SERVER_ERROR, "Unsupported codegen type: " + codegenType);
     };
   }
 }

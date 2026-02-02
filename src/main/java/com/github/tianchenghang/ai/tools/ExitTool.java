@@ -14,16 +14,16 @@ public class ExitTool extends BaseTool {
 
   @Override
   public String getDisplayName() {
-    return "退出";
+    return "Exit";
   }
 
-  @Tool("当任务已完成, 或无需继续调用工具时, 使用此工具退出, 防止循环")
+  @Tool("Use this tool to exit when task is completed or no more tools needed, preventing loops")
   public String exit() {
-    return "不要继续调用工具, 可以输出结果";
+    return "Do not continue calling tools, output result";
   }
 
   @Override
   public String generateToolExecuteResult(JSONObject arguments) {
-    return String.format("调用工具: %s", getDisplayName());
+    return String.format("Invoke tool: %s", getDisplayName());
   }
 }

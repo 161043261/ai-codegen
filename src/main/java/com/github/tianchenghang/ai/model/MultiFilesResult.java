@@ -3,18 +3,18 @@ package com.github.tianchenghang.ai.model;
 import dev.langchain4j.model.output.structured.Description;
 import lombok.Data;
 
-@Description("生成的多个代码文件结果")
+@Description("Generated multiple code files result")
 @Data
 public class MultiFilesResult {
-  @Description("生成的 HTML 代码")
+  @Description("Generated HTML code")
   private String htmlCode;
 
-  @Description("生成的 CSS 代码")
+  @Description("Generated CSS code")
   private String cssCode;
 
-  @Description("生成的 JavaScript 代码")
+  @Description("Generated JavaScript code")
   private String jsCode;
 
-  @Description("生成的代码的描述")
+  @Description("Description of the generated code")
   private String description;
 }

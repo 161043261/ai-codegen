@@ -34,9 +34,9 @@ public class DirReadTool extends BaseTool {
 
   private static final Set<String> IGNORED_EXTENSIONS = Set.of(".cache", ".lock", ".log", ".tmp");
 
-  @Tool("读取指定路径的目录, 获取指定目录下所有文件和子目录")
+  @Tool("Read directory at the specified path, get all files and subdirectories")
   public String readDir(
-      @P("目录的相对路径, 如果为空则是项目根目录") String relativeDirpath, @ToolMemoryId Long appId) {
+      @P("Relative directory path, empty for project root") String relativeDirpath, @ToolMemoryId Long appId) {
     try {
       var path = Paths.get(relativeDirpath == null ? "" : relativeDirpath);
       if (!path.isAbsolute()) {
@@ -46,10 +46,10 @@ public class DirReadTool extends BaseTool {
       }
       var targetDir = path.toFile();
       if (!targetDir.exists() || !targetDir.isDirectory()) {
-        return "目录不存在, 或不是目录: " + relativeDirpath;
+        return "Directory not found or not a directory: " + relativeDirpath;
       }
       var dirStructureBuilder = new StringBuilder();
-      dirStructureBuilder.append("目录结构:\n");
+      dirStructureBuilder.append("Directory structure:\n");
       var allFiles = FileUtil.loopFiles(targetDir, file -> !shouldIgnore(file.getName()));
       allFiles.stream()
           .sorted(
@@ -69,7 +69,7 @@ public class DirReadTool extends BaseTool {
               });
       return dirStructureBuilder.toString();
     } catch (Exception e) {
-      var errorMessage = String.format("读取目录失败: %s, 错误: %s", relativeDirpath, e.getMessage());
+      var errorMessage = String.format("Failed to read directory: %s, error: %s", relativeDirpath, e.getMessage());
       log.error(errorMessage, e);
       return errorMessage;
     }
@@ -95,15 +95,15 @@ public class DirReadTool extends BaseTool {
 
   @Override
   public String getDisplayName() {
-    return "读取目录";
+    return "Read Directory";
   }
 
   @Override
   public String generateToolExecuteResult(JSONObject arguments) {
     var relativeDirpath = arguments.getStr("relativeDirpath");
     if (StrUtil.isEmpty(relativeDirpath)) {
-      relativeDirpath = "项目根目录";
+      relativeDirpath = "project root";
     }
-    return String.format("调用工具: %s %s", getDisplayName(), relativeDirpath);
+    return String.format("Invoke tool: %s %s", getDisplayName(), relativeDirpath);
   }
 }

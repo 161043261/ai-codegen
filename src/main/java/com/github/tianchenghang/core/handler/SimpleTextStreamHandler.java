@@ -26,7 +26,7 @@ public class SimpleTextStreamHandler {
             })
         .doOnError(
             error -> {
-              var errorMessage = "AI 响应失败: " + error.getMessage();
+              var errorMessage = "AI response failed: " + error.getMessage();
               chatHistoryService.addChatMessage(
                   appId, errorMessage, ChatHistoryMessageType.AI.getValue(), loginUser.getId());
             });

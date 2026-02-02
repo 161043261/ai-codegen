@@ -17,9 +17,9 @@ import org.springframework.stereotype.Component;
 public class FileModifyTool extends BaseTool {
 
   public String modifyFile(
-      @P("文件的相对路径") String relativeFilepath,
-      @P("修改前的旧内容") String oldContent,
-      @P("修改后的新内容") String newContent,
+      @P("Relative file path") String relativeFilepath,
+      @P("Old content before modification") String oldContent,
+      @P("New content after modification") String newContent,
       @ToolMemoryId Long appId) {
     try {
       var path = Paths.get(relativeFilepath);
@@ -29,22 +29,22 @@ public class FileModifyTool extends BaseTool {
         path = projectRoot.resolve(relativeFilepath);
       }
       if (!Files.exists(path) || !Files.isRegularFile(path)) {
-        return "文件不存在, 或不是文件: " + relativeFilepath;
+        return "File not found or not a file: " + relativeFilepath;
       }
       var originalContent = Files.readString(path);
       if (!originalContent.contains(oldContent)) {
-        return "文件未修改: " + relativeFilepath;
+        return "File not modified: " + relativeFilepath;
       }
       var modifiedContent = originalContent.replace(oldContent, newContent);
       if (originalContent.equals(modifiedContent)) {
-        return "文件未修改: " + relativeFilepath;
+        return "File not modified: " + relativeFilepath;
       }
       Files.writeString(
           path, modifiedContent, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-      log.info("文件修改成功: {}", path.toAbsolutePath());
-      return "文件修改成功: " + relativeFilepath;
+      log.info("File modified successfully: {}", path.toAbsolutePath());
+      return "File modified successfully: " + relativeFilepath;
     } catch (IOException e) {
-      var errorMessage = String.format("文件修改失败: %s, 错误: %s", relativeFilepath, e.getMessage());
+      var errorMessage = String.format("File modification failed: %s, error: %s", relativeFilepath, e.getMessage());
       log.error(errorMessage, e);
       return errorMessage;
     }
@@ -57,7 +57,7 @@ public class FileModifyTool extends BaseTool {
 
   @Override
   public String getDisplayName() {
-    return "文件修改";
+    return "File Modify";
   }
 
   @Override
@@ -68,14 +68,14 @@ public class FileModifyTool extends BaseTool {
     var newContent = arguments.getStr("newContent");
     return String.format(
         """
-        调用工具: %s %s;
+        Invoke tool: %s %s;
 
-        修改前:
+        Before:
         ```%s
         %s
         ```
 
-        修改后
+        After:
         ```%s
         %s
         ```

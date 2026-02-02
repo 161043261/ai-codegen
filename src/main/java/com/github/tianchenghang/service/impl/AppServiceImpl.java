@@ -59,22 +59,22 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
   @Override
   public Flux<String> chat2codegen(Long appId, String message, User loginUser) {
     if (appId == null || appId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目 ID 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Invalid project ID");
     }
     if (StrUtil.isBlank(message)) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "提示词为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Prompt is empty");
     }
     var appEntity = this.getById(appId);
     if (appEntity == null) {
-      throw new BusinessException(ErrorCode.NOT_FOUND, "项目不存在");
+      throw new BusinessException(ErrorCode.NOT_FOUND, "Project not found");
     }
     if (!appEntity.getUserId().equals(loginUser.getId())) {
-      throw new BusinessException(ErrorCode.NO_PERMISSION, "无访问权限");
+      throw new BusinessException(ErrorCode.NO_PERMISSION, "Access denied");
     }
     var codegenType = appEntity.getCodegenType();
     var codegenTypeEnum = CodegenType.getEnumByValue(codegenType);
     if (codegenTypeEnum == null) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "代码生成类型错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Invalid codegen type");
     }
     chatHistoryService.addChatMessage(
         appId, message, ChatHistoryMessageType.USER.getValue(), loginUser.getId());
@@ -88,7 +88,7 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
         .handle(codeStream, chatHistoryService, appId, loginUser, codegenTypeEnum)
         .doFinally(
             signalType -> {
-              // 流结束时清理（无论成功/失败/取消）
+              // Cleanup when stream ends (success/failure/cancel)
               MonitorContextHolder.clearContext();
             });
   }
@@ -97,7 +97,7 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
   public Long createApp(AppAddRequest appAddRequest, User loginUser) {
     var initialPrompt = appAddRequest.getInitPrompt();
     if (StrUtil.isBlank(initialPrompt)) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "提示词为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Prompt is empty");
     }
     var appEntity = new AppEntity();
     BeanUtil.copyProperties(appAddRequest, appEntity);
@@ -111,24 +111,24 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
     if (!ok) {
       throw new BusinessException(ErrorCode.OPERATION_FAILED);
     }
-    log.info("代码生成成功, appId: {}, 类型: {}", appEntity.getId(), codegenType.getValue());
+    log.info("Code generation succeeded, appId: {}, type: {}", appEntity.getId(), codegenType.getValue());
     return appEntity.getId();
   }
 
   @Override
   public String deployApp(Long appId, User loginUser) {
     if (appId == null || appId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目 ID 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Invalid project ID");
     }
     if (loginUser == null) {
-      throw new BusinessException(ErrorCode.UNAUTHORIZED, "用户未登录");
+      throw new BusinessException(ErrorCode.UNAUTHORIZED, "User not logged in");
     }
     var appEntity = this.getById(appId);
     if (appEntity == null) {
-      throw new BusinessException(ErrorCode.NOT_FOUND, "项目不存在");
+      throw new BusinessException(ErrorCode.NOT_FOUND, "Project not found");
     }
     if (!appEntity.getUserId().equals(loginUser.getId())) {
-      throw new BusinessException(ErrorCode.NO_PERMISSION, "无部署权限");
+      throw new BusinessException(ErrorCode.NO_PERMISSION, "No deployment permission");
     }
     var deployKey = appEntity.getDeployKey();
     if (StrUtil.isBlank(deployKey)) {
@@ -139,17 +139,17 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
     var sourceDirpath = AppConstant.CODE_OUTPUT_ROOT_DIR + File.separator + sourceDirname;
     var sourceDir = new File(sourceDirpath);
     if (!sourceDir.exists() || !sourceDir.isDirectory()) {
-      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "项目不存在");
+      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Project not found");
     }
     var codegenTypeEnum = CodegenType.getEnumByValue(codegenType);
     if (codegenTypeEnum == CodegenType.VITE_PROJECT) {
       var ok = viteProjectBuilder.buildProject(sourceDirpath);
       if (!ok) {
-        throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Vite 项目构建失败, 请重试");
+        throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Vite project build failed, please retry");
       }
       var distDir = new File(sourceDirpath, "dist");
       if (!distDir.exists()) {
-        throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Vite 项目构建成功, 但未生成 dist 目录");
+        throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Vite project built successfully, but dist directory not found");
       }
       sourceDir = distDir;
     }
@@ -157,7 +157,7 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
     try {
       FileUtil.copyContent(sourceDir, new File(deployDirpath), true);
     } catch (Exception e) {
-      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "项目部署失败: " + e.getMessage());
+      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, "Project deployment failed: " + e.getMessage());
     }
     var updateApp = new AppEntity();
     updateApp.setId(appId);
@@ -165,7 +165,7 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
     updateApp.setDeployTime(LocalDateTime.now());
     var ok = this.updateById(updateApp);
     if (!ok) {
-      throw new BusinessException(ErrorCode.OPERATION_FAILED, "更新项目部署信息失败");
+      throw new BusinessException(ErrorCode.OPERATION_FAILED, "Failed to update project deployment info");
     }
     var appDeployUrl = String.format("%s/%s/", deployHost, deployKey);
     generateAppScreenshotAsync(appId, appDeployUrl);
@@ -177,13 +177,13 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
     Thread.startVirtualThread(
         () -> {
           var screenshotUrl = screenshotService.generateAndUploadScreenshot(appUrl);
-          // 更新数据库的封面
+          // Update cover in database
           var updateApp = new AppEntity();
           updateApp.setId(appId);
           updateApp.setAppCover(screenshotUrl);
           var updated = this.updateById(updateApp);
           if (!updated) {
-            throw new BusinessException(ErrorCode.OPERATION_FAILED, "更新项目封面失败");
+            throw new BusinessException(ErrorCode.OPERATION_FAILED, "Failed to update project cover");
           }
         });
   }
@@ -263,7 +263,7 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, AppEntity> implements
     try {
       chatHistoryService.deleteByAppId(appId);
     } catch (Exception e) {
-      log.error("删除对话历史失败: {}", e.getMessage());
+      log.error("Failed to delete chat history: {}", e.getMessage());
     }
     return super.removeById(id);
   }

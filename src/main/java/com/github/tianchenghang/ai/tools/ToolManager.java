@@ -18,9 +18,9 @@ public class ToolManager {
   public void registerToolkits() {
     for (var tool : tools) {
       toolkits.put(tool.getToolName(), tool);
-      log.info("注册工具: {} -> {}", tool.getToolName(), tool.getDisplayName());
+      log.info("Registering tool: {} -> {}", tool.getToolName(), tool.getDisplayName());
     }
-    log.info("工具注册成功, 共 {} 个工具", toolkits.size());
+    log.info("Tool registration completed, total {} tools", toolkits.size());
   }
 
   public BaseTool getTool(String toolName) {

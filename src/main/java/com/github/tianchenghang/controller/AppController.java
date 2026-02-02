@@ -45,14 +45,14 @@ public class AppController {
   @Resource private ProjectDownloadService projectDownloadService;
 
   @GetMapping(value = "/chat/codegen", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-  @RateLimit(limitType = RateLimitType.USER, rate = 5, rateInterval = 60, message = "AI 对话请求过于频繁")
+  @RateLimit(limitType = RateLimitType.USER, rate = 5, rateInterval = 60, message = "AI chat request rate limit exceeded")
   public Flux<ServerSentEvent<String>> chatForCodegen(
       @RequestParam Long appId, @RequestParam String message, HttpServletRequest request) {
     if (appId == null || appId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目 ID 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Invalid project ID");
     }
     if (StrUtil.isBlank(message)) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "提示词为空");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Prompt is empty");
     }
     var loginUser = userService.getLoginUser(request);
     var contentFlux = appService.chat2codegen(appId, message, loginUser);
@@ -76,7 +76,7 @@ public class AppController {
     }
     var appId = appDeployRequest.getAppId();
     if (appId == null || appId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目 ID 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Invalid project ID");
     }
     var loginUser = userService.getLoginUser(request);
     var deployUrl = appService.deployApp(appId, loginUser);
@@ -87,22 +87,22 @@ public class AppController {
   public void downloadApp(
       @PathVariable Long appId, HttpServletRequest request, HttpServletResponse response) {
     if (appId == null || appId <= 0) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目 ID 错误");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Invalid project ID");
     }
     var appEntity = appService.getById(appId);
     if (appEntity == null) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "项目不存在");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Project not found");
     }
     var loginUser = userService.getLoginUser(request);
     if (!appEntity.getUserId().equals(loginUser.getId())) {
-      throw new BusinessException(ErrorCode.NO_PERMISSION, "无下载权限");
+      throw new BusinessException(ErrorCode.NO_PERMISSION, "No download permission");
     }
     var codegenType = appEntity.getCodegenType();
     var sourceDirname = codegenType + "_" + appId;
     var sourceDirpath = AppConstant.CODE_OUTPUT_ROOT_DIR + File.separator + sourceDirname;
     var sourceDir = new File(sourceDirpath);
     if (!sourceDir.exists() || !sourceDir.isDirectory()) {
-      throw new BusinessException(ErrorCode.NOT_FOUND, "项目不存在");
+      throw new BusinessException(ErrorCode.NOT_FOUND, "Project not found");
     }
     var downloadFilename = String.valueOf(appId);
     projectDownloadService.downloadProjectAsZip(sourceDirpath, downloadFilename, response);
@@ -186,7 +186,7 @@ public class AppController {
     var loginUser = userService.getLoginUser(request);
     var pageSize = appQueryRequest.getPageSize();
     if (pageSize > 20) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "每页最多 20 个 app");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Maximum 20 apps per page");
     }
     var pageNum = appQueryRequest.getPageNum();
     appQueryRequest.setUserId(loginUser.getId());
@@ -210,7 +210,7 @@ public class AppController {
     }
     var pageSize = appQueryRequest.getPageSize();
     if (pageSize > 20) {
-      throw new BusinessException(ErrorCode.BAD_REQUEST, "每页最多 20 个 app");
+      throw new BusinessException(ErrorCode.BAD_REQUEST, "Maximum 20 apps per page");
     }
     var pageNum = appQueryRequest.getPageNum();
     appQueryRequest.setPriority(AppConstant.AWESOME_APP_PRIORITY);

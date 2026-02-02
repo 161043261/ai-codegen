@@ -3,12 +3,12 @@ package com.github.tianchenghang.rate_limiter.limiter;
 public interface RateLimiter {
 
   /**
-   * 尝试获取令牌
+   * Try to acquire a token
    *
-   * @param key 限流键
-   * @param rate 速率, 每个时间窗口允许的请求数
-   * @param rateInterval 时间窗口, 单位 s
-   * @return 是否获取成功
+   * @param key Rate limit key
+   * @param rate Rate, number of requests allowed per time window
+   * @param rateInterval Time window in seconds
+   * @return Whether acquisition was successful
    */
   boolean tryAcquire(String key, long rate, long rateInterval);
 }

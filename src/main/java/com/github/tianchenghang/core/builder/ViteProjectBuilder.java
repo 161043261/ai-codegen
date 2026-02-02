@@ -18,7 +18,7 @@ public class ViteProjectBuilder {
               try {
                 buildProject(projectPath);
               } catch (Exception e) {
-                log.error("异步构建 Vite 项目异常: {}", e.getMessage(), e);
+                log.error("Async Vite project build exception: {}", e.getMessage(), e);
               }
             });
   }
@@ -26,37 +26,37 @@ public class ViteProjectBuilder {
   public boolean buildProject(String projectPath) {
     var projectDir = new File(projectPath);
     if (!projectDir.exists() || !projectDir.isDirectory()) {
-      log.error("项目目录不存在, 或不是目录: {}", projectPath);
+      log.error("Project directory not found or not a directory: {}", projectPath);
       return false;
     }
     var packageJsonFile = new File(projectDir, "package.json");
     if (!packageJsonFile.exists()) {
-      log.error("项目目录中没有 package.json: {}", projectPath);
+      log.error("No package.json found in project directory: {}", projectPath);
       return false;
     }
-    log.info("开始构建 Vite 项目: {}", projectPath);
+    log.info("Starting Vite project build: {}", projectPath);
     if (!executeNpmInstall(projectDir)) {
-      log.error("npm install 失败: {}", projectPath);
+      log.error("npm install failed: {}", projectPath);
       return false;
     }
     if (!executeNpmBuild(projectDir)) {
-      log.error("npm run builder 失败: {}", projectPath);
+      log.error("npm run build failed: {}", projectPath);
       return false;
     }
-    log.info("Vite 项目构建成功, dist 目录: {}", projectPath);
+    log.info("Vite project built successfully, dist directory: {}", projectPath);
     return true;
   }
 
   private boolean executeNpmInstall(File projectDir) {
-    log.info("执行 npm install...");
+    log.info("Executing npm install...");
     var command = String.format("%s install", buildCommand("npm"));
-    return executeCommand(projectDir, command, 300); // 5min 超时
+    return executeCommand(projectDir, command, 300); // 5min timeout
   }
 
   private boolean executeNpmBuild(File projectDir) {
-    log.info("执行 npm run builder...");
+    log.info("Executing npm run build...");
     var command = String.format("%s run builder", buildCommand("npm"));
-    return executeCommand(projectDir, command, 300); // 5min 超时
+    return executeCommand(projectDir, command, 300); // 5min timeout
   }
 
   private String buildCommand(String baseCommand) {
@@ -72,23 +72,23 @@ public class ViteProjectBuilder {
 
   private boolean executeCommand(File workDir, String command, int timeoutSeconds) {
     try {
-      log.info("工作目录: {}, 执行命令: {}", workDir.getAbsolutePath(), command);
+      log.info("Working directory: {}, executing command: {}", workDir.getAbsolutePath(), command);
       var process = RuntimeUtil.exec(null, workDir, command.split("\\s+"));
       var finished = process.waitFor(timeoutSeconds, TimeUnit.SECONDS);
       if (!finished) {
-        log.error("执行 {} 命令超时 {}s, 强制终止", command, timeoutSeconds);
+        log.error("Command {} timed out after {}s, force terminating", command, timeoutSeconds);
         process.destroyForcibly();
         return false;
       }
       var exitCode = process.exitValue();
       if (exitCode == 0) {
-        log.info("命令 {} 执行成功", command);
+        log.info("Command {} executed successfully", command);
         return true;
       }
-      log.error("命令 {} 执行失败, 退出码: {}", command, exitCode);
+      log.error("Command {} failed with exit code: {}", command, exitCode);
       return false;
     } catch (Exception e) {
-      log.error("命令 {} 执行失败, 错误信息: {}", command, e.getMessage(), e);
+      log.error("Command {} failed with error: {}", command, e.getMessage(), e);
       return false;
     }
   }

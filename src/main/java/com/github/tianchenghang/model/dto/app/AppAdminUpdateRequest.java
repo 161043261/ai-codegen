@@ -4,7 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import lombok.Data;
 
-/** 管理员更新应用请求 */
+/** Admin update application request */
 @Data
 public class AppAdminUpdateRequest implements Serializable {
   private Long id;

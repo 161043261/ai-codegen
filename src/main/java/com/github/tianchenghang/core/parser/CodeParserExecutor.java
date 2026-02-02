@@ -14,7 +14,7 @@ public class CodeParserExecutor {
       case MULTI_FILES -> multiFilesCodeParser.parseCode(codeContent);
       default ->
           throw new BusinessException(
-              ErrorCode.INTERNAL_SERVER_ERROR, "不支持的代码生成类型: " + codegenType.getValue());
+              ErrorCode.INTERNAL_SERVER_ERROR, "Unsupported codegen type: " + codegenType.getValue());
     };
   }
 }
