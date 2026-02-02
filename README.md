@@ -26,5 +26,6 @@ exit 0
 
 
 ```bash
+export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
 mvn spring-boot:run
 ```
