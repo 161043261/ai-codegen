@@ -88,4 +88,4 @@ management:
     health:
       show-details: always
 codegen:
-  deploy-host: http://localhost/dist
+  deploy-host: http://localhost:8123/dist
