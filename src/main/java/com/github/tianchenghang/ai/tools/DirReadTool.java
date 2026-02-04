@@ -86,8 +86,8 @@ public class DirReadTool extends BaseTool {
 
   private int getRelativeDepth(File root, File file) {
     var rootPath = root.toPath();
-    var filePath = file.toPath();
-    return rootPath.relativize(filePath).getNameCount() - 1;
+    var filepath = file.toPath();
+    return rootPath.relativize(filepath).getNameCount() - 1;
   }
 
   @Override

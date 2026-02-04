@@ -44,7 +44,7 @@ public abstract class CodeSaver<T> {
     return dirpath;
   }
 
-  protected abstract void saveFiles(T result, String baseDirPath);
+  protected abstract void saveFiles(T result, String baseDirpath);
 
   protected abstract CodegenType getCodegenType();
 }

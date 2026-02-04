@@ -28,10 +28,10 @@ public class CodeSaver {
   }
 
   private static String buildUniqueDir(String bizType) {
-    var uniqueDirName = StrUtil.format("{}_{}", bizType, IdUtil.getSnowflakeNextIdStr());
-    var dirPath = CODE_SAVE_ROOT_DIR + File.separator + uniqueDirName;
-    FileUtil.mkdir(dirPath);
-    return dirPath;
+    var uniqueDirname = StrUtil.format("{}_{}", bizType, IdUtil.getSnowflakeNextIdStr());
+    var dirpath = CODE_SAVE_ROOT_DIR + File.separator + uniqueDirname;
+    FileUtil.mkdir(dirpath);
+    return dirpath;
   }
 
   private static void write2file(String dirpath, String filename, String content) {

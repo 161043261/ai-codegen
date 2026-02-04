@@ -35,11 +35,11 @@ public class ProjectDownloadServiceImpl implements ProjectDownloadService {
 
   @Override
   public void downloadProjectAsZip(
-      String projectPath, String downloadFileName, HttpServletResponse response) {
+      String projectPath, String downloadFilename, HttpServletResponse response) {
     if (StrUtil.isBlank(projectPath)) {
       throw new BusinessException(ErrorCode.BAD_REQUEST, "Project path is empty");
     }
-    if (StrUtil.isBlank(downloadFileName)) {
+    if (StrUtil.isBlank(downloadFilename)) {
       throw new BusinessException(ErrorCode.BAD_REQUEST, "Download filename is empty");
     }
     var projectDir = new File(projectPath);
@@ -49,16 +49,16 @@ public class ProjectDownloadServiceImpl implements ProjectDownloadService {
     if (!projectDir.isDirectory()) {
       throw new BusinessException(ErrorCode.BAD_REQUEST, "Project path is not a directory");
     }
-    log.info("Starting project directory compression: {} -> {}.zip", projectPath, downloadFileName);
+    log.info("Starting project directory compression: {} -> {}.zip", projectPath, downloadFilename);
     response.setStatus(HttpServletResponse.SC_OK);
     response.setContentType("application/zip");
     response.addHeader(
-        "Content-Disposition", String.format("attachment; filename=\"%s.zip\"", downloadFileName));
+        "Content-Disposition", String.format("attachment; filename=\"%s.zip\"", downloadFilename));
     FileFilter filter = file -> isPathAllowed(projectDir.toPath(), file.toPath());
     try {
       ZipUtil.zip(response.getOutputStream(), StandardCharsets.UTF_8, false, filter, projectDir);
       log.info(
-          "Project directory compression succeeded: {} -> {}.zip", projectPath, downloadFileName);
+          "Project directory compression succeeded: {} -> {}.zip", projectPath, downloadFilename);
     } catch (IOException e) {
       log.error("Project directory compression failed: {}", e.getMessage(), e);
     }

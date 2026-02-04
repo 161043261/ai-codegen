@@ -93,7 +93,7 @@ public class CodeQualityCheckNode {
   }
 
   private static boolean isCodeFile(File file) {
-    var fileName = file.getName().toLowerCase();
-    return CODE_EXTENSIONS.stream().anyMatch(fileName::endsWith);
+    var filename = file.getName().toLowerCase();
+    return CODE_EXTENSIONS.stream().anyMatch(filename::endsWith);
   }
 }
