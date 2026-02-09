@@ -1,0 +1,71 @@
+import { Injectable, Logger } from '@nestjs/common';
+import type { Response } from 'express';
+import * as fs from 'fs';
+import * as path from 'path';
+import archiver, { type Archiver } from 'archiver';
+import { BusinessException } from '../common/exceptions/business.exception';
+import { ErrorCode } from '../common/enums/error-code.enum';
+
+@Injectable()
+export class ProjectDownloadService {
+  private readonly logger = new Logger(ProjectDownloadService.name);
+
+  private readonly excludeDirs = [
+    'node_modules',
+    '.git',
+    'dist',
+    '.next',
+    '.nuxt',
+    'build',
+    'coverage',
+  ];
+
+  async downloadAsZip(
+    projectDir: string,
+    projectName: string,
+    response: Response,
+  ): Promise<void> {
+    if (!fs.existsSync(projectDir)) {
+      throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, '项目目录不存在');
+    }
+
+    response.setHeader('Content-Type', 'application/zip');
+    response.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${encodeURIComponent(projectName)}.zip"`,
+    );
+
+    const archive = archiver('zip', { zlib: { level: 9 } });
+
+    archive.on('error', (err) => {
+      this.logger.error('Archive error', err);
+      throw new BusinessException(ErrorCode.SYSTEM_ERROR, '打包失败');
+    });
+
+    archive.pipe(response);
+
+    this.addDirToArchive(archive, projectDir, '');
+
+    await archive.finalize();
+  }
+
+  private addDirToArchive(
+    archive: Archiver,
+    dir: string,
+    prefix: string,
+  ): void {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (this.excludeDirs.includes(entry.name)) continue;
+
+      const fullPath = path.join(dir, entry.name);
+      const archivePath = prefix ? `${prefix}/${entry.name}` : entry.name;
+
+      if (entry.isDirectory()) {
+        this.addDirToArchive(archive, fullPath, archivePath);
+      } else {
+        archive.file(fullPath, { name: archivePath });
+      }
+    }
+  }
+}
