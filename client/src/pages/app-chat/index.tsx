@@ -1,43 +1,44 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router";
-import { toast } from "sonner";
 import {
   Bot,
-  Info,
-  Download,
   CloudUpload,
-  Send,
-  ExternalLink,
+  Download,
   Edit,
+  ExternalLink,
+  Info,
   Loader2,
+  Send,
   X,
 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import { toast } from "sonner";
+import request from "@/api/request";
+import AppDetailModal from "@/components/app-detail-modal";
+import DeploySuccessModal from "@/components/deploy-success-modal";
+import MarkdownRenderer from "@/components/markdown-renderer";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import MarkdownRenderer from "@/components/markdown-renderer";
-import AppDetailModal from "@/components/app-detail-modal";
-import DeploySuccessModal from "@/components/deploy-success-modal";
-import { useUserStore } from "@/stores/user-store";
-import { useAppVoById } from "@/hooks/queries/use-app-queries";
-import {
-  useDeployAppMutation,
-  useDeleteAppMutation,
-} from "@/hooks/mutations/use-app-mutations";
-import { CodegenTypeEnum, formatCodegenType } from "@/utils/codegen-types";
 import { API_BASE_URL, getStaticPreviewUrl } from "@/config";
-import { VisualEditor, type ElementInfo } from "@/utils/visual-editor";
-import request from "@/api/request";
+import {
+  useDeleteAppMutation,
+  useDeployAppMutation,
+} from "@/hooks/mutations/use-app-mutations";
+import { useAppVoById } from "@/hooks/queries/use-app-queries";
+import { useUserStore } from "@/stores/user-store";
+import { CodegenTypeEnum, formatCodegenType } from "@/utils/codegen-types";
+import { type ElementInfo, VisualEditor } from "@/utils/visual-editor";
 
 interface Message {
+  id: string;
   type: "user" | "ai";
   content: string;
   loading?: boolean;
@@ -63,6 +64,8 @@ export default function AppChatPage() {
   const [userInput, setUserInput] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const messageIdRef = useRef(0);
+  const nextMessageId = () => String(++messageIdRef.current);
 
   // Chat history related
   const [loadingHistory, setLoadingHistory] = useState(false);
@@ -153,6 +156,7 @@ export default function AppChatPage() {
           if (chatHistories.length > 0) {
             const historyMessages: Message[] = chatHistories
               .map((chat) => ({
+                id: nextMessageId(),
                 type: (chat.messageType === "user" ? "user" : "ai") as
                   | "user"
                   | "ai",
@@ -338,6 +342,7 @@ export default function AppChatPage() {
         if (chatHistories.length > 0) {
           const historyMessages: Message[] = chatHistories
             .map((chat) => ({
+              id: nextMessageId(),
               type: (chat.messageType === "user" ? "user" : "ai") as
                 | "user"
                 | "ai",
@@ -354,7 +359,7 @@ export default function AppChatPage() {
 
           // If there are messages, show preview
           if (historyMessages.length >= 2 && app.codegenType) {
-            setPreviewUrl(getStaticPreviewUrl(app.codegenType, appId!));
+            setPreviewUrl(getStaticPreviewUrl(app.codegenType, appId ?? ""));
           }
         }
       }
@@ -368,9 +373,11 @@ export default function AppChatPage() {
           historyRes.data.data.records.length === 0)
       ) {
         // Auto send initial message
+        const userMsgId = nextMessageId();
+        const aiMsgId = nextMessageId();
         const newMessages = [
-          { type: "user" as const, content: app.initPrompt },
-          { type: "ai" as const, content: "", loading: true },
+          { id: userMsgId, type: "user" as const, content: app.initPrompt },
+          { id: aiMsgId, type: "ai" as const, content: "", loading: true },
         ];
         setMessages(newMessages);
 
@@ -394,8 +401,13 @@ export default function AppChatPage() {
             if (content !== undefined && content !== null) {
               fullContent += content;
               setMessages([
-                { type: "user", content: app.initPrompt! },
-                { type: "ai", content: fullContent, loading: false },
+                { id: userMsgId, type: "user", content: app.initPrompt ?? "" },
+                {
+                  id: aiMsgId,
+                  type: "ai",
+                  content: fullContent,
+                  loading: false,
+                },
               ]);
             }
           } catch (error) {
@@ -412,7 +424,7 @@ export default function AppChatPage() {
           setTimeout(async () => {
             await refetchAppInfo();
             if (app.codegenType) {
-              setPreviewUrl(getStaticPreviewUrl(app.codegenType, appId!));
+              setPreviewUrl(getStaticPreviewUrl(app.codegenType, appId ?? ""));
             }
           }, 1000);
         });
@@ -427,8 +439,7 @@ export default function AppChatPage() {
     };
 
     initPage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appId, appInfo?.id]);
+  }, [appId, appInfo, navigate, refetchAppInfo, loginUser.id]);
 
   // Send message
   const sendMessage = async () => {
@@ -453,8 +464,8 @@ export default function AppChatPage() {
 
     const newMessages: Message[] = [
       ...messages,
-      { type: "user", content: message },
-      { type: "ai", content: "", loading: true },
+      { id: nextMessageId(), type: "user", content: message },
+      { id: nextMessageId(), type: "ai", content: "", loading: true },
     ];
     setMessages(newMessages);
     const aiMessageIndex = newMessages.length - 1;
@@ -681,7 +692,7 @@ export default function AppChatPage() {
       {/* Main content area */}
       <div className="flex flex-1 gap-4 overflow-hidden p-2">
         {/* Left chat area */}
-        <div className="flex flex-[2] flex-col overflow-hidden rounded-lg bg-white shadow">
+        <div className="flex flex-2 flex-col overflow-hidden rounded-lg bg-white shadow">
           {/* Messages container */}
           <div
             ref={messagesContainerRef}
@@ -708,11 +719,11 @@ export default function AppChatPage() {
               </div>
             )}
 
-            {messages.map((message, index) => (
-              <div key={index} className="mb-3">
+            {messages.map((message) => (
+              <div key={message.id} className="mb-3">
                 {message.type === "user" ? (
                   <div className="flex items-start justify-end gap-2">
-                    <div className="max-w-[70%] rounded-xl bg-blue-500 px-4 py-3 leading-relaxed break-words text-white">
+                    <div className="max-w-[70%] rounded-xl bg-blue-500 px-4 py-3 leading-relaxed wrap-break-word text-white">
                       {message.content}
                     </div>
                     <Avatar className="h-8 w-8 shrink-0">
@@ -889,6 +900,7 @@ export default function AppChatPage() {
             {previewUrl && (
               <iframe
                 src={previewUrl}
+                title="Website Preview"
                 className="preview-iframe h-full w-full border-none"
                 onLoad={onIframeLoad}
               />

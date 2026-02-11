@@ -1,17 +1,17 @@
+import { ArrowUp } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { ArrowUp } from "lucide-react";
+import AppCard from "@/components/app-card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import AppCard from "@/components/app-card";
-import { useUserStore } from "@/stores/user-store";
-import {
-  useMyAppVoByPage,
-  useFeaturedAppVoByPage,
-} from "@/hooks/queries/use-app-queries";
-import { useAddAppMutation } from "@/hooks/mutations/use-app-mutations";
 import { getDeployUrl } from "@/config";
+import { useAddAppMutation } from "@/hooks/mutations/use-app-mutations";
+import {
+  useFeaturedAppVoByPage,
+  useMyAppVoByPage,
+} from "@/hooks/queries/use-app-queries";
+import { useUserStore } from "@/stores/user-store";
 
 const quickPrompts = [
   {

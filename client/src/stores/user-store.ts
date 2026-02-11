@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { queryClient, queryKeys } from "@/lib/query-client";
 import request from "@/api/request";
+import { queryClient, queryKeys } from "@/lib/query-client";
 
 interface UserState {
   loginUser: API.LoginUserVO;

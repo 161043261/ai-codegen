@@ -1,17 +1,17 @@
+import { Code, Home, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
-import { Code, Home, LogOut, Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUserStore } from "@/stores/user-store";
 import { useLogoutMutation } from "@/hooks/mutations/use-user-mutations";
+import { useUserStore } from "@/stores/user-store";
 
 interface MenuItem {
   key: string;

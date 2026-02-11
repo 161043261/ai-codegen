@@ -1,13 +1,13 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import BasicLayout from "@/layout";
-import HomePage from "@/pages/homepage";
-import UserLoginPage from "@/pages/user-login";
-import UserRegisterPage from "@/pages/user-register";
-import UserManagePage from "@/pages/user-manage";
-import AppManagePage from "@/pages/app-manage";
-import ChatManagePage from "@/pages/chat-manage";
 import AppChatPage from "@/pages/app-chat";
 import AppEditPage from "@/pages/app-edit";
+import AppManagePage from "@/pages/app-manage";
+import ChatManagePage from "@/pages/chat-manage";
+import HomePage from "@/pages/homepage";
+import UserLoginPage from "@/pages/user-login";
+import UserManagePage from "@/pages/user-manage";
+import UserRegisterPage from "@/pages/user-register";
 
 const router = createBrowserRouter([
   {

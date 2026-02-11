@@ -1,12 +1,10 @@
-import { useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
-import { toast } from "sonner";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
@@ -17,17 +15,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
 import UserInfo from "@/components/user-info";
-import { useUserStore } from "@/stores/user-store";
-import { useAppVoById } from "@/hooks/queries/use-app-queries";
+import { getStaticPreviewUrl } from "@/config";
 import {
-  useUpdateAppMutation,
   useUpdateAppByAdminMutation,
+  useUpdateAppMutation,
 } from "@/hooks/mutations/use-app-mutations";
+import { useAppVoById } from "@/hooks/queries/use-app-queries";
+import { useUserStore } from "@/stores/user-store";
 import { formatCodegenType } from "@/utils/codegen-types";
 import { formatTime } from "@/utils/time";
-import { getStaticPreviewUrl } from "@/config";
 
 const formSchema = z.object({
   appName: z
@@ -222,7 +222,7 @@ export default function AppEditPage() {
                               <img
                                 src={field.value}
                                 alt="Cover preview"
-                                className="h-auto max-w-[200px] rounded"
+                                className="h-auto max-w-50 rounded"
                                 onError={(e) => {
                                   (e.target as HTMLImageElement).style.display =
                                     "none";
@@ -246,7 +246,7 @@ export default function AppEditPage() {
                               type="number"
                               min={0}
                               max={99}
-                              className="w-[200px]"
+                              className="w-50"
                               value={field.value ?? 0}
                               onChange={(e) =>
                                 field.onChange(Number(e.target.value) || 0)

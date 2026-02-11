@@ -4,7 +4,7 @@ import { queryKeys } from "@/lib/query-client";
 
 export function useAppVoById(id: number | undefined) {
   return useQuery({
-    queryKey: queryKeys.app.byId(id!),
+    queryKey: queryKeys.app.byId(id ?? 0),
     queryFn: async () => {
       const res = await request<API.BaseResponseAppVO>("/app/get/vo", {
         method: "GET",

@@ -15,17 +15,13 @@ const request = axios.create({
 
 // Request interceptor
 request.interceptors.request.use(
-  function (config) {
-    return config;
-  },
-  function (error) {
-    return Promise.reject(error);
-  },
+  (config) => config,
+  (error) => Promise.reject(error),
 );
 
 // Response interceptor
 request.interceptors.response.use(
-  function (response) {
+  (response) => {
     const { data } = response;
     // Not logged in
     if (data.code === 40100) {
@@ -39,9 +35,7 @@ request.interceptors.response.use(
     }
     return response;
   },
-  function (error) {
-    return Promise.reject(error);
-  },
+  (error) => Promise.reject(error),
 );
 
 export default request;

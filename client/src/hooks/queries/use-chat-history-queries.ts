@@ -7,7 +7,7 @@ export function useAppChatHistory(
   params?: { pageSize?: number; lastCreateTime?: string },
 ) {
   return useQuery({
-    queryKey: [...queryKeys.chatHistory.byApp(appId!), params],
+    queryKey: [...queryKeys.chatHistory.byApp(appId ?? 0), params],
     queryFn: async () => {
       const res = await request<API.BaseResponsePageChatHistory>(
         `/chat-history/app/${appId}`,

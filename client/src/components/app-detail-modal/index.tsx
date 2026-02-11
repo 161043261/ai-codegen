@@ -1,13 +1,5 @@
 import { Edit, Trash2 } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -18,9 +10,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import UserInfo from "../user-info";
-import { formatTime } from "@/utils/time";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { formatCodegenType } from "@/utils/codegen-types";
+import { formatTime } from "@/utils/time";
+import UserInfo from "../user-info";
 
 interface Props {
   open: boolean;
@@ -41,7 +41,7 @@ export default function AppDetailModal({
 }: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-125">
         <DialogHeader>
           <DialogTitle>App Details</DialogTitle>
         </DialogHeader>

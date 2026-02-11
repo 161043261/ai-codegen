@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
-import GlobalHeader from "@/components/global-header";
 import GlobalFooter from "@/components/global-footer";
+import GlobalHeader from "@/components/global-header";
 
 export default function BasicLayout() {
   return (

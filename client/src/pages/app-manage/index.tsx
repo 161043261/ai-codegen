@@ -1,10 +1,21 @@
+import { Edit, Search, Star, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { Search, Edit, Star, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -26,28 +37,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import UserInfo from "@/components/user-info";
-import { formatTime } from "@/utils/time";
-import {
-  formatCodegenType,
-  CODE_GEN_TYPE_OPTIONS,
-} from "@/utils/codegen-types";
-import { useAdminAppVoByPage } from "@/hooks/queries/use-app-queries";
 import {
   useDeleteAppByAdminMutation,
   useUpdateAppByAdminMutation,
 } from "@/hooks/mutations/use-app-mutations";
+import { useAdminAppVoByPage } from "@/hooks/queries/use-app-queries";
+import {
+  CODE_GEN_TYPE_OPTIONS,
+  formatCodegenType,
+} from "@/utils/codegen-types";
+import { formatTime } from "@/utils/time";
 
 export default function AppManagePage() {
   const navigate = useNavigate();
@@ -197,7 +197,7 @@ export default function AppManagePage() {
             {data.map((app) => (
               <TableRow key={app.id}>
                 <TableCell>{app.id}</TableCell>
-                <TableCell className="max-w-[150px] truncate">
+                <TableCell className="max-w-37.5 truncate">
                   {app.appName}
                 </TableCell>
                 <TableCell>
@@ -217,7 +217,7 @@ export default function AppManagePage() {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span className="block max-w-[200px] cursor-default truncate">
+                        <span className="block max-w-50 cursor-default truncate">
                           {app.initPrompt}
                         </span>
                       </TooltipTrigger>

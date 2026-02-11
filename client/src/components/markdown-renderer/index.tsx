@@ -1,19 +1,19 @@
 import ReactMarkdown from "react-markdown";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
+import css from "react-syntax-highlighter/dist/esm/languages/prism/css";
+import java from "react-syntax-highlighter/dist/esm/languages/prism/java";
+import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
+import json from "react-syntax-highlighter/dist/esm/languages/prism/json";
+import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
+import markdown from "react-syntax-highlighter/dist/esm/languages/prism/markdown";
+import html from "react-syntax-highlighter/dist/esm/languages/prism/markup";
+import python from "react-syntax-highlighter/dist/esm/languages/prism/python";
+import sql from "react-syntax-highlighter/dist/esm/languages/prism/sql";
 import tsx from "react-syntax-highlighter/dist/esm/languages/prism/tsx";
 import typescript from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
-import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
-import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
-import css from "react-syntax-highlighter/dist/esm/languages/prism/css";
-import json from "react-syntax-highlighter/dist/esm/languages/prism/json";
-import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
-import markdown from "react-syntax-highlighter/dist/esm/languages/prism/markdown";
-import python from "react-syntax-highlighter/dist/esm/languages/prism/python";
-import java from "react-syntax-highlighter/dist/esm/languages/prism/java";
-import sql from "react-syntax-highlighter/dist/esm/languages/prism/sql";
 import yaml from "react-syntax-highlighter/dist/esm/languages/prism/yaml";
-import html from "react-syntax-highlighter/dist/esm/languages/prism/markup";
+import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 SyntaxHighlighter.registerLanguage("tsx", tsx);
 SyntaxHighlighter.registerLanguage("typescript", typescript);
@@ -37,7 +37,7 @@ interface Props {
 
 export default function MarkdownRenderer({ content }: Props) {
   return (
-    <div className="markdown-content leading-relaxed break-words text-gray-800">
+    <div className="markdown-content leading-relaxed wrap-break-word text-gray-800">
       <ReactMarkdown
         components={{
           code({ className, children, ...props }) {
@@ -55,7 +55,7 @@ export default function MarkdownRenderer({ content }: Props) {
                 style={oneLight}
                 language={match[1]}
                 PreTag="div"
-                className="rounded-lg border border-gray-200 !bg-gray-50"
+                className="rounded-lg border border-gray-200 bg-gray-50!"
               >
                 {String(children).replace(/\n$/, "")}
               </SyntaxHighlighter>

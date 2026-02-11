@@ -1,19 +1,7 @@
-import { useState } from "react";
-import { toast } from "sonner";
 import dayjs from "dayjs";
 import { Search, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useState } from "react";
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,8 +13,20 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useUserVoByPage } from "@/hooks/queries/use-user-queries";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useDeleteUserMutation } from "@/hooks/mutations/use-user-mutations";
+import { useUserVoByPage } from "@/hooks/queries/use-user-queries";
 
 export default function UserManagePage() {
   const [searchParams, setSearchParams] = useState({
@@ -128,7 +128,7 @@ export default function UserManagePage() {
                   </AvatarFallback>
                 </Avatar>
               </TableCell>
-              <TableCell className="max-w-[200px] truncate">
+              <TableCell className="max-w-50 truncate">
                 {user.userProfile}
               </TableCell>
               <TableCell>

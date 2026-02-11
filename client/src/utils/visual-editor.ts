@@ -148,10 +148,11 @@ export class VisualEditor {
 
     const waitForIframeLoad = () => {
       try {
-        if (this.iframe!.contentWindow && this.iframe!.contentDocument) {
-          if (
-            this.iframe!.contentDocument.getElementById("visual-edit-script")
-          ) {
+        const iframe = this.iframe;
+        if (!iframe) return;
+
+        if (iframe.contentWindow && iframe.contentDocument) {
+          if (iframe.contentDocument.getElementById("visual-edit-script")) {
             this.sendMessageToIframe({
               type: "TOGGLE_EDIT_MODE",
               editMode: true,
@@ -160,11 +161,10 @@ export class VisualEditor {
           }
 
           const script = this.generateEditScript();
-          const scriptElement =
-            this.iframe!.contentDocument.createElement("script");
+          const scriptElement = iframe.contentDocument.createElement("script");
           scriptElement.id = "visual-edit-script";
           scriptElement.textContent = script;
-          this.iframe!.contentDocument.head.appendChild(scriptElement);
+          iframe.contentDocument.head.appendChild(scriptElement);
         } else {
           setTimeout(waitForIframeLoad, 100);
         }
