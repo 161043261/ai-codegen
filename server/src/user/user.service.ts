@@ -11,6 +11,7 @@ import { UserQueryDto } from './dto/user-query.dto';
 import { LoginUserVo, UserVo } from './vo/user.vo';
 import { BusinessException } from '../common/exceptions/business.exception';
 import { ErrorCode } from '../common/enums/error-code.js';
+import { UserRole } from '../common/enums/user-role';
 import { USER_LOGIN_STATE } from '../common/constants';
 import { md5Hash } from '../common/utils/crypto.util';
 import type { FindOptionsWhere, FindOptionsOrder } from 'typeorm';
@@ -114,7 +115,7 @@ export class UserService {
       userPassword: encryptPassword,
       username: dto.username,
       userAvatar: dto.userAvatar,
-      userRole: dto.userRole || 'user',
+      userRole: dto.userRole ?? UserRole.USER,
     });
     const saved = await this.userRepository.save(user);
     return String(saved.id);

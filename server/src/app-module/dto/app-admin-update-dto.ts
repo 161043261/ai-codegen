@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { CodegenType } from '../../common/enums';
 
@@ -17,7 +23,7 @@ export class AppAdminUpdateDto {
   appCover?: string;
 
   @IsOptional()
-  @IsString()
+  @IsEnum(CodegenType)
   codegenType?: CodegenType;
 
   @IsOptional()

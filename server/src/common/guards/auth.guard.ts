@@ -3,6 +3,8 @@ import {
   CanActivate,
   ExecutionContext,
   SetMetadata,
+  UseGuards,
+  applyDecorators,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import type { Request } from 'express';
@@ -15,20 +17,11 @@ export const AUTH_KEY = 'auth_check';
 export const MUST_ROLE_KEY = 'must_role';
 
 export const AuthCheck = (mustRole?: UserRole) => {
-  return (
-    target: object,
-    key: string,
-    descriptor: TypedPropertyDescriptor<unknown>,
-  ) => {
-    SetMetadata(AUTH_KEY, true)(target, key, descriptor as PropertyDescriptor);
-    if (mustRole) {
-      SetMetadata(MUST_ROLE_KEY, mustRole)(
-        target,
-        key,
-        descriptor as PropertyDescriptor,
-      );
-    }
-  };
+  const decorators = [SetMetadata(AUTH_KEY, true), UseGuards(AuthGuard)];
+  if (mustRole) {
+    decorators.push(SetMetadata(MUST_ROLE_KEY, mustRole));
+  }
+  return applyDecorators(...decorators);
 };
 
 @Injectable()

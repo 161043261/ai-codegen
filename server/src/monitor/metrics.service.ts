@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import promClient from 'prom-client';
 
 @Injectable()
 export class MetricsService {
-  private readonly logger = new Logger(MetricsService.name);
+  // private readonly logger = new Logger(MetricsService.name);
   private readonly registry: promClient.Registry;
 
   readonly aiRequestCounter: promClient.Counter;

@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsNumber } from 'class-validator';
+import { IsOptional, IsString, IsNumber, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PageRequestDto } from '../../common/dto/page-request-dto';
 import { CodegenType } from '../../common/enums';
@@ -14,7 +14,7 @@ export class AppQueryDto extends PageRequestDto {
   appName?: string;
 
   @IsOptional()
-  @IsString()
+  @IsEnum(CodegenType)
   codegenType?: CodegenType;
 
   @IsOptional()

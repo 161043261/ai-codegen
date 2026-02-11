@@ -1,10 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import {
   HumanMessage,
   SystemMessage,
   AIMessage,
   ToolMessage,
   BaseMessage,
+  ToolCall,
 } from '@langchain/core/messages';
 import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { AiModelConfigService } from './ai-model-config.service';
@@ -25,7 +26,7 @@ interface CachedAiService {
 
 @Injectable()
 export class AiCodegenService {
-  private readonly logger = new Logger(AiCodegenService.name);
+  // private readonly logger = new Logger(AiCodegenService.name);
   private readonly serviceCache = new Map<string, CachedAiService>();
   private readonly CACHE_TTL = 30 * 60 * 1000; // 30 min
   private readonly MAX_MESSAGES = 20;
@@ -119,11 +120,7 @@ export class AiCodegenService {
 
       const stream = await modelWithTools.stream(currentMessages);
       let fullContent = '';
-      const toolCalls: {
-        id: string;
-        name: string;
-        args: Record<string, unknown>;
-      }[] = [];
+      const toolCalls: ToolCall[] = [];
 
       for await (const chunk of stream) {
         const content =
@@ -157,7 +154,7 @@ export class AiCodegenService {
         const matchedTool = tools.find((t) => t.name === tc.name);
         if (matchedTool) {
           onChunk(`\n[Tool: ${tc.name}] ${JSON.stringify(tc.args)}\n`);
-          // TODO Unsafe assignment of an `any` value.
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           const result = await matchedTool.invoke(tc.args);
           const resultStr =
             typeof result === 'string' ? result : JSON.stringify(result);
@@ -165,7 +162,7 @@ export class AiCodegenService {
           currentMessages.push(
             new ToolMessage({
               content: resultStr,
-              tool_call_id: tc.id,
+              tool_call_id: tc.id ?? Date.now().toString(),
             }),
           );
 

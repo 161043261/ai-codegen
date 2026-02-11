@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { UserRole } from '../../common/enums';
 
@@ -21,6 +27,6 @@ export class UserUpdateDto {
   userProfile?: string;
 
   @IsOptional()
-  @IsString()
+  @IsEnum(UserRole)
   userRole?: UserRole;
 }
