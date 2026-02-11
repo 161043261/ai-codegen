@@ -1,3 +1,6 @@
+/**
+ * @deprecated Use hooks from `@/hooks/queries/use-user-queries` and `@/hooks/mutations/use-user-mutations` instead.
+ */
 import request from "@/api/request";
 
 /** Add user POST /user/add */

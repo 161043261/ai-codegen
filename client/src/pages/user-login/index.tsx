@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -22,7 +21,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useUserStore } from "@/stores/user-store";
-import { userLogin } from "@/api/user";
+import { useLoginMutation } from "@/hooks/mutations/use-user-mutations";
 
 const formSchema = z.object({
   userAccount: z.string().min(1, "Please enter account"),
@@ -34,7 +33,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function UserLoginPage() {
   const navigate = useNavigate();
   const { fetchLoginUser } = useUserStore();
-  const [loading, setLoading] = useState(false);
+  const loginMutation = useLoginMutation();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -44,23 +43,21 @@ export default function UserLoginPage() {
     },
   });
 
-  const onSubmit = async (values: FormValues) => {
-    setLoading(true);
-    try {
-      const res = await userLogin(values);
-      if (res.data.code === 0 && res.data.data) {
-        await fetchLoginUser();
-        toast.success("Login successful");
-        navigate("/", { replace: true });
-      } else {
-        toast.error("Login failed: " + res.data.message);
-      }
-    } catch (error) {
-      console.error("Login failed:", error);
-      toast.error("Login failed, please retry");
-    } finally {
-      setLoading(false);
-    }
+  const onSubmit = (values: FormValues) => {
+    loginMutation.mutate(values, {
+      onSuccess: async (data) => {
+        if (data.code === 0 && data.data) {
+          await fetchLoginUser();
+          toast.success("Login successful");
+          navigate("/", { replace: true });
+        } else {
+          toast.error("Login failed: " + data.message);
+        }
+      },
+      onError: () => {
+        toast.error("Login failed, please retry");
+      },
+    });
   };
 
   return (
@@ -116,8 +113,12 @@ export default function UserLoginPage() {
                 </Link>
               </div>
 
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Logging in..." : "Login"}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loginMutation.isPending}
+              >
+                {loginMutation.isPending ? "Logging in..." : "Login"}
               </Button>
             </form>
           </Form>

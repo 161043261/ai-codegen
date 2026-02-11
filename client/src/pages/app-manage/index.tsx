@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { Search, Edit, Star, Trash2 } from "lucide-react";
@@ -43,16 +43,14 @@ import {
   formatCodegenType,
   CODE_GEN_TYPE_OPTIONS,
 } from "@/utils/codegen-types";
+import { useAdminAppVoByPage } from "@/hooks/queries/use-app-queries";
 import {
-  listAppVoByPageByAdmin,
-  deleteAppByAdmin,
-  updateAppByAdmin,
-} from "@/api/app";
+  useDeleteAppByAdminMutation,
+  useUpdateAppByAdminMutation,
+} from "@/hooks/mutations/use-app-mutations";
 
 export default function AppManagePage() {
   const navigate = useNavigate();
-  const [data, setData] = useState<API.AppVO[]>([]);
-  const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useState({
     pageNum: 1,
     pageSize: 10,
@@ -61,71 +59,68 @@ export default function AppManagePage() {
     codegenType: "",
   });
 
-  const fetchData = async () => {
-    try {
-      const res = await listAppVoByPageByAdmin({
-        ...searchParams,
-        userId: searchParams.userId ? Number(searchParams.userId) : undefined,
-        codegenType: searchParams.codegenType || undefined,
-      });
-      if (res.data.data) {
-        setData(res.data.data.records ?? []);
-        setTotal(res.data.data.totalRow ?? 0);
-      } else {
-        toast.error("Failed to fetch data: " + res.data.message);
-      }
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-      toast.error("Failed to fetch data");
-    }
+  const queryParams = {
+    pageNum: searchParams.pageNum,
+    pageSize: searchParams.pageSize,
+    appName: searchParams.appName || undefined,
+    userId: searchParams.userId ? Number(searchParams.userId) : undefined,
+    codegenType: searchParams.codegenType || undefined,
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [searchParams.pageNum, searchParams.pageSize]);
+  const { data: pageData } = useAdminAppVoByPage(queryParams);
+  const data = pageData?.records ?? [];
+  const total = pageData?.totalRow ?? 0;
+
+  const updateAppByAdminMutation = useUpdateAppByAdminMutation();
+  const deleteAppByAdminMutation = useDeleteAppByAdminMutation();
 
   const handleSearch = () => {
     setSearchParams((prev) => ({ ...prev, pageNum: 1 }));
-    fetchData();
   };
 
   const editApp = (app: API.AppVO) => {
     navigate(`/app/edit/${app.id}`);
   };
 
-  const toggleFeatured = async (app: API.AppVO) => {
+  const toggleFeatured = (app: API.AppVO) => {
     if (!app.id) return;
     const newPriority = app.priority === 99 ? 0 : 99;
-    try {
-      const res = await updateAppByAdmin({ id: app.id, priority: newPriority });
-      if (res.data.code === 0) {
-        toast.success(
-          newPriority === 99 ? "Set as featured" : "Removed from featured",
-        );
-        fetchData();
-      } else {
-        toast.error("Operation failed: " + res.data.message);
-      }
-    } catch (error) {
-      console.error("Operation failed:", error);
-      toast.error("Operation failed");
-    }
+    updateAppByAdminMutation.mutate(
+      { id: app.id, priority: newPriority },
+      {
+        onSuccess: (res) => {
+          if (res.code === 0) {
+            toast.success(
+              newPriority === 99 ? "Set as featured" : "Removed from featured",
+            );
+          } else {
+            toast.error("Operation failed: " + res.message);
+          }
+        },
+        onError: () => {
+          toast.error("Operation failed");
+        },
+      },
+    );
   };
 
-  const deleteApp = async (id: number | undefined) => {
+  const deleteApp = (id: number | undefined) => {
     if (!id) return;
-    try {
-      const res = await deleteAppByAdmin({ id });
-      if (res.data.code === 0) {
-        toast.success("Deleted successfully");
-        fetchData();
-      } else {
-        toast.error("Delete failed: " + res.data.message);
-      }
-    } catch (error) {
-      console.error("Delete failed:", error);
-      toast.error("Delete failed");
-    }
+    deleteAppByAdminMutation.mutate(
+      { id },
+      {
+        onSuccess: (res) => {
+          if (res.code === 0) {
+            toast.success("Deleted successfully");
+          } else {
+            toast.error("Delete failed: " + res.message);
+          }
+        },
+        onError: () => {
+          toast.error("Delete failed");
+        },
+      },
+    );
   };
 
   return (

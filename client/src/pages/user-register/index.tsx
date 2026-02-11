@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -21,7 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { userRegister } from "@/api/user";
+import { useRegisterMutation } from "@/hooks/mutations/use-user-mutations";
 
 const formSchema = z
   .object({
@@ -38,7 +37,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function UserRegisterPage() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const registerMutation = useRegisterMutation();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -49,22 +48,20 @@ export default function UserRegisterPage() {
     },
   });
 
-  const onSubmit = async (values: FormValues) => {
-    setLoading(true);
-    try {
-      const res = await userRegister(values);
-      if (res.data.code === 0) {
-        toast.success("Registration successful");
-        navigate("/user/login", { replace: true });
-      } else {
-        toast.error("Registration failed: " + res.data.message);
-      }
-    } catch (error) {
-      console.error("Registration failed:", error);
-      toast.error("Registration failed, please retry");
-    } finally {
-      setLoading(false);
-    }
+  const onSubmit = (values: FormValues) => {
+    registerMutation.mutate(values, {
+      onSuccess: (data) => {
+        if (data.code === 0) {
+          toast.success("Registration successful");
+          navigate("/user/login", { replace: true });
+        } else {
+          toast.error("Registration failed: " + data.message);
+        }
+      },
+      onError: () => {
+        toast.error("Registration failed, please retry");
+      },
+    });
   };
 
   return (
@@ -139,8 +136,12 @@ export default function UserRegisterPage() {
                 </Link>
               </div>
 
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Registering..." : "Register"}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={registerMutation.isPending}
+              >
+                {registerMutation.isPending ? "Registering..." : "Register"}
               </Button>
             </form>
           </Form>

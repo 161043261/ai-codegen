@@ -1,3 +1,7 @@
+/**
+ * @deprecated Use hooks from `@/hooks/queries` and `@/hooks/mutations` instead.
+ * This module is kept for backward compatibility only.
+ */
 import axios from "axios";
 import { toast } from "sonner";
 import { API_BASE_URL } from "@/config";

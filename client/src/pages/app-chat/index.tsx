@@ -27,12 +27,11 @@ import MarkdownRenderer from "@/components/markdown-renderer";
 import AppDetailModal from "@/components/app-detail-modal";
 import DeploySuccessModal from "@/components/deploy-success-modal";
 import { useUserStore } from "@/stores/user-store";
+import { useAppVoById } from "@/hooks/queries/use-app-queries";
 import {
-  getAppVoById,
-  deployApp as deployAppApi,
-  deleteApp as deleteAppApi,
-} from "@/api/app";
-import { listAppChatHistory } from "@/api/chat-history";
+  useDeployAppMutation,
+  useDeleteAppMutation,
+} from "@/hooks/mutations/use-app-mutations";
 import { CodegenTypeEnum, formatCodegenType } from "@/utils/codegen-types";
 import { API_BASE_URL, getStaticPreviewUrl } from "@/config";
 import { VisualEditor, type ElementInfo } from "@/utils/visual-editor";
@@ -50,9 +49,14 @@ export default function AppChatPage() {
   const navigate = useNavigate();
   const { loginUser } = useUserStore();
 
-  // App info
-  const [appInfo, setAppInfo] = useState<API.AppVO>();
+  // App info via react-query
   const appId = id;
+  const numericAppId = id ? Number(id) : undefined;
+  const { data: appInfo, refetch: refetchAppInfo } = useAppVoById(numericAppId);
+
+  // Mutations
+  const deployAppMutation = useDeployAppMutation();
+  const deleteAppMutation = useDeleteAppMutation();
 
   // Chat related
   const [messages, setMessages] = useState<Message[]>([]);
@@ -69,7 +73,6 @@ export default function AppChatPage() {
   const [previewUrl, setPreviewUrl] = useState("");
 
   // Deploy related
-  const [deploying, setDeploying] = useState(false);
   const [deployModalVisible, setDeployModalVisible] = useState(false);
   const [deployUrl, setDeployUrl] = useState("");
 
@@ -134,15 +137,17 @@ export default function AppChatPage() {
       setLoadingHistory(true);
 
       try {
-        const params: API.listAppChatHistoryParams = {
-          appId: Number(appId),
-          pageSize: 10,
+        const queryParams: Record<string, string> = {
+          pageSize: "10",
         };
         if (isLoadMore && lastCreateTime) {
-          params.lastCreateTime = lastCreateTime;
+          queryParams.lastCreateTime = lastCreateTime;
         }
 
-        const res = await listAppChatHistory(params);
+        const res = await request<API.BaseResponsePageChatHistory>(
+          `/chatHistory/app/${appId}`,
+          { method: "GET", params: queryParams },
+        );
         if (res.data.code === 0 && res.data.data) {
           const chatHistories = res.data.data.records || [];
           if (chatHistories.length > 0) {
@@ -230,10 +235,7 @@ export default function AppChatPage() {
 
           // Delay update preview
           setTimeout(async () => {
-            const res = await getAppVoById({ id: Number(appId) });
-            if (res.data.code === 0 && res.data.data) {
-              setAppInfo(res.data.data);
-            }
+            await refetchAppInfo();
             updatePreview();
           }, 1000);
         });
@@ -276,10 +278,7 @@ export default function AppChatPage() {
             eventSource.close();
 
             setTimeout(async () => {
-              const res = await getAppVoById({ id: Number(appId) });
-              if (res.data.code === 0 && res.data.data) {
-                setAppInfo(res.data.data);
-              }
+              await refetchAppInfo();
               updatePreview();
             }, 1000);
           } else {
@@ -313,45 +312,26 @@ export default function AppChatPage() {
         setIsGenerating(false);
       }
     },
-    [appId, isGenerating, scrollToBottom, updatePreview],
+    [appId, isGenerating, scrollToBottom, updatePreview, refetchAppInfo],
   );
 
-  // Fetch app info
-  const fetchAppInfo = useCallback(async () => {
+  // Initial load - triggered when appInfo is available from react-query
+  useEffect(() => {
     if (!appId) {
       toast.error("App ID does not exist");
       navigate("/");
       return;
     }
+    if (!appInfo) return;
 
-    try {
-      const res = await getAppVoById({ id: Number(appId) });
-      if (res.data.code === 0 && res.data.data) {
-        setAppInfo(res.data.data);
-        return res.data.data;
-      } else {
-        toast.error("Failed to get app info");
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("Failed to get app info:", error);
-      toast.error("Failed to get app info");
-      navigate("/");
-    }
-  }, [appId, navigate]);
-
-  // Initial load
-  useEffect(() => {
     const initPage = async () => {
-      const app = await fetchAppInfo();
-      if (!app) return;
+      const app = appInfo;
 
       // Load chat history
-      const params: API.listAppChatHistoryParams = {
-        appId: Number(appId),
-        pageSize: 10,
-      };
-      const historyRes = await listAppChatHistory(params);
+      const historyRes = await request<API.BaseResponsePageChatHistory>(
+        `/chatHistory/app/${appId}`,
+        { method: "GET", params: { pageSize: "10" } },
+      );
 
       if (historyRes.data.code === 0 && historyRes.data.data) {
         const chatHistories = historyRes.data.data.records || [];
@@ -430,14 +410,9 @@ export default function AppChatPage() {
           eventSource.close();
 
           setTimeout(async () => {
-            const res = await getAppVoById({ id: Number(appId) });
-            if (res.data.code === 0 && res.data.data) {
-              setAppInfo(res.data.data);
-              if (res.data.data.codegenType) {
-                setPreviewUrl(
-                  getStaticPreviewUrl(res.data.data.codegenType, appId!),
-                );
-              }
+            await refetchAppInfo();
+            if (app.codegenType) {
+              setPreviewUrl(getStaticPreviewUrl(app.codegenType, appId!));
             }
           }, 1000);
         });
@@ -452,7 +427,8 @@ export default function AppChatPage() {
     };
 
     initPage();
-  }, [appId, loginUser.id, fetchAppInfo]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appId, appInfo?.id]);
 
   // Send message
   const sendMessage = async () => {
@@ -538,29 +514,30 @@ export default function AppChatPage() {
   };
 
   // Deploy app
-  const deployApp = async () => {
+  const deploying = deployAppMutation.isPending;
+  const deployApp = () => {
     if (!appId) {
       toast.error("App ID does not exist");
       return;
     }
 
-    setDeploying(true);
-    try {
-      const res = await deployAppApi({ appId: Number(appId) });
-
-      if (res.data.code === 0 && res.data.data) {
-        setDeployUrl(res.data.data);
-        setDeployModalVisible(true);
-        toast.success("Deploy successful");
-      } else {
-        toast.error("Deploy failed: " + res.data.message);
-      }
-    } catch (error) {
-      console.error("Deploy failed:", error);
-      toast.error("Deploy failed, please try again");
-    } finally {
-      setDeploying(false);
-    }
+    deployAppMutation.mutate(
+      { appId: Number(appId) },
+      {
+        onSuccess: (res) => {
+          if (res.code === 0 && res.data) {
+            setDeployUrl(res.data);
+            setDeployModalVisible(true);
+            toast.success("Deploy successful");
+          } else {
+            toast.error("Deploy failed: " + res.message);
+          }
+        },
+        onError: () => {
+          toast.error("Deploy failed, please try again");
+        },
+      },
+    );
   };
 
   // Open preview in new tab
@@ -596,22 +573,26 @@ export default function AppChatPage() {
   };
 
   // Delete app
-  const deleteApp = async () => {
+  const deleteApp = () => {
     if (!appInfo?.id) return;
 
-    try {
-      const res = await deleteAppApi({ id: appInfo.id });
-      if (res.data.code === 0) {
-        toast.success("Delete successful");
-        setAppDetailVisible(false);
-        navigate("/");
-      } else {
-        toast.error("Delete failed: " + res.data.message);
-      }
-    } catch (error) {
-      console.error("Delete failed:", error);
-      toast.error("Delete failed");
-    }
+    deleteAppMutation.mutate(
+      { id: appInfo.id },
+      {
+        onSuccess: (res) => {
+          if (res.code === 0) {
+            toast.success("Delete successful");
+            setAppDetailVisible(false);
+            navigate("/");
+          } else {
+            toast.error("Delete failed: " + res.message);
+          }
+        },
+        onError: () => {
+          toast.error("Delete failed");
+        },
+      },
+    );
   };
 
   // Toggle edit mode
@@ -920,7 +901,7 @@ export default function AppChatPage() {
       <AppDetailModal
         open={appDetailVisible}
         onOpenChange={setAppDetailVisible}
-        app={appInfo}
+        app={appInfo ?? undefined}
         showActions={isOwner || isAdmin}
         onEdit={editApp}
         onDelete={deleteApp}

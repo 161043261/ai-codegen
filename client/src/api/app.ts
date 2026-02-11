@@ -1,3 +1,6 @@
+/**
+ * @deprecated Use hooks from `@/hooks/queries/use-app-queries` and `@/hooks/mutations/use-app-mutations` instead.
+ */
 import request from "@/api/request";
 
 /** Add app POST /app/add */

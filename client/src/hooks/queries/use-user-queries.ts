@@ -1,0 +1,47 @@
+import { useQuery } from "@tanstack/react-query";
+import request from "@/api/request";
+import { queryKeys } from "@/lib/query-client";
+
+export function useLoginUser() {
+  return useQuery({
+    queryKey: queryKeys.user.loginUser,
+    queryFn: async () => {
+      const res = await request<API.BaseResponseLoginUserVO>(
+        "/user/get/login",
+        {
+          method: "GET",
+        },
+      );
+      if (res.data.code === 0 && res.data.data) {
+        return res.data.data;
+      }
+      return null;
+    },
+    retry: false,
+  });
+}
+
+export function useUserVoByPage(params: {
+  pageNum: number;
+  pageSize: number;
+  userAccount?: string;
+  userName?: string;
+}) {
+  return useQuery({
+    queryKey: queryKeys.user.listPage(params),
+    queryFn: async () => {
+      const res = await request<API.BaseResponsePageUserVO>(
+        "/user/list/page/vo",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          data: params,
+        },
+      );
+      if (res.data.code === 0 && res.data.data) {
+        return res.data.data;
+      }
+      return { records: [], totalRow: 0 } as API.PageUserVO;
+    },
+  });
+}

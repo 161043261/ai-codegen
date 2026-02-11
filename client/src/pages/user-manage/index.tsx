@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import dayjs from "dayjs";
 import { Search, Trash2 } from "lucide-react";
@@ -25,11 +25,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { deleteUser, listUserVoByPage } from "@/api/user";
+import { useUserVoByPage } from "@/hooks/queries/use-user-queries";
+import { useDeleteUserMutation } from "@/hooks/mutations/use-user-mutations";
 
 export default function UserManagePage() {
-  const [data, setData] = useState<API.UserVO[]>([]);
-  const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useState({
     pageNum: 1,
     pageSize: 10,
@@ -37,44 +36,33 @@ export default function UserManagePage() {
     userName: "",
   });
 
-  const fetchData = useCallback(async () => {
-    try {
-      const res = await listUserVoByPage(searchParams);
-      if (res.data.data) {
-        setData(res.data.data.records ?? []);
-        setTotal(res.data.data.totalRow ?? 0);
-      } else {
-        toast.error("Failed to fetch data: " + res.data.message);
-      }
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-      toast.error("Failed to fetch data");
-    }
-  }, [searchParams]);
+  const { data: pageData } = useUserVoByPage(searchParams);
+  const data = pageData?.records ?? [];
+  const total = pageData?.totalRow ?? 0;
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const deleteUserMutation = useDeleteUserMutation();
 
   const handleSearch = () => {
     setSearchParams((prev) => ({ ...prev, pageNum: 1 }));
-    fetchData();
   };
 
-  const handleDelete = async (id: number | undefined) => {
+  const handleDelete = (id: number | undefined) => {
     if (!id) return;
-    try {
-      const res = await deleteUser({ id });
-      if (res.data.code === 0) {
-        toast.success("Deleted successfully");
-        fetchData();
-      } else {
-        toast.error("Delete failed");
-      }
-    } catch (error) {
-      console.error("Delete failed:", error);
-      toast.error("Delete failed");
-    }
+    deleteUserMutation.mutate(
+      { id },
+      {
+        onSuccess: (res) => {
+          if (res.code === 0) {
+            toast.success("Deleted successfully");
+          } else {
+            toast.error("Delete failed");
+          }
+        },
+        onError: () => {
+          toast.error("Delete failed");
+        },
+      },
+    );
   };
 
   return (

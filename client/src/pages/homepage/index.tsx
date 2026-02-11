@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { ArrowUp } from "lucide-react";
@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import AppCard from "@/components/app-card";
 import { useUserStore } from "@/stores/user-store";
-import { addApp, listMyAppVoByPage, listGoodAppVoByPage } from "@/api/app";
+import {
+  useMyAppVoByPage,
+  useFeaturedAppVoByPage,
+} from "@/hooks/queries/use-app-queries";
+import { useAddAppMutation } from "@/hooks/mutations/use-app-mutations";
 import { getDeployUrl } from "@/config";
 
 const quickPrompts = [
@@ -36,65 +40,20 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { loginUser } = useUserStore();
   const [userPrompt, setUserPrompt] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [myApps, setMyApps] = useState<API.AppVO[]>([]);
-  const [myAppsPage, setMyAppsPage] = useState({
-    current: 1,
+
+  const myAppsQuery = useMyAppVoByPage(
+    { pageNum: 1, pageSize: 6, sortField: "createTime", sortOrder: "desc" },
+    !!loginUser?.id,
+  );
+
+  const featuredAppsQuery = useFeaturedAppVoByPage({
+    pageNum: 1,
     pageSize: 6,
-    total: 0,
-  });
-  const [featuredApps, setFeaturedApps] = useState<API.AppVO[]>([]);
-  const [featuredAppsPage, setFeaturedAppsPage] = useState({
-    current: 1,
-    pageSize: 6,
-    total: 0,
+    sortField: "createTime",
+    sortOrder: "desc",
   });
 
-  const loadMyApps = useCallback(async () => {
-    if (!loginUser?.id) return;
-    try {
-      const res = await listMyAppVoByPage({
-        pageNum: myAppsPage.current,
-        pageSize: myAppsPage.pageSize,
-        sortField: "createTime",
-        sortOrder: "desc",
-      });
-      if (res.data.code === 0 && res.data.data) {
-        setMyApps(res.data.data.records || []);
-        setMyAppsPage((prev) => ({
-          ...prev,
-          total: res.data.data?.totalRow || 0,
-        }));
-      }
-    } catch (error) {
-      console.error("Failed to load my apps:", error);
-    }
-  }, [loginUser?.id, myAppsPage]);
-
-  const loadFeaturedApps = useCallback(async () => {
-    try {
-      const res = await listGoodAppVoByPage({
-        pageNum: featuredAppsPage.current,
-        pageSize: featuredAppsPage.pageSize,
-        sortField: "createTime",
-        sortOrder: "desc",
-      });
-      if (res.data.code === 0 && res.data.data) {
-        setFeaturedApps(res.data.data.records || []);
-        setFeaturedAppsPage((prev) => ({
-          ...prev,
-          total: res.data.data?.totalRow || 0,
-        }));
-      }
-    } catch (error) {
-      console.error("Failed to load featured apps:", error);
-    }
-  }, [featuredAppsPage]);
-
-  useEffect(() => {
-    loadMyApps();
-    loadFeaturedApps();
-  }, [loginUser?.id, loadFeaturedApps, loadMyApps]);
+  const addAppMutation = useAddAppMutation();
 
   const createApp = async () => {
     if (!userPrompt.trim()) {
@@ -107,21 +66,22 @@ export default function HomePage() {
       return;
     }
 
-    setCreating(true);
-    try {
-      const res = await addApp({ initPrompt: userPrompt.trim() });
-      if (res.data.code === 0 && res.data.data) {
-        toast.success("App created successfully");
-        navigate(`/app/chat/${res.data.data}`);
-      } else {
-        toast.error("Creation failed: " + res.data.message);
-      }
-    } catch (error) {
-      console.error("Failed to create app:", error);
-      toast.error("Creation failed, please retry");
-    } finally {
-      setCreating(false);
-    }
+    addAppMutation.mutate(
+      { initPrompt: userPrompt.trim() },
+      {
+        onSuccess: (data) => {
+          if (data.code === 0 && data.data) {
+            toast.success("App created successfully");
+            navigate(`/app/chat/${data.data}`);
+          } else {
+            toast.error("Creation failed: " + data.message);
+          }
+        },
+        onError: () => {
+          toast.error("Creation failed, please retry");
+        },
+      },
+    );
   };
 
   const viewChat = (appId: string | number | undefined) => {
@@ -133,6 +93,9 @@ export default function HomePage() {
       window.open(getDeployUrl(app.deployKey), "_blank");
     }
   };
+
+  const myApps = myAppsQuery.data?.records ?? [];
+  const featuredApps = featuredAppsQuery.data?.records ?? [];
 
   return (
     <div
@@ -179,7 +142,7 @@ export default function HomePage() {
           <div className="absolute right-3 bottom-3">
             <Button
               onClick={createApp}
-              disabled={creating}
+              disabled={addAppMutation.isPending}
               size="icon"
               className="rounded-full"
             >

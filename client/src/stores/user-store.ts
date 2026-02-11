@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { getLoginUser } from "@/api/user";
+import { queryClient, queryKeys } from "@/lib/query-client";
+import request from "@/api/request";
 
 interface UserState {
   loginUser: API.LoginUserVO;
@@ -12,10 +13,22 @@ export const useUserStore = create<UserState>((set) => ({
     userName: "Not logged in",
   },
   fetchLoginUser: async () => {
-    const res = await getLoginUser();
-    if (res.data.code === 0 && res.data.data) {
-      set({ loginUser: res.data.data });
+    try {
+      const res = await request<API.BaseResponseLoginUserVO>(
+        "/user/get/login",
+        { method: "GET" },
+      );
+      if (res.data.code === 0 && res.data.data) {
+        const user = res.data.data;
+        set({ loginUser: user });
+        queryClient.setQueryData(queryKeys.user.loginUser, user);
+      }
+    } catch {
+      // Silently fail if not logged in
     }
   },
-  setLoginUser: (user) => set({ loginUser: user }),
+  setLoginUser: (user) => {
+    set({ loginUser: user });
+    queryClient.setQueryData(queryKeys.user.loginUser, user);
+  },
 }));

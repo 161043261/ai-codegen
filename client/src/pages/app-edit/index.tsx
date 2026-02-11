@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -20,7 +20,11 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import UserInfo from "@/components/user-info";
 import { useUserStore } from "@/stores/user-store";
-import { getAppVoById, updateApp, updateAppByAdmin } from "@/api/app";
+import { useAppVoById } from "@/hooks/queries/use-app-queries";
+import {
+  useUpdateAppMutation,
+  useUpdateAppByAdminMutation,
+} from "@/hooks/mutations/use-app-mutations";
 import { formatCodegenType } from "@/utils/codegen-types";
 import { formatTime } from "@/utils/time";
 import { getStaticPreviewUrl } from "@/config";
@@ -49,9 +53,13 @@ export default function AppEditPage() {
   const navigate = useNavigate();
   const { loginUser } = useUserStore();
 
-  const [appInfo, setAppInfo] = useState<API.AppVO>();
-  const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const numericId = id ? Number(id) : undefined;
+  const { data: appInfo, isLoading: loading } = useAppVoById(numericId);
+
+  const updateAppMutation = useUpdateAppMutation();
+  const updateAppByAdminMutation = useUpdateAppByAdminMutation();
+  const submitting =
+    updateAppMutation.isPending || updateAppByAdminMutation.isPending;
 
   const isAdmin = loginUser.userRole === "admin";
 
@@ -64,83 +72,64 @@ export default function AppEditPage() {
     },
   });
 
-  // Fetch app info
-  const fetchAppInfo = useCallback(async () => {
+  // Fill form when appInfo loads
+  useEffect(() => {
     if (!id) {
       toast.error("App ID does not exist");
       navigate("/");
       return;
     }
-
-    setLoading(true);
-    try {
-      const res = await getAppVoById({ id: Number(id) });
-      if (res.data.code === 0 && res.data.data) {
-        const app = res.data.data;
-        setAppInfo(app);
-
-        // Check permission
-        if (!isAdmin && app.userId !== loginUser.id) {
-          toast.error("You do not have permission to edit this app");
-          navigate("/");
-          return;
-        }
-
-        // Fill form data
-        form.reset({
-          appName: app.appName || "",
-          cover: app.cover || "",
-          priority: app.priority || 0,
-        });
-      } else {
-        toast.error("Failed to get app info");
+    if (appInfo) {
+      // Check permission
+      if (!isAdmin && appInfo.userId !== loginUser.id) {
+        toast.error("You do not have permission to edit this app");
         navigate("/");
+        return;
       }
-    } catch (error) {
-      console.error("Failed to get app info:", error);
+      form.reset({
+        appName: appInfo.appName || "",
+        cover: appInfo.cover || "",
+        priority: appInfo.priority || 0,
+      });
+    } else if (appInfo === null) {
       toast.error("Failed to get app info");
       navigate("/");
-    } finally {
-      setLoading(false);
     }
-  }, [form, id, isAdmin, loginUser.id, navigate]);
-
-  useEffect(() => {
-    fetchAppInfo();
-  }, [id, fetchAppInfo]);
+  }, [appInfo, id, isAdmin, loginUser.id, navigate, form]);
 
   // Submit form
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = (data: FormValues) => {
     if (!appInfo?.id) return;
 
-    setSubmitting(true);
-    try {
-      let res;
-      if (isAdmin) {
-        res = await updateAppByAdmin({
+    const onSuccess = (res: { code?: number; message?: string }) => {
+      if (res.code === 0) {
+        toast.success("Update successful");
+      } else {
+        toast.error("Update failed: " + res.message);
+      }
+    };
+    const onError = () => {
+      toast.error("Update failed");
+    };
+
+    if (isAdmin) {
+      updateAppByAdminMutation.mutate(
+        {
           id: appInfo.id,
           appName: data.appName,
           cover: data.cover,
           priority: data.priority,
-        });
-      } else {
-        res = await updateApp({
+        },
+        { onSuccess, onError },
+      );
+    } else {
+      updateAppMutation.mutate(
+        {
           id: appInfo.id,
           appName: data.appName,
-        });
-      }
-
-      if (res.data.code === 0) {
-        toast.success("Update successful");
-        await fetchAppInfo();
-      } else {
-        toast.error("Update failed: " + res.data.message);
-      }
-    } catch (error) {
-      console.error("Update failed:", error);
-      toast.error("Update failed");
-    } finally {
-      setSubmitting(false);
+        },
+        { onSuccess, onError },
+      );
     }
   };
 

@@ -1,3 +1,6 @@
+/**
+ * @deprecated Use hooks from `@/hooks/queries/use-chat-history-queries` instead.
+ */
 import request from "@/api/request";
 
 /** List all chat history by page (admin) POST /chatHistory/admin/list/page/vo */

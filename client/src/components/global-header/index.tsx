@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUserStore } from "@/stores/user-store";
-import { userLogout } from "@/api/user";
+import { useLogoutMutation } from "@/hooks/mutations/use-user-mutations";
 
 interface MenuItem {
   key: string;
@@ -45,15 +45,23 @@ export default function GlobalHeader() {
     return true;
   });
 
-  const handleLogout = async () => {
-    const res = await userLogout();
-    if (res.data.code === 0) {
-      setLoginUser({ userName: "Not logged in" });
-      toast.success("Logged out successfully");
-      navigate("/user/login");
-    } else {
-      toast.error("Logout failed: " + res.data.message);
-    }
+  const logoutMutation = useLogoutMutation();
+
+  const handleLogout = () => {
+    logoutMutation.mutate(undefined, {
+      onSuccess: (res) => {
+        if (res.code === 0) {
+          setLoginUser({ userName: "Not logged in" });
+          toast.success("Logged out successfully");
+          navigate("/user/login");
+        } else {
+          toast.error("Logout failed: " + res.message);
+        }
+      },
+      onError: () => {
+        toast.error("Logout failed");
+      },
+    });
   };
 
   return (

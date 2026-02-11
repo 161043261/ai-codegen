@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { Search, Eye, Trash2 } from "lucide-react";
@@ -38,12 +38,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { formatTime } from "@/utils/time";
-import { listAllChatHistoryByPageForAdmin } from "@/api/chat-history";
+import { useAdminChatHistoryByPage } from "@/hooks/queries/use-chat-history-queries";
 
 export default function ChatManagePage() {
   const navigate = useNavigate();
-  const [data, setData] = useState<API.ChatHistory[]>([]);
-  const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useState({
     pageNum: 1,
     pageSize: 10,
@@ -53,33 +51,21 @@ export default function ChatManagePage() {
     userId: "",
   });
 
-  const fetchData = async () => {
-    try {
-      const res = await listAllChatHistoryByPageForAdmin({
-        ...searchParams,
-        appId: searchParams.appId ? Number(searchParams.appId) : undefined,
-        userId: searchParams.userId ? Number(searchParams.userId) : undefined,
-        messageType: searchParams.messageType || undefined,
-      });
-      if (res.data.data) {
-        setData(res.data.data.records ?? []);
-        setTotal(res.data.data.totalRow ?? 0);
-      } else {
-        toast.error("Failed to fetch data: " + res.data.message);
-      }
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-      toast.error("Failed to fetch data");
-    }
+  const queryParams = {
+    pageNum: searchParams.pageNum,
+    pageSize: searchParams.pageSize,
+    message: searchParams.message || undefined,
+    messageType: searchParams.messageType || undefined,
+    appId: searchParams.appId ? Number(searchParams.appId) : undefined,
+    userId: searchParams.userId ? Number(searchParams.userId) : undefined,
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [searchParams.pageNum, searchParams.pageSize]);
+  const { data: pageData } = useAdminChatHistoryByPage(queryParams);
+  const data = pageData?.records ?? [];
+  const total = pageData?.totalRow ?? 0;
 
   const handleSearch = () => {
     setSearchParams((prev) => ({ ...prev, pageNum: 1 }));
-    fetchData();
   };
 
   const viewAppChat = (appId: number | undefined) => {
@@ -92,7 +78,6 @@ export default function ChatManagePage() {
     if (!id) return;
     // Note: Backend delete API needed
     toast.success("Deleted successfully");
-    fetchData();
   };
 
   return (
