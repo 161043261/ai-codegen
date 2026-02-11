@@ -1,8 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import { z } from 'zod';
 import { AiModelConfigService } from '../../ai/services/ai-model-config.service';
 import { CODE_QUALITY_CHECK_SYSTEM_PROMPT } from '../../ai/prompts';
 import { WorkflowStateType } from '../models/workflow-context';
+
+const codeQualityResultSchema = z.object({
+  passed: z.boolean().optional(),
+  score: z.number().optional(),
+  issues: z.array(z.string()).optional(),
+});
 
 @Injectable()
 export class CodeQualityCheckNode {
@@ -11,7 +18,7 @@ export class CodeQualityCheckNode {
   constructor(private readonly aiModelConfig: AiModelConfigService) {}
 
   async execute(state: WorkflowStateType): Promise<Partial<WorkflowStateType>> {
-    this.logger.log('Executing CodeQualityCheckNode');
+    this.logger.log('Executing code quality check node');
 
     if (!state.generatedCode || state.generatedCode.trim().length === 0) {
       return {
@@ -36,15 +43,18 @@ export class CodeQualityCheckNode {
       try {
         const jsonMatch = content.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
-          const result = JSON.parse(jsonMatch[0]);
+          const result = codeQualityResultSchema.parse(
+            JSON.parse(jsonMatch[0]),
+          );
           return {
             qualityCheckPassed:
-              result.passed !== false && (result.score || 0) >= 60,
+              result.passed !== false && (result.score ?? 0) >= 60,
             qualityCheckMessage: content,
           };
         }
-      } catch {
+      } catch (err) {
         // JSON parse failed
+        this.logger.error('Code quality check failed', err);
       }
 
       return {

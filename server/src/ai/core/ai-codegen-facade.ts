@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AiCodegenService } from '../services/ai-codegen.service';
-import { PromptSafeInputGuardrail } from '../guardrails/prompt-safe-input.guardrail';
+import { PromptSafeInputGuardrail } from '../guardrails/prompt-safe-input';
 import { CodeParser } from './code-parser';
 import { CodeSaver } from './code-saver';
-import { CodegenType } from '../../common/enums/codegen-type.enum';
+import { CodegenType } from '../../common/enums/codegen-type';
 
 @Injectable()
 export class AiCodegenFacade {

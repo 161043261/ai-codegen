@@ -6,11 +6,12 @@ import {
   UpdateDateColumn,
   Index,
 } from 'typeorm';
+import { UserRole } from '../../common/enums';
 
 @Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn({ type: 'bigint', comment: 'id' })
-  id: number;
+  id = 0;
 
   @Index('uk_user_account', { unique: true })
   @Column({
@@ -19,7 +20,7 @@ export class UserEntity {
     length: 256,
     comment: 'user account',
   })
-  userAccount: string;
+  userAccount = '';
 
   @Column({
     name: 'user_password',
@@ -27,7 +28,7 @@ export class UserEntity {
     length: 512,
     comment: 'password',
   })
-  userPassword: string;
+  userPassword = '';
 
   @Index('idx_username')
   @Column({
@@ -37,7 +38,7 @@ export class UserEntity {
     nullable: true,
     comment: 'username',
   })
-  username: string;
+  username = '';
 
   @Column({
     name: 'user_avatar',
@@ -46,7 +47,7 @@ export class UserEntity {
     nullable: true,
     comment: 'user avatar',
   })
-  userAvatar: string;
+  userAvatar = '';
 
   @Column({
     name: 'user_profile',
@@ -55,7 +56,7 @@ export class UserEntity {
     nullable: true,
     comment: 'user profile',
   })
-  userProfile: string;
+  userProfile = '';
 
   @Column({
     name: 'user_role',
@@ -64,7 +65,7 @@ export class UserEntity {
     default: 'user',
     comment: 'user role',
   })
-  userRole: string;
+  userRole: UserRole = UserRole.USER;
 
   @Column({
     name: 'edit_time',
@@ -72,13 +73,13 @@ export class UserEntity {
     default: () => 'CURRENT_TIMESTAMP',
     comment: 'edit time',
   })
-  editTime: Date;
+  editTime = new Date();
 
   @CreateDateColumn({ name: 'create_time', comment: 'create time' })
-  createTime: Date;
+  createTime = new Date();
 
   @UpdateDateColumn({ name: 'update_time', comment: 'update time' })
-  updateTime: Date;
+  updateTime = new Date();
 
   @Column({
     name: 'is_delete',
@@ -86,5 +87,5 @@ export class UserEntity {
     default: 0,
     comment: 'is delete',
   })
-  isDelete: number;
+  isDelete = 0;
 }

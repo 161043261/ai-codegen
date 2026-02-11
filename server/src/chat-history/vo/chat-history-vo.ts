@@ -1,12 +1,12 @@
-import { ChatHistoryEntity } from '../../database/entities/chat-history.entity';
+import { ChatHistoryEntity } from '../../database/entities/chat-history-entity';
 
 export class ChatHistoryVo {
-  id: string;
-  message: string;
-  messageType: string;
-  appId: string;
-  userId: string;
-  createTime: Date;
+  id = '';
+  message = '';
+  messageType = '';
+  appId = '';
+  userId = '';
+  createTime = new Date();
 
   static fromEntity(entity: ChatHistoryEntity): ChatHistoryVo | null {
     if (!entity) return null;

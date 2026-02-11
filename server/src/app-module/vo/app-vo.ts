@@ -1,17 +1,17 @@
-import { AppEntity } from '../../database/entities/app.entity';
+import { AppEntity } from '../../database/entities/app-entity';
 
 export class AppVo {
-  id: string;
-  appName: string;
-  appCover: string;
-  initPrompt: string;
-  codegenType: string;
-  deployKey: string;
-  deployTime: string;
-  priority: number;
-  userId: string;
-  createTime: Date;
-  updateTime: Date;
+  id = '';
+  appName = '';
+  appCover = '';
+  initPrompt = '';
+  codegenType = '';
+  deployKey = '';
+  deployTime = '';
+  priority = 0;
+  userId = '';
+  createTime = new Date();
+  updateTime = new Date();
 
   static fromEntity(entity: AppEntity): AppVo | null {
     if (!entity) return null;

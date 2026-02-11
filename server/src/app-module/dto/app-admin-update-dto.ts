@@ -1,11 +1,12 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
+import { CodegenType } from '../../common/enums';
 
 export class AppAdminUpdateDto {
   @IsNotEmpty()
   @Type(() => Number)
   @IsNumber()
-  id: number;
+  id = 0;
 
   @IsOptional()
   @IsString()
@@ -17,7 +18,7 @@ export class AppAdminUpdateDto {
 
   @IsOptional()
   @IsString()
-  codegenType?: string;
+  codegenType?: CodegenType;
 
   @IsOptional()
   @Type(() => Number)

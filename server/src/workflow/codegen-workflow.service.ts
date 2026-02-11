@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { StateGraph, END, START } from '@langchain/langgraph';
 import { WorkflowState, WorkflowStateType } from './models/workflow-context';
-import { PromptEnhanceNode } from './nodes/prompt-enhance.node';
-import { RouterNode } from './nodes/router.node';
-import { CodegenNode } from './nodes/codegen.node';
-import { CodeQualityCheckNode } from './nodes/code-quality-check.node';
-import { ProjectBuildNode } from './nodes/project-build.node';
-import { CodegenType } from '../common/enums/codegen-type.enum';
+import { PromptEnhanceNode } from './nodes/prompt-enhance-node';
+import { RouterNode } from './nodes/router-node';
+import { CodegenNode } from './nodes/codegen-node';
+import { CodeQualityCheckNode } from './nodes/code-quality-check-node';
+import { ProjectBuildNode } from './nodes/project-build-node';
+import { CodegenType } from '../common/enums/codegen-type';
 
 @Injectable()
 export class CodegenWorkflowService {
@@ -27,7 +27,7 @@ export class CodegenWorkflowService {
     const result = await compiled.invoke({
       userPrompt,
       enhancedPrompt: '',
-      codegenType: '',
+      // codegenType: '',
       generatedCode: '',
       qualityCheckPassed: false,
       qualityCheckMessage: '',
@@ -36,12 +36,12 @@ export class CodegenWorkflowService {
       error: '',
     });
 
-    return result as WorkflowStateType;
+    return result;
   }
 
   async *executeStream(
     userPrompt: string,
-  ): AsyncGenerator<{ event: string; data: any }> {
+  ): AsyncGenerator<{ event: string; data: unknown }> {
     const graph = this.buildGraph();
     const compiled = graph.compile();
 
@@ -51,7 +51,7 @@ export class CodegenWorkflowService {
       const stream = await compiled.stream({
         userPrompt,
         enhancedPrompt: '',
-        codegenType: '',
+        // codegenType: '',
         generatedCode: '',
         qualityCheckPassed: false,
         qualityCheckMessage: '',
@@ -64,13 +64,17 @@ export class CodegenWorkflowService {
         const nodeName = Object.keys(update)[0];
         yield {
           event: 'step-complete',
-          data: { node: nodeName, state: update[nodeName] },
+          data: {
+            node: nodeName,
+            state: update[nodeName],
+          },
         };
       }
 
       yield { event: 'workflow-complete', data: {} };
-    } catch (error: any) {
-      yield { event: 'workflow-error', data: { error: error.message } };
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      yield { event: 'workflow-error', data: { error: msg } };
     }
   }
 

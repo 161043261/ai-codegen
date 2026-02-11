@@ -3,15 +3,15 @@ import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 export class UserRegisterDto {
   @IsNotEmpty()
   @IsString()
-  userAccount: string;
+  userAccount = '';
 
   @IsNotEmpty()
   @IsString()
   @MinLength(8)
-  userPassword: string;
+  userPassword = '';
 
   @IsNotEmpty()
   @IsString()
   @MinLength(8)
-  checkPassword: string;
+  checkPassword = '';
 }

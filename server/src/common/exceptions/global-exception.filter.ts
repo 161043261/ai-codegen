@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BusinessException } from './business.exception';
-import { ErrorCode } from '../enums/error-code.enum';
+import { ErrorCode } from '../enums/error-code';
 import { BaseResponse } from '../response/base-response';
 
 @Catch()

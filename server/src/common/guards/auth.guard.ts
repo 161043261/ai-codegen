@@ -5,18 +5,28 @@ import {
   SetMetadata,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import type { Request } from 'express';
 import { BusinessException } from '../exceptions/business.exception';
-import { ErrorCode } from '../enums/error-code.enum';
-import { UserRole } from '../enums/user-role.enum';
+import { ErrorCode } from '../enums/error-code';
+import { UserRole } from '../enums/user-role';
+import { USER_LOGIN_STATE } from '../constants';
 
 export const AUTH_KEY = 'auth_check';
 export const MUST_ROLE_KEY = 'must_role';
 
 export const AuthCheck = (mustRole?: UserRole) => {
-  return (target: any, key?: string, descriptor?: PropertyDescriptor) => {
-    SetMetadata(AUTH_KEY, true)(target, key!, descriptor!);
+  return (
+    target: object,
+    key: string,
+    descriptor: TypedPropertyDescriptor<unknown>,
+  ) => {
+    SetMetadata(AUTH_KEY, true)(target, key, descriptor as PropertyDescriptor);
     if (mustRole) {
-      SetMetadata(MUST_ROLE_KEY, mustRole)(target, key!, descriptor!);
+      SetMetadata(MUST_ROLE_KEY, mustRole)(
+        target,
+        key,
+        descriptor as PropertyDescriptor,
+      );
     }
   };
 };
@@ -35,8 +45,8 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
-    const loginUser = request.session?.login;
+    const request = context.switchToHttp().getRequest<Request>();
+    const loginUser = request.session?.[USER_LOGIN_STATE];
 
     if (!loginUser) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);

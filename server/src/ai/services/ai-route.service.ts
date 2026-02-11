@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { AiModelConfigService } from './ai-model-config.service';
 import { ROUTE_SYSTEM_PROMPT } from '../prompts';
-import { CodegenType } from '../../common/enums/codegen-type.enum';
+import { CodegenType } from '../../common/enums/codegen-type';
 
 @Injectable()
 export class AiRouteService {
@@ -10,7 +10,7 @@ export class AiRouteService {
 
   constructor(private readonly aiModelConfig: AiModelConfigService) {}
 
-  async routeCodegenType(userPrompt: string): Promise<string> {
+  async routeCodegenType(userPrompt: string): Promise<CodegenType> {
     try {
       const model = this.aiModelConfig.createRouteChatModel();
       const response = await model.invoke([

@@ -1,12 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, LessThan } from 'typeorm';
-import { ChatHistoryEntity } from '../database/entities/chat-history.entity';
-import { ChatHistoryQueryDto } from './dto/chat-history-query.dto';
-import { ChatHistoryVo } from './vo/chat-history.vo';
-import { BusinessException } from '../common/exceptions/business.exception';
-import { ErrorCode } from '../common/enums/error-code.enum';
+import { ChatHistoryEntity } from '../database/entities/chat-history-entity';
+import { ChatHistoryQueryDto } from './dto/chat-history-query-dto';
+import { ChatHistoryVo } from './vo/chat-history-vo';
 import { HumanMessage, AIMessage, BaseMessage } from '@langchain/core/messages';
+import type { FindOptionsWhere, FindOptionsOrder } from 'typeorm';
 
 @Injectable()
 export class ChatHistoryService {
@@ -37,7 +36,7 @@ export class ChatHistoryService {
     cursor?: Date,
     pageSize: number = 20,
   ): Promise<ChatHistoryVo[]> {
-    const where: any = { appId, isDelete: 0 };
+    const where: FindOptionsWhere<ChatHistoryEntity> = { appId, isDelete: 0 };
     if (cursor) {
       where.createTime = LessThan(cursor);
     }
@@ -67,15 +66,15 @@ export class ChatHistoryService {
       sortField,
       sortOrder,
     } = dto;
-    const where: any = { isDelete: 0 };
+    const where: FindOptionsWhere<ChatHistoryEntity> = { isDelete: 0 };
 
     if (appId) where.appId = appId;
     if (userId) where.userId = userId;
     if (messageType) where.messageType = messageType;
     if (message) where.message = Like(`%${message}%`);
 
-    const order: any = {};
-    if (sortField) {
+    const order: FindOptionsOrder<ChatHistoryEntity> = {};
+    if (sortField && sortField in new ChatHistoryEntity()) {
       order[sortField] = sortOrder === 'ascend' ? 'ASC' : 'DESC';
     } else {
       order.createTime = 'DESC';

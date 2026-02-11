@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserEntity } from './entities/user.entity';
-import { AppEntity } from './entities/app.entity';
-import { ChatHistoryEntity } from './entities/chat-history.entity';
+import { UserEntity } from './entities/user-entity.ts';
+import { AppEntity } from './entities/app-entity';
+import { ChatHistoryEntity } from './entities/chat-history-entity';
 
 @Module({
   imports: [

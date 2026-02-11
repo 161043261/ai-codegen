@@ -1,5 +1,5 @@
 import { HttpException } from '@nestjs/common';
-import { ErrorCode, ErrorMessage } from '../enums/error-code.enum';
+import { ErrorCode, ErrorMessage } from '../enums/error-code';
 
 export class BusinessException extends HttpException {
   private readonly errorCode: ErrorCode;

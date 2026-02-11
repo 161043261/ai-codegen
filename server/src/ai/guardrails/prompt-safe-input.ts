@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { BusinessException } from '../../common/exceptions/business.exception';
-import { ErrorCode } from '../../common/enums/error-code.enum';
+import { ErrorCode } from '../../common/enums/error-code';
 
 @Injectable()
 export class PromptSafeInputGuardrail {

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as promClient from 'prom-client';
+import promClient from 'prom-client';
 
 @Injectable()
 export class MetricsService {

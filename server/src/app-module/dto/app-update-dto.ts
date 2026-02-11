@@ -5,7 +5,7 @@ export class AppUpdateDto {
   @IsNotEmpty()
   @Type(() => Number)
   @IsNumber()
-  id: number;
+  id = 0;
 
   @IsOptional()
   @IsString()

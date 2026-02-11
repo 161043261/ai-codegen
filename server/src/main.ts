@@ -46,4 +46,4 @@ async function bootstrap() {
     `Application is running on: http://localhost:${port}/${apiPrefix}`,
   );
 }
-bootstrap();
+bootstrap().catch(console.error);

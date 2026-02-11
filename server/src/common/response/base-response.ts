@@ -1,4 +1,4 @@
-import { ErrorCode } from '../enums/error-code.enum';
+import { ErrorCode } from '../enums/error-code';
 
 export class BaseResponse<T = any> {
   code: number;

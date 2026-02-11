@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ChatHistoryEntity } from '../database/entities/chat-history.entity';
+import { ChatHistoryEntity } from '../database/entities/chat-history-entity';
 import { ChatHistoryController } from './chat-history.controller';
 import { ChatHistoryService } from './chat-history.service';
 

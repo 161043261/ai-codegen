@@ -7,7 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-function convertBigIntToString(obj: any): any {
+function convertBigIntToString(obj: unknown): unknown {
   if (obj === null || obj === undefined) return obj;
   if (typeof obj === 'bigint') return obj.toString();
   if (typeof obj === 'number' && Math.abs(obj) > Number.MAX_SAFE_INTEGER) {
@@ -15,9 +15,11 @@ function convertBigIntToString(obj: any): any {
   }
   if (Array.isArray(obj)) return obj.map(convertBigIntToString);
   if (typeof obj === 'object') {
-    const result: any = {};
-    for (const key of Object.keys(obj)) {
-      result[key] = convertBigIntToString(obj[key]);
+    const result: Record<string, unknown> = {};
+    for (const key of Object.keys(obj as Record<string, unknown>)) {
+      result[key] = convertBigIntToString(
+        (obj as Record<string, unknown>)[key],
+      );
     }
     return result;
   }
@@ -26,7 +28,9 @@ function convertBigIntToString(obj: any): any {
 
 @Injectable()
 export class BigIntSerializationInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next.handle().pipe(map((data) => convertBigIntToString(data)));
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    return next
+      .handle()
+      .pipe(map((data: unknown) => convertBigIntToString(data)));
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AiCodegenService } from '../../ai/services/ai-codegen.service';
-import { CodegenType } from '../../common/enums/codegen-type.enum';
+import { CodegenType } from '../../common/enums/codegen-type';
 import { WorkflowStateType } from '../models/workflow-context';
 
 @Injectable()
@@ -11,8 +11,7 @@ export class CodegenNode {
 
   async execute(state: WorkflowStateType): Promise<Partial<WorkflowStateType>> {
     this.logger.log('Executing CodegenNode');
-    const codegenType =
-      (state.codegenType as CodegenType) || CodegenType.VANILLA_HTML;
+    const codegenType = state.codegenType || CodegenType.VANILLA_HTML;
     const prompt = state.enhancedPrompt || state.userPrompt;
     const collectedContent: string[] = [];
 

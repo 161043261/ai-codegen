@@ -5,10 +5,10 @@ import { WorkflowStateType } from '../models/workflow-context';
 export class PromptEnhanceNode {
   private readonly logger = new Logger(PromptEnhanceNode.name);
 
-  async execute(state: WorkflowStateType): Promise<Partial<WorkflowStateType>> {
-    this.logger.log('Executing PromptEnhanceNode');
-    return {
+  execute(state: WorkflowStateType): Promise<Partial<WorkflowStateType>> {
+    this.logger.log('Executing prompt enhance node');
+    return Promise.resolve({
       enhancedPrompt: state.userPrompt,
-    };
+    });
   }
 }

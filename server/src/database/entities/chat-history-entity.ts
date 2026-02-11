@@ -11,10 +11,10 @@ import {
 @Index('idx_app_id_create_time', ['appId', 'createTime'])
 export class ChatHistoryEntity {
   @PrimaryGeneratedColumn({ type: 'bigint', comment: 'id' })
-  id: number;
+  id = 0;
 
   @Column({ name: 'message', type: 'text', comment: 'message' })
-  message: string;
+  message = '';
 
   @Column({
     name: 'message_type',
@@ -22,21 +22,21 @@ export class ChatHistoryEntity {
     length: 32,
     comment: 'user or ai',
   })
-  messageType: string;
+  messageType = '';
 
   @Index('idx_app_id')
   @Column({ name: 'app_id', type: 'bigint', comment: 'app id' })
-  appId: number;
+  appId = 0;
 
   @Column({ name: 'user_id', type: 'bigint', comment: 'creator user id' })
-  userId: number;
+  userId = 0;
 
   @Index('idx_create_time')
   @CreateDateColumn({ name: 'create_time', comment: 'create time' })
-  createTime: Date;
+  createTime = new Date();
 
   @UpdateDateColumn({ name: 'update_time', comment: 'update time' })
-  updateTime: Date;
+  updateTime = new Date();
 
   @Column({
     name: 'is_delete',
@@ -44,5 +44,5 @@ export class ChatHistoryEntity {
     default: 0,
     comment: 'is delete',
   })
-  isDelete: number;
+  isDelete = 0;
 }

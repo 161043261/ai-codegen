@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import type { Response } from 'express';
-import * as fs from 'fs';
-import * as path from 'path';
+import { existsSync, readdirSync } from 'fs';
+import { join } from 'path';
 import archiver, { type Archiver } from 'archiver';
 import { BusinessException } from '../common/exceptions/business.exception';
-import { ErrorCode } from '../common/enums/error-code.enum';
+import { ErrorCode } from '../common/enums/error-code';
 
 @Injectable()
 export class ProjectDownloadService {
@@ -25,7 +25,7 @@ export class ProjectDownloadService {
     projectName: string,
     response: Response,
   ): Promise<void> {
-    if (!fs.existsSync(projectDir)) {
+    if (!existsSync(projectDir)) {
       throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, '项目目录不存在');
     }
 
@@ -54,11 +54,11 @@ export class ProjectDownloadService {
     dir: string,
     prefix: string,
   ): void {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    const entries = readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
       if (this.excludeDirs.includes(entry.name)) continue;
 
-      const fullPath = path.join(dir, entry.name);
+      const fullPath = join(dir, entry.name);
       const archivePath = prefix ? `${prefix}/${entry.name}` : entry.name;
 
       if (entry.isDirectory()) {

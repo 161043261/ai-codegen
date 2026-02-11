@@ -1,9 +1,10 @@
 import { Annotation } from '@langchain/langgraph';
+import { CodegenType } from '../../common/enums';
 
 export const WorkflowState = Annotation.Root({
   userPrompt: Annotation<string>,
   enhancedPrompt: Annotation<string>,
-  codegenType: Annotation<string>,
+  codegenType: Annotation<CodegenType>,
   generatedCode: Annotation<string>,
   qualityCheckPassed: Annotation<boolean>,
   qualityCheckMessage: Annotation<string>,

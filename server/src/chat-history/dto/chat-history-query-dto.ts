@@ -1,6 +1,6 @@
 import { IsOptional, IsNumber, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PageRequestDto } from '../../common/dto/page-request.dto';
+import { PageRequestDto } from '../../common/dto/page-request-dto';
 
 export class ChatHistoryQueryDto extends PageRequestDto {
   @IsOptional()

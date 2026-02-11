@@ -1,13 +1,14 @@
-import { UserEntity } from '../../database/entities/user.entity';
+import { UserRole } from '../../common/enums/user-role';
+import { UserEntity } from '../../database/entities/user-entity';
 
 export class UserVo {
-  id: string;
-  userAccount: string;
-  username: string;
-  userAvatar: string;
-  userProfile: string;
-  userRole: string;
-  createTime: Date;
+  id = '';
+  userAccount = '';
+  username = '';
+  userAvatar = '';
+  userProfile = '';
+  userRole = '';
+  createTime = new Date();
 
   static fromEntity(entity: UserEntity): UserVo | null {
     if (!entity) return null;
@@ -24,12 +25,12 @@ export class UserVo {
 }
 
 export class LoginUserVo {
-  id: string;
-  userAccount: string;
-  username: string;
-  userAvatar: string;
-  userProfile: string;
-  userRole: string;
+  id = '';
+  userAccount = '';
+  username = '';
+  userAvatar = '';
+  userProfile = '';
+  userRole: UserRole = UserRole.USER;
 
   static fromEntity(entity: UserEntity): LoginUserVo | null {
     if (!entity) return null;

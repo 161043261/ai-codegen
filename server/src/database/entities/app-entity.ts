@@ -6,11 +6,12 @@ import {
   UpdateDateColumn,
   Index,
 } from 'typeorm';
+import { CodegenType } from '../../common/enums';
 
 @Entity('app')
 export class AppEntity {
   @PrimaryGeneratedColumn({ type: 'bigint', comment: 'id' })
-  id: number;
+  id = 0;
 
   @Index('idx_app_name')
   @Column({
@@ -20,7 +21,7 @@ export class AppEntity {
     nullable: true,
     comment: 'app name',
   })
-  appName: string;
+  appName = '';
 
   @Column({
     name: 'app_cover',
@@ -29,7 +30,7 @@ export class AppEntity {
     nullable: true,
     comment: 'app cover',
   })
-  appCover: string;
+  appCover = '';
 
   @Column({
     name: 'init_prompt',
@@ -37,7 +38,7 @@ export class AppEntity {
     nullable: true,
     comment: 'init prompt',
   })
-  initPrompt: string;
+  initPrompt = '';
 
   @Column({
     name: 'codegen_type',
@@ -46,7 +47,7 @@ export class AppEntity {
     nullable: true,
     comment: 'codegen type',
   })
-  codegenType: string;
+  codegenType: CodegenType = CodegenType.MULTI_FILES;
 
   @Index('uk_deploy_key', { unique: true })
   @Column({
@@ -56,7 +57,7 @@ export class AppEntity {
     nullable: true,
     comment: 'deploy key',
   })
-  deployKey: string;
+  deployKey = '';
 
   @Column({
     name: 'deploy_time',
@@ -65,14 +66,14 @@ export class AppEntity {
     nullable: true,
     comment: 'deploy time',
   })
-  deployTime: string;
+  deployTime = '';
 
   @Column({ name: 'priority', type: 'int', default: 0, comment: 'priority' })
-  priority: number;
+  priority = 0;
 
   @Index('idx_user_id')
   @Column({ name: 'user_id', type: 'bigint', comment: 'creator user id' })
-  userId: number;
+  userId = 0;
 
   @Column({
     name: 'edit_time',
@@ -80,13 +81,13 @@ export class AppEntity {
     default: () => 'CURRENT_TIMESTAMP',
     comment: 'edit time',
   })
-  editTime: Date;
+  editTime = new Date();
 
   @CreateDateColumn({ name: 'create_time', comment: 'create time' })
-  createTime: Date;
+  createTime = new Date();
 
   @UpdateDateColumn({ name: 'update_time', comment: 'update time' })
-  updateTime: Date;
+  updateTime = new Date();
 
   @Column({
     name: 'is_delete',
@@ -94,5 +95,5 @@ export class AppEntity {
     default: 0,
     comment: 'is delete',
   })
-  isDelete: number;
+  isDelete = 0;
 }

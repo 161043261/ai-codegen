@@ -1,13 +1,9 @@
-import { Controller, Get, Post, Body, Param, Query, Req } from '@nestjs/common';
-import { Request } from 'express';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ChatHistoryService } from './chat-history.service';
-import { ChatHistoryQueryDto } from './dto/chat-history-query.dto';
+import { ChatHistoryQueryDto } from './dto/chat-history-query-dto';
 import { BaseResponse } from '../common/response/base-response';
 import { AuthCheck } from '../common/guards/auth.guard';
-import { UserRole } from '../common/enums/user-role.enum';
-import { USER_LOGIN_STATE } from '../common/constants';
-import { BusinessException } from '../common/exceptions/business.exception';
-import { ErrorCode } from '../common/enums/error-code.enum';
+import { UserRole } from '../common/enums/user-role';
 
 @Controller('chat-history')
 export class ChatHistoryController {

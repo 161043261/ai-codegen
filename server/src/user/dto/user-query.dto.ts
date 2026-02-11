@@ -1,6 +1,7 @@
 import { IsOptional, IsString, IsNumber } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PageRequestDto } from '../../common/dto/page-request.dto';
+import { PageRequestDto } from '../../common/dto/page-request-dto';
+import { UserRole } from '../../common/enums';
 
 export class UserQueryDto extends PageRequestDto {
   @IsOptional()
@@ -18,5 +19,5 @@ export class UserQueryDto extends PageRequestDto {
 
   @IsOptional()
   @IsString()
-  userRole?: string;
+  userRole?: UserRole;
 }

@@ -3,6 +3,7 @@ import {
   HumanMessage,
   SystemMessage,
   AIMessage,
+  ToolMessage,
   BaseMessage,
 } from '@langchain/core/messages';
 import { BaseChatModel } from '@langchain/core/language_models/chat_models';
@@ -13,9 +14,9 @@ import {
   MULTI_FILES_SYSTEM_PROMPT,
   VITE_PROJECT_SYSTEM_PROMPT,
 } from '../prompts';
-import { CodegenType } from '../../common/enums/codegen-type.enum';
+import { CodegenType } from '../../common/enums/codegen-type';
 import { ToolManager } from '../tools/tool-manager';
-import * as path from 'path';
+import { join } from 'path';
 
 interface CachedAiService {
   messages: BaseMessage[];
@@ -97,7 +98,7 @@ export class AiCodegenService {
     appId: string,
     onChunk: (chunk: string) => void,
   ): Promise<void> {
-    const workDir = path.join(
+    const workDir = join(
       process.cwd(),
       'tmp',
       'code_output',
@@ -109,7 +110,7 @@ export class AiCodegenService {
     }
     const modelWithTools = model.bindTools(tools);
 
-    let currentMessages = [...messages];
+    const currentMessages = [...messages];
     let iterations = 0;
     const maxIterations = 20;
 
@@ -118,16 +119,29 @@ export class AiCodegenService {
 
       const stream = await modelWithTools.stream(currentMessages);
       let fullContent = '';
-      let toolCalls: any[] = [];
+      const toolCalls: {
+        id: string;
+        name: string;
+        args: Record<string, unknown>;
+      }[] = [];
 
       for await (const chunk of stream) {
-        const content = typeof chunk.content === 'string' ? chunk.content : '';
+        const content =
+          typeof chunk.content === 'string'
+            ? chunk.content
+            : JSON.stringify(chunk);
         if (content) {
           fullContent += content;
           onChunk(content);
         }
         if (chunk.tool_calls && chunk.tool_calls.length > 0) {
-          toolCalls.push(...chunk.tool_calls);
+          toolCalls.push(
+            ...chunk.tool_calls.map((tc) => ({
+              id: tc.id ?? '',
+              name: tc.name,
+              args: tc.args,
+            })),
+          );
         }
       }
 
@@ -143,16 +157,17 @@ export class AiCodegenService {
         const matchedTool = tools.find((t) => t.name === tc.name);
         if (matchedTool) {
           onChunk(`\n[Tool: ${tc.name}] ${JSON.stringify(tc.args)}\n`);
-          const result = await (matchedTool as any).invoke(tc.args);
-          onChunk(
-            `[Result] ${typeof result === 'string' ? result.substring(0, 200) : result}\n`,
+          // TODO Unsafe assignment of an `any` value.
+          const result = await matchedTool.invoke(tc.args);
+          const resultStr =
+            typeof result === 'string' ? result : JSON.stringify(result);
+          onChunk(`[Result] ${resultStr.substring(0, 200)}\n`);
+          currentMessages.push(
+            new ToolMessage({
+              content: resultStr,
+              tool_call_id: tc.id,
+            }),
           );
-          currentMessages.push({
-            role: 'tool',
-            content:
-              typeof result === 'string' ? result : JSON.stringify(result),
-            tool_call_id: tc.id,
-          } as any);
 
           if (tc.name === 'Exit') {
             return;

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import type { Request } from 'express';
-import { UserEntity } from '../database/entities/user.entity';
+import { UserEntity } from '../database/entities/user-entity';
 import { UserRegisterDto } from './dto/user-register.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UserAddDto } from './dto/user-add.dto';
@@ -10,9 +10,10 @@ import { UserUpdateDto } from './dto/user-update.dto';
 import { UserQueryDto } from './dto/user-query.dto';
 import { LoginUserVo, UserVo } from './vo/user.vo';
 import { BusinessException } from '../common/exceptions/business.exception';
-import { ErrorCode } from '../common/enums/error-code.enum';
+import { ErrorCode } from '../common/enums/error-code.js';
 import { USER_LOGIN_STATE } from '../common/constants';
 import { md5Hash } from '../common/utils/crypto.util';
+import type { FindOptionsWhere, FindOptionsOrder } from 'typeorm';
 
 @Injectable()
 export class UserService {
@@ -79,17 +80,17 @@ export class UserService {
     }
 
     const loginUserVo = LoginUserVo.fromEntity(user);
-    (request.session as any)[USER_LOGIN_STATE] = loginUserVo;
+    request.session[USER_LOGIN_STATE] = loginUserVo ?? undefined;
     return loginUserVo;
   }
 
   async getLoginUser(request: Request): Promise<LoginUserVo | null> {
-    const loginUser = (request.session as any)?.[USER_LOGIN_STATE];
+    const loginUser = request.session?.[USER_LOGIN_STATE];
     if (!loginUser || !loginUser.id) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
     const user = await this.userRepository.findOne({
-      where: { id: loginUser.id, isDelete: 0 },
+      where: { id: Number(loginUser.id), isDelete: 0 },
     });
     if (!user) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
@@ -97,13 +98,13 @@ export class UserService {
     return LoginUserVo.fromEntity(user);
   }
 
-  async logout(request: Request): Promise<boolean> {
-    const loginUser = (request.session as any)?.[USER_LOGIN_STATE];
+  logout(request: Request): Promise<boolean> {
+    const loginUser = request.session?.[USER_LOGIN_STATE];
     if (!loginUser) {
       throw new BusinessException(ErrorCode.OPERATION_ERROR, '未登录');
     }
-    delete (request.session as any)[USER_LOGIN_STATE];
-    return true;
+    delete request.session[USER_LOGIN_STATE];
+    return Promise.resolve(true);
   }
 
   async addUser(dto: UserAddDto): Promise<string> {
@@ -167,15 +168,15 @@ export class UserService {
       sortField,
       sortOrder,
     } = dto;
-    const where: any = { isDelete: 0 };
+    const where: FindOptionsWhere<UserEntity> = { isDelete: 0 };
 
     if (id) where.id = id;
     if (userRole) where.userRole = userRole;
     if (username) where.username = Like(`%${username}%`);
     if (userProfile) where.userProfile = Like(`%${userProfile}%`);
 
-    const order: any = {};
-    if (sortField) {
+    const order: FindOptionsOrder<UserEntity> = {};
+    if (sortField && sortField in new UserEntity()) {
       order[sortField] = sortOrder === 'ascend' ? 'ASC' : 'DESC';
     } else {
       order.createTime = 'DESC';

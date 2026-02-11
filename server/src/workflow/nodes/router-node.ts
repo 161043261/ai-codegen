@@ -9,7 +9,7 @@ export class RouterNode {
   constructor(private readonly aiRouteService: AiRouteService) {}
 
   async execute(state: WorkflowStateType): Promise<Partial<WorkflowStateType>> {
-    this.logger.log('Executing RouterNode');
+    this.logger.log('Executing router node');
     const codegenType = await this.aiRouteService.routeCodegenType(
       state.enhancedPrompt || state.userPrompt,
     );

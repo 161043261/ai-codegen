@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Body,
-  Query,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Post, Get, Body, Query, Req } from '@nestjs/common';
 import type { Request } from 'express';
 import { UserService } from './user.service';
 import { UserRegisterDto } from './dto/user-register.dto';
@@ -14,10 +6,10 @@ import { UserLoginDto } from './dto/user-login.dto';
 import { UserAddDto } from './dto/user-add.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UserQueryDto } from './dto/user-query.dto';
-import { DeleteRequestDto } from '../common/dto/delete-request.dto';
+import { DeleteRequestDto } from '../common/dto/delete-request-dto';
 import { BaseResponse } from '../common/response/base-response';
 import { AuthCheck } from '../common/guards/auth.guard';
-import { UserRole } from '../common/enums/user-role.enum';
+import { UserRole } from '../common/enums/user-role';
 
 @Controller('user')
 export class UserController {

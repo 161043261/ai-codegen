@@ -1,9 +1,9 @@
 import { Controller, Get, Param, Res } from '@nestjs/common';
 import type { Response } from 'express';
-import * as fs from 'fs';
-import * as path from 'path';
+import { existsSync, createReadStream } from 'fs';
+import { join, resolve, extname } from 'path';
 import { BusinessException } from '../common/exceptions/business.exception';
-import { ErrorCode } from '../common/enums/error-code.enum';
+import { ErrorCode } from '../common/enums/error-code';
 
 @Controller()
 export class StaticResourceController {
@@ -30,7 +30,7 @@ export class StaticResourceController {
     @Param('filePath') filePath: string,
     @Res() response: Response,
   ) {
-    const uploadPath = path.join(process.cwd(), 'uploads', deployKey);
+    const uploadPath = join(process.cwd(), 'uploads', deployKey);
     const relativePath = filePath || 'index.html';
     this.serveFile(uploadPath, relativePath, response);
   }
@@ -41,7 +41,7 @@ export class StaticResourceController {
     @Param('filePath') filePath: string,
     @Res() response: Response,
   ) {
-    const deployDir = path.join(process.cwd(), 'tmp', 'code_deploy', deployKey);
+    const deployDir = join(process.cwd(), 'tmp', 'code_deploy', deployKey);
     const relativePath = filePath || 'index.html';
     this.serveFile(deployDir, relativePath, response);
   }
@@ -51,9 +51,9 @@ export class StaticResourceController {
     relativePath: string,
     response: Response,
   ): void {
-    const filePath = path.join(baseDir, relativePath);
-    const normalizedBase = path.resolve(baseDir);
-    const normalizedFile = path.resolve(filePath);
+    const filePath = join(baseDir, relativePath);
+    const normalizedBase = resolve(baseDir);
+    const normalizedFile = resolve(filePath);
 
     if (!normalizedFile.startsWith(normalizedBase)) {
       throw new BusinessException(
@@ -62,16 +62,16 @@ export class StaticResourceController {
       );
     }
 
-    if (!fs.existsSync(filePath)) {
+    if (!existsSync(filePath)) {
       throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, 'File not found');
     }
 
-    const ext = path.extname(filePath).toLowerCase();
+    const ext = extname(filePath).toLowerCase();
     const mimeType = this.mimeTypes[ext] || 'application/octet-stream';
 
     response.setHeader('Content-Type', mimeType);
     response.setHeader('Cache-Control', 'public, max-age=86400');
-    const stream = fs.createReadStream(filePath);
+    const stream = createReadStream(filePath);
     stream.pipe(response);
   }
 }

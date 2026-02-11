@@ -1,4 +1,4 @@
-import { CodegenType } from '../../common/enums/codegen-type.enum';
+import { CodegenType } from '../../common/enums/codegen-type';
 
 export interface ParsedCode {
   files: { filename: string; content: string }[];

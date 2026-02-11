@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as fs from 'fs';
-import * as path from 'path';
+import { existsSync, mkdirSync, copyFileSync } from 'fs';
+import { join, dirname } from 'path';
 
 @Injectable()
 export class LocalStorageService {
@@ -19,20 +19,20 @@ export class LocalStorageService {
       'http://localhost:8123/api/static',
     );
 
-    if (!fs.existsSync(this.storagePath)) {
-      fs.mkdirSync(this.storagePath, { recursive: true });
+    if (!existsSync(this.storagePath)) {
+      mkdirSync(this.storagePath, { recursive: true });
     }
   }
 
-  async upload(filePath: string, filename: string): Promise<string> {
-    const destPath = path.join(this.storagePath, filename);
-    fs.mkdirSync(path.dirname(destPath), { recursive: true });
-    fs.copyFileSync(filePath, destPath);
-    return `${this.baseUrl}/${filename}`;
+  upload(filePath: string, filename: string): Promise<string> {
+    const destPath = join(this.storagePath, filename);
+    mkdirSync(dirname(destPath), { recursive: true });
+    copyFileSync(filePath, destPath);
+    return Promise.resolve(`${this.baseUrl}/${filename}`);
   }
 
   getFilePath(filename: string): string {
-    return path.join(this.storagePath, filename);
+    return join(this.storagePath, filename);
   }
 
   getStoragePath(): string {

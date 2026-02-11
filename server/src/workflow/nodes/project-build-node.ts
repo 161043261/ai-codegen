@@ -1,21 +1,21 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { execSync } from 'child_process';
-import * as path from 'path';
-import { CodegenType } from '../../common/enums/codegen-type.enum';
+import { join } from 'path';
+import { CodegenType } from '../../common/enums/codegen-type';
 import { WorkflowStateType } from '../models/workflow-context';
 
 @Injectable()
 export class ProjectBuildNode {
   private readonly logger = new Logger(ProjectBuildNode.name);
 
-  async execute(state: WorkflowStateType): Promise<Partial<WorkflowStateType>> {
-    this.logger.log('Executing ProjectBuildNode');
+  execute(state: WorkflowStateType): Promise<Partial<WorkflowStateType>> {
+    this.logger.log('Executing project build node');
 
     if (state.codegenType !== CodegenType.VITE_PROJECT) {
-      return { buildSuccess: true };
+      return Promise.resolve({ buildSuccess: true });
     }
 
-    const projectDir = path.join(
+    const projectDir = join(
       process.cwd(),
       'tmp',
       'code_output',
@@ -33,13 +33,13 @@ export class ProjectBuildNode {
         timeout: 300000,
         stdio: 'pipe',
       });
-      return { buildSuccess: true };
-    } catch (error: any) {
-      this.logger.error('Project build failed', error);
-      return {
+      return Promise.resolve({ buildSuccess: true });
+    } catch (err) {
+      this.logger.error('Project build failed', err);
+      return Promise.resolve({
         buildSuccess: false,
-        error: `Build failed: ${error.message}`,
-      };
+        error: `Build failed: ${err instanceof Error ? err.message : String(err)}`,
+      });
     }
   }
 }

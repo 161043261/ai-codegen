@@ -3,17 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import type { Request, Response } from 'express';
-import * as fs from 'fs';
-import * as path from 'path';
-import { AppEntity } from '../database/entities/app.entity';
-import { AppAddDto } from './dto/app-add.dto';
-import { AppUpdateDto } from './dto/app-update.dto';
-import { AppDeployDto } from './dto/app-deploy.dto';
-import { AppQueryDto } from './dto/app-query.dto';
-import { AppAdminUpdateDto } from './dto/app-admin-update.dto';
-import { AppVo } from './vo/app.vo';
+import { existsSync, mkdirSync, copyFileSync, readdirSync } from 'fs';
+import { join } from 'path';
+import { AppEntity } from '../database/entities/app-entity';
+import { AppAddDto } from './dto/app-add-dto';
+import { AppUpdateDto } from './dto/app-update-dto';
+import { AppDeployDto } from './dto/app-deploy-dto';
+import { AppQueryDto } from './dto/app-query-dto';
+import { AppAdminUpdateDto } from './dto/app-admin-update-dto';
+import { AppVo } from './vo/app-vo';
 import { BusinessException } from '../common/exceptions/business.exception';
-import { ErrorCode } from '../common/enums/error-code.enum';
+import { ErrorCode } from '../common/enums/error-code';
 import {
   USER_LOGIN_STATE,
   AWESOME_APP_PRIORITY,
@@ -25,8 +25,9 @@ import { ChatHistoryService } from '../chat-history/chat-history.service';
 import { ScreenshotService } from '../screenshot/screenshot.service';
 import { LocalStorageService } from '../local-storage/local-storage.service';
 import { ProjectDownloadService } from '../project-download/project-download.service';
-import { CodegenType } from '../common/enums/codegen-type.enum';
-import { ChatHistoryMessageType } from '../common/enums/message-type.enum';
+import { CodegenType } from '../common/enums/codegen-type';
+import { ChatHistoryMessageType } from '../common/enums/message-type';
+import type { FindOptionsWhere, FindOptionsOrder } from 'typeorm';
 
 @Injectable()
 export class AppService {
@@ -45,7 +46,7 @@ export class AppService {
   ) {}
 
   async addApp(dto: AppAddDto, request: Request): Promise<string> {
-    const loginUser = (request.session as any)?.[USER_LOGIN_STATE];
+    const loginUser = request.session?.[USER_LOGIN_STATE];
     if (!loginUser) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
@@ -58,7 +59,7 @@ export class AppService {
       appName: dto.appName,
       initPrompt: dto.initPrompt,
       codegenType,
-      userId: loginUser.id,
+      userId: Number(loginUser.id),
     });
     const saved = await this.appRepository.save(app);
     return String(saved.id);
@@ -70,7 +71,7 @@ export class AppService {
     request: Request,
     response: Response,
   ): Promise<void> {
-    const loginUser = (request.session as any)?.[USER_LOGIN_STATE];
+    const loginUser = request.session?.[USER_LOGIN_STATE];
     if (!loginUser) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
@@ -100,7 +101,7 @@ export class AppService {
       await this.aiCodegenFacade.generateAndSaveCodeStream(
         String(appId),
         message,
-        app.codegenType as CodegenType,
+        app.codegenType,
         (chunk: string) => {
           collectedContent.push(chunk);
           response.write(`data: ${JSON.stringify({ d: chunk })}\n\n`);
@@ -128,7 +129,7 @@ export class AppService {
   }
 
   async deployApp(dto: AppDeployDto, request: Request): Promise<AppVo | null> {
-    const loginUser = (request.session as any)?.[USER_LOGIN_STATE];
+    const loginUser = request.session?.[USER_LOGIN_STATE];
     if (!loginUser) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
@@ -148,20 +149,20 @@ export class AppService {
       deployKey = this.generateDeployKey();
     }
 
-    const codeOutputDir = path.join(
+    const codeOutputDir = join(
       process.cwd(),
       'tmp',
       'code_output',
       `${app.codegenType}_${app.id}`,
     );
-    const deployDir = path.join(process.cwd(), 'tmp', 'code_deploy', deployKey);
+    const deployDir = join(process.cwd(), 'tmp', 'code_deploy', deployKey);
 
     if (app.codegenType === CodegenType.VITE_PROJECT) {
       const { execSync } = await import('child_process');
       try {
         execSync('npm install', { cwd: codeOutputDir, timeout: 300000 });
         execSync('npm run build', { cwd: codeOutputDir, timeout: 300000 });
-        const distDir = path.join(codeOutputDir, 'dist');
+        const distDir = join(codeOutputDir, 'dist');
         this.copyDir(distDir, deployDir);
       } catch (err) {
         this.logger.error('Build failed', err);
@@ -175,7 +176,7 @@ export class AppService {
     app.deployTime = new Date().toISOString();
     await this.appRepository.save(app);
 
-    const deployHost = this.configService.get('CODEGEN_DEPLOY_HOST');
+    const deployHost = this.configService.get<string>('CODEGEN_DEPLOY_HOST');
     const deployUrl = `${deployHost}/${deployKey}/index.html`;
 
     this.screenshotService.captureAndUpload(deployUrl, app).catch((err) => {
@@ -190,7 +191,7 @@ export class AppService {
     response: Response,
     request: Request,
   ): Promise<void> {
-    const loginUser = (request.session as any)?.[USER_LOGIN_STATE];
+    const loginUser = request.session?.[USER_LOGIN_STATE];
     if (!loginUser) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
@@ -200,7 +201,7 @@ export class AppService {
     if (!app) {
       throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
     }
-    const projectDir = path.join(
+    const projectDir = join(
       process.cwd(),
       'tmp',
       'code_output',
@@ -214,7 +215,7 @@ export class AppService {
   }
 
   async updateApp(dto: AppUpdateDto, request: Request): Promise<boolean> {
-    const loginUser = (request.session as any)?.[USER_LOGIN_STATE];
+    const loginUser = request.session?.[USER_LOGIN_STATE];
     if (!loginUser) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
@@ -233,7 +234,7 @@ export class AppService {
   }
 
   async deleteApp(id: number, request: Request): Promise<boolean> {
-    const loginUser = (request.session as any)?.[USER_LOGIN_STATE];
+    const loginUser = request.session?.[USER_LOGIN_STATE];
     if (!loginUser) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
@@ -265,7 +266,7 @@ export class AppService {
     dto: AppQueryDto,
     request: Request,
   ): Promise<{ records: AppVo[]; total: number }> {
-    const loginUser = (request.session as any)?.[USER_LOGIN_STATE];
+    const loginUser = request.session?.[USER_LOGIN_STATE];
     if (!loginUser) {
       throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
     }
@@ -329,7 +330,7 @@ export class AppService {
       priority,
       initPrompt,
     } = dto;
-    const where: any = { isDelete: 0 };
+    const where: FindOptionsWhere<AppEntity> = { isDelete: 0 };
 
     if (id) where.id = id;
     if (codegenType) where.codegenType = codegenType;
@@ -339,8 +340,8 @@ export class AppService {
     if (appName) where.appName = Like(`%${appName}%`);
     if (initPrompt) where.initPrompt = Like(`%${initPrompt}%`);
 
-    const order: any = {};
-    if (sortField) {
+    const order: FindOptionsOrder<AppEntity> = {};
+    if (sortField && sortField in new AppEntity()) {
       order[sortField] = sortOrder === 'ascend' ? 'ASC' : 'DESC';
     } else {
       order.createTime = 'DESC';
@@ -371,18 +372,18 @@ export class AppService {
   }
 
   private copyDir(src: string, dest: string): void {
-    if (!fs.existsSync(src)) {
+    if (!existsSync(src)) {
       throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, '源目录不存在');
     }
-    fs.mkdirSync(dest, { recursive: true });
-    const entries = fs.readdirSync(src, { withFileTypes: true });
+    mkdirSync(dest, { recursive: true });
+    const entries = readdirSync(src, { withFileTypes: true });
     for (const entry of entries) {
-      const srcPath = path.join(src, entry.name);
-      const destPath = path.join(dest, entry.name);
+      const srcPath = join(src, entry.name);
+      const destPath = join(dest, entry.name);
       if (entry.isDirectory()) {
         this.copyDir(srcPath, destPath);
       } else {
-        fs.copyFileSync(srcPath, destPath);
+        copyFileSync(srcPath, destPath);
       }
     }
   }

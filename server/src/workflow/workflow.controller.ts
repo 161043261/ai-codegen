@@ -29,9 +29,9 @@ export class WorkflowController {
           `event: ${event.event}\ndata: ${JSON.stringify(event.data)}\n\n`,
         );
       }
-    } catch (error: any) {
+    } catch (err) {
       response.write(
-        `event: workflow-error\ndata: ${JSON.stringify({ error: error.message })}\n\n`,
+        `event: workflow-error\ndata: ${JSON.stringify({ error: err instanceof Error ? err.message : String(err) })}\n\n`,
       );
     } finally {
       response.end();
@@ -51,9 +51,9 @@ export class WorkflowController {
           `event: ${event.event}\ndata: ${JSON.stringify(event.data)}\n\n`,
         );
       }
-    } catch (error: any) {
+    } catch (err) {
       response.write(
-        `event: workflow-error\ndata: ${JSON.stringify({ error: error.message })}\n\n`,
+        `event: workflow-error\ndata: ${JSON.stringify({ error: err instanceof Error ? err.message : String(err) })}\n\n`,
       );
     } finally {
       response.end();

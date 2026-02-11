@@ -3,11 +3,11 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class UserAddDto {
   @IsNotEmpty()
   @IsString()
-  userAccount: string;
+  userAccount = '';
 
   @IsNotEmpty()
   @IsString()
-  userPassword: string;
+  userPassword = '';
 
   @IsOptional()
   @IsString()

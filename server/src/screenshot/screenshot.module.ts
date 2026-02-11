@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppEntity } from '../database/entities/app.entity';
+import { AppEntity } from '../database/entities/app-entity';
 import { ScreenshotService } from './screenshot.service';
 import { LocalStorageModule } from '../local-storage/local-storage.module';
 

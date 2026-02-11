@@ -10,15 +10,15 @@ import {
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { AppService } from './app.service';
-import { AppAddDto } from './dto/app-add.dto';
-import { AppUpdateDto } from './dto/app-update.dto';
-import { AppDeployDto } from './dto/app-deploy.dto';
-import { AppQueryDto } from './dto/app-query.dto';
-import { AppAdminUpdateDto } from './dto/app-admin-update.dto';
-import { DeleteRequestDto } from '../common/dto/delete-request.dto';
+import { AppAddDto } from './dto/app-add-dto';
+import { AppUpdateDto } from './dto/app-update-dto';
+import { AppDeployDto } from './dto/app-deploy-dto';
+import { AppQueryDto } from './dto/app-query-dto';
+import { AppAdminUpdateDto } from './dto/app-admin-update-dto';
+import { DeleteRequestDto } from '../common/dto/delete-request-dto';
 import { BaseResponse } from '../common/response/base-response';
 import { AuthCheck } from '../common/guards/auth.guard';
-import { UserRole } from '../common/enums/user-role.enum';
+import { UserRole } from '../common/enums/user-role';
 
 @Controller('app')
 export class AppController {

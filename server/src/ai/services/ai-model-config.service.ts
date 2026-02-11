@@ -57,10 +57,7 @@ export class AiModelConfigService {
           'OLLAMA_BASE_URL',
           'http://localhost:11434',
         ),
-        model: this.configService.get(
-          'OLLAMA_REASONING_CHAT_MODEL',
-          'qwen3',
-        ),
+        model: this.configService.get('OLLAMA_REASONING_CHAT_MODEL', 'qwen3'),
         numPredict: this.configService.get<number>(
           'OLLAMA_REASONING_CHAT_MAX_TOKENS',
           8192,
