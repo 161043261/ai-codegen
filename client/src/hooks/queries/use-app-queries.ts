@@ -58,7 +58,7 @@ export function useFeaturedAppVoByPage(params: {
     queryKey: queryKeys.app.featuredList(params),
     queryFn: async () => {
       const res = await request<API.BaseResponsePageAppVO>(
-        "/app/good/list/page/vo",
+        "/app/awesome/list/page/vo",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

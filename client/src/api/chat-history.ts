@@ -9,7 +9,7 @@ export async function listAllChatHistoryByPageForAdmin(
   options?: { [key: string]: unknown },
 ) {
   return request<API.BaseResponsePageChatHistory>(
-    "/chatHistory/admin/list/page/vo",
+    "/chat-history/admin/list/page/vo",
     {
       method: "POST",
       headers: {
@@ -28,7 +28,7 @@ export async function listAppChatHistory(
 ) {
   const { appId: param0, ...queryParams } = params;
   return request<API.BaseResponsePageChatHistory>(
-    `/chatHistory/app/${param0}`,
+    `/chat-history/app/${param0}`,
     {
       method: "GET",
       params: {

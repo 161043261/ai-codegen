@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { Code, Home, LogOut, Menu, X } from "lucide-react";
@@ -30,12 +30,8 @@ export default function GlobalHeader() {
   const location = useLocation();
   const navigate = useNavigate();
   const { loginUser, setLoginUser } = useUserStore();
-  const [selectedKey, setSelectedKey] = useState("/");
+  const selectedKey = location.pathname;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    setSelectedKey(location.pathname);
-  }, [location.pathname]);
 
   // Filter menu items based on user role
   const filteredMenuItems = menuItems.filter((item) => {

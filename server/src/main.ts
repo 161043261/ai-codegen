@@ -22,11 +22,11 @@ async function bootstrap() {
 
   app.use(
     session({
-      secret: configService.get('SESSION_SECRET', 'ai-codegen-session-secret'),
+      secret: configService.get('SESSION_SECRET', 'ai-codegen'),
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: configService.get<number>('SESSION_MAX_AGE', 2592000000),
+        maxAge: Number(configService.get('SESSION_MAX_AGE', 2_592_000_000)),
         httpOnly: true,
         secure: false,
       },

@@ -77,12 +77,12 @@ export async function updateAppByAdmin(
   });
 }
 
-/** Chat to generate code GET /app/chat/gen/code */
+/** Chat to generate code GET /app/chat/codegen */
 export async function chatToGenCode(
   params: API.chatToGenCodeParams,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.ServerSentEventString[]>("/app/chat/gen/code", {
+  return request<API.ServerSentEventString[]>("/app/chat/codegen", {
     method: "GET",
     params: {
       ...params,
@@ -148,12 +148,12 @@ export async function getAppVoById(
   });
 }
 
-/** List good app VO by page POST /app/good/list/page/vo */
+/** List awesome app VO by page POST /app/awesome/list/page/vo */
 export async function listGoodAppVoByPage(
   body: API.AppQueryRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponsePageAppVO>("/app/good/list/page/vo", {
+  return request<API.BaseResponsePageAppVO>("/app/awesome/list/page/vo", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

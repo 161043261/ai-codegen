@@ -10,7 +10,7 @@ export function useAppChatHistory(
     queryKey: [...queryKeys.chatHistory.byApp(appId!), params],
     queryFn: async () => {
       const res = await request<API.BaseResponsePageChatHistory>(
-        `/chatHistory/app/${appId}`,
+        `/chat-history/app/${appId}`,
         {
           method: "GET",
           params: { pageSize: "10", ...params },
@@ -37,7 +37,7 @@ export function useAdminChatHistoryByPage(params: {
     queryKey: queryKeys.chatHistory.adminList(params),
     queryFn: async () => {
       const res = await request<API.BaseResponsePageChatHistory>(
-        "/chatHistory/admin/list/page/vo",
+        "/chat-history/admin/list/page/vo",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

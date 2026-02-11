@@ -1,8 +1,8 @@
 # AI Codegen
 
 ```bash
-git fetch origin
-git checkout -b dev origin/dev
+ollama pull qwen3
+ollama serve
 ```
 
 .git/hooks/pre-commit
@@ -11,7 +11,7 @@ git checkout -b dev origin/dev
 #!/bin/sh
 echo "Running code formatter..."
 
-mvn com.spotify.fmt:fmt-maven-plugin:format -q
+mvn fmt:format -q
 
 if [ $? -ne 0 ]; then
   echo "Code formatting failed."

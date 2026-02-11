@@ -196,7 +196,7 @@ export default function AppChatPage() {
           message: userMessage,
         });
 
-        const url = `${baseURL}/app/chat/gen/code?${params}`;
+        const url = `${baseURL}/app/chat/codegen?${params}`;
         const eventSource = new EventSource(url, { withCredentials: true });
 
         let fullContent = "";
@@ -381,7 +381,7 @@ export default function AppChatPage() {
           message: app.initPrompt,
         });
 
-        const url = `${baseURL}/app/chat/gen/code?${params}`;
+        const url = `${baseURL}/app/chat/codegen?${params}`;
         const eventSource = new EventSource(url, { withCredentials: true });
         let streamCompleted = false;
         let fullContent = "";

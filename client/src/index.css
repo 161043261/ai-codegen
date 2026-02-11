@@ -5,11 +5,9 @@
 
 @theme inline {
   --font-sans:
-    "Maple Mono", "Iosevka", "Sarasa Gothic SC", "Microsoft YaHei",
-    "PingFang SC", sans-serif;
+    "Iosevka", "Sarasa Gothic SC", "Microsoft YaHei", "PingFang SC", sans-serif;
   --font-mono:
-    "Maple Mono", "Iosevka", "Sarasa Gothic SC", "Microsoft YaHei",
-    "PingFang SC", monospace;
+    "Iosevka", "Sarasa Gothic SC", "Microsoft YaHei", "PingFang SC", monospace;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

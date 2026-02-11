@@ -116,7 +116,7 @@ export default function HomePage() {
             className="mb-5 text-5xl leading-tight font-bold md:text-6xl"
             style={{
               background:
-                "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #10b981 100%)",
+                "linear-gradient(135deg, #3b82f6 0%, #10b981 50%, #8b5cf6 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
