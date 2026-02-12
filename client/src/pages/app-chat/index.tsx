@@ -38,7 +38,6 @@ import { CodegenTypeEnum, formatCodegenType } from "@/utils/codegen-types";
 import { type ElementInfo, VisualEditor } from "@/utils/visual-editor";
 
 interface Message {
-  id: string;
   type: "user" | "ai";
   content: string;
   loading?: boolean;
@@ -64,8 +63,6 @@ export default function AppChatPage() {
   const [userInput, setUserInput] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const messageIdRef = useRef(0);
-  const nextMessageId = () => String(++messageIdRef.current);
 
   // Chat history related
   const [loadingHistory, setLoadingHistory] = useState(false);
@@ -156,7 +153,6 @@ export default function AppChatPage() {
           if (chatHistories.length > 0) {
             const historyMessages: Message[] = chatHistories
               .map((chat) => ({
-                id: nextMessageId(),
                 type: (chat.messageType === "user" ? "user" : "ai") as
                   | "user"
                   | "ai",
@@ -342,7 +338,6 @@ export default function AppChatPage() {
         if (chatHistories.length > 0) {
           const historyMessages: Message[] = chatHistories
             .map((chat) => ({
-              id: nextMessageId(),
               type: (chat.messageType === "user" ? "user" : "ai") as
                 | "user"
                 | "ai",
@@ -373,11 +368,9 @@ export default function AppChatPage() {
           historyRes.data.data.records.length === 0)
       ) {
         // Auto send initial message
-        const userMsgId = nextMessageId();
-        const aiMsgId = nextMessageId();
         const newMessages = [
-          { id: userMsgId, type: "user" as const, content: app.initPrompt },
-          { id: aiMsgId, type: "ai" as const, content: "", loading: true },
+          { type: "user" as const, content: app.initPrompt },
+          { type: "ai" as const, content: "", loading: true },
         ];
         setMessages(newMessages);
 
@@ -401,9 +394,8 @@ export default function AppChatPage() {
             if (content !== undefined && content !== null) {
               fullContent += content;
               setMessages([
-                { id: userMsgId, type: "user", content: app.initPrompt ?? "" },
+                { type: "user", content: app.initPrompt ?? "" },
                 {
-                  id: aiMsgId,
                   type: "ai",
                   content: fullContent,
                   loading: false,
@@ -464,8 +456,8 @@ export default function AppChatPage() {
 
     const newMessages: Message[] = [
       ...messages,
-      { id: nextMessageId(), type: "user", content: message },
-      { id: nextMessageId(), type: "ai", content: "", loading: true },
+      { type: "user", content: message },
+      { type: "ai", content: "", loading: true },
     ];
     setMessages(newMessages);
     const aiMessageIndex = newMessages.length - 1;
@@ -719,8 +711,8 @@ export default function AppChatPage() {
               </div>
             )}
 
-            {messages.map((message) => (
-              <div key={message.id} className="mb-3">
+            {messages.map((message, idx) => (
+              <div key={idx} className="mb-3">
                 {message.type === "user" ? (
                   <div className="flex items-start justify-end gap-2">
                     <div className="max-w-[70%] rounded-xl bg-blue-500 px-4 py-3 leading-relaxed wrap-break-word text-white">

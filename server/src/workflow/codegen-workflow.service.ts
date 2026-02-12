@@ -45,7 +45,13 @@ export class CodegenWorkflowService {
     const graph = this.buildGraph();
     const compiled = graph.compile();
 
-    yield { event: 'workflow-start', data: { prompt: userPrompt } };
+    yield {
+      event: 'workflow-start',
+      data: {
+        message: 'Codegen workflow: starting execution',
+        original_prompt: userPrompt,
+      },
+    };
 
     try {
       const stream = await compiled.stream({
@@ -60,21 +66,39 @@ export class CodegenWorkflowService {
         error: '',
       });
 
+      let stepNumber = 1;
       for await (const update of stream) {
-        const nodeName = Object.keys(update)[0];
+        // 每次 yield 只有一个 key 有值
+        const entry = Object.entries(update).find(
+          ([, value]) => value !== undefined,
+        );
+        if (!entry) continue;
+        const [nodeName, nodeState] = entry;
+        this.logger.log(
+          `Codegen workflow: step ${stepNumber} completed (${nodeName})`,
+        );
         yield {
           event: 'step-complete',
           data: {
-            node: nodeName,
-            state: update[nodeName],
+            step_number: stepNumber,
+            current_step: nodeName,
+            state: nodeState,
           },
         };
+        stepNumber++;
       }
-
-      yield { event: 'workflow-complete', data: {} };
+      this.logger.log('Codegen workflow: execution completed');
+      yield {
+        event: 'workflow-complete',
+        data: { message: 'Codegen workflow completed' },
+      };
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error);
-      yield { event: 'workflow-error', data: { error: msg } };
+      this.logger.error(`Codegen workflow: execution failed ${msg}`);
+      yield {
+        event: 'workflow-error',
+        data: { error: msg, message: 'Codegen workflow: execution failed' },
+      };
     }
   }
 
