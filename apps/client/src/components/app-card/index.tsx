@@ -2,22 +2,22 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 interface Props {
-  app: API.AppVO;
-  featured?: boolean;
+  app: ApiNs.AppVo;
+  awesome?: boolean;
   onViewChat?: (appId: string | number | undefined) => void;
-  onViewWork?: (app: API.AppVO) => void;
+  onViewWork?: (app: ApiNs.AppVo) => void;
 }
 
 export default function AppCard({
   app,
-  featured = false,
+  awesome = false,
   onViewChat,
   onViewWork,
 }: Props) {
   return (
     <div
       className={`cursor-pointer overflow-hidden rounded-2xl border border-white/20 bg-white/95 shadow-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl ${
-        featured ? "ring-2 ring-yellow-400" : ""
+        awesome ? "ring-2 ring-yellow-400" : ""
       }`}
     >
       {/* Preview Image */}
@@ -65,7 +65,7 @@ export default function AppCard({
             {app.appName || "Unnamed App"}
           </h3>
           <p className="truncate text-sm text-gray-500">
-            {app.user?.userName || (featured ? "Official" : "Unknown User")}
+            {app.user?.userName || (awesome ? "Official" : "Unknown User")}
           </p>
         </div>
       </div>

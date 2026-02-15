@@ -5,8 +5,8 @@ import { queryKeys } from "@/lib/query-client";
 export function useAddAppMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: API.AppAddRequest) => {
-      const res = await request<API.BaseResponseLong>("/app/add", {
+    mutationFn: async (body: ApiNs.AppAddRequest) => {
+      const res = await request<ApiNs.BaseResponseNumber>("/app/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: body,
@@ -24,8 +24,8 @@ export function useAddAppMutation() {
 export function useUpdateAppMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: API.AppUpdateRequest) => {
-      const res = await request<API.BaseResponseBoolean>("/app/update", {
+    mutationFn: async (body: ApiNs.AppUpdateRequest) => {
+      const res = await request<ApiNs.BaseResponseBoolean>("/app/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: body,
@@ -46,12 +46,15 @@ export function useUpdateAppMutation() {
 export function useUpdateAppByAdminMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: API.AppAdminUpdateRequest) => {
-      const res = await request<API.BaseResponseBoolean>("/app/admin/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        data: body,
-      });
+    mutationFn: async (body: ApiNs.AppAdminUpdateRequest) => {
+      const res = await request<ApiNs.BaseResponseBoolean>(
+        "/app/admin/update",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          data: body,
+        },
+      );
       return res.data;
     },
     onSuccess: (data, variables) => {
@@ -68,8 +71,8 @@ export function useUpdateAppByAdminMutation() {
 export function useDeleteAppMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: API.DeleteRequest) => {
-      const res = await request<API.BaseResponseBoolean>("/app/delete", {
+    mutationFn: async (body: ApiNs.DeleteRequest) => {
+      const res = await request<ApiNs.BaseResponseBoolean>("/app/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: body,
@@ -87,12 +90,15 @@ export function useDeleteAppMutation() {
 export function useDeleteAppByAdminMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: API.DeleteRequest) => {
-      const res = await request<API.BaseResponseBoolean>("/app/admin/delete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        data: body,
-      });
+    mutationFn: async (body: ApiNs.DeleteRequest) => {
+      const res = await request<ApiNs.BaseResponseBoolean>(
+        "/app/admin/delete",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          data: body,
+        },
+      );
       return res.data;
     },
     onSuccess: (data) => {
@@ -106,8 +112,8 @@ export function useDeleteAppByAdminMutation() {
 export function useDeployAppMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: API.AppDeployRequest) => {
-      const res = await request<API.BaseResponseString>("/app/deploy", {
+    mutationFn: async (body: ApiNs.AppDeployRequest) => {
+      const res = await request<ApiNs.BaseResponseString>("/app/deploy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: body,

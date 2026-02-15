@@ -1,20 +1,20 @@
-declare namespace API {
-  type AppAddRequest = {
+declare namespace ApiNs {
+  interface AppAddRequest {
     initPrompt?: string;
-  };
+  }
 
-  type AppAdminUpdateRequest = {
+  interface AppAdminUpdateRequest {
     id?: number;
     appName?: string;
     cover?: string;
     priority?: number;
-  };
+  }
 
-  type AppDeployRequest = {
+  interface AppDeployRequest {
     appId?: number;
-  };
+  }
 
-  type AppQueryRequest = {
+  interface AppQueryRequest {
     pageNum?: number;
     pageSize?: number;
     sortField?: string;
@@ -27,14 +27,14 @@ declare namespace API {
     deployKey?: string;
     priority?: number;
     userId?: number;
-  };
+  }
 
-  type AppUpdateRequest = {
+  interface AppUpdateRequest {
     id?: number;
     appName?: string;
-  };
+  }
 
-  type AppVO = {
+  interface AppVo {
     id?: number;
     appName?: string;
     cover?: string;
@@ -46,70 +46,70 @@ declare namespace API {
     userId?: number;
     createTime?: string;
     updateTime?: string;
-    user?: UserVO;
-  };
+    user?: UserVo;
+  }
 
-  type BaseResponseAppVO = {
+  interface BaseResponseAppVo {
     code?: number;
-    data?: AppVO;
+    data?: AppVo;
     message?: string;
-  };
+  }
 
-  type BaseResponseBoolean = {
+  interface BaseResponseBoolean {
     code?: number;
     data?: boolean;
     message?: string;
-  };
+  }
 
-  type BaseResponseLoginUserVO = {
+  interface BaseResponseLoginUserVo {
     code?: number;
-    data?: LoginUserVO;
+    data?: LoginUserVo;
     message?: string;
-  };
+  }
 
-  type BaseResponseLong = {
+  interface BaseResponseNumber {
     code?: number;
     data?: number;
     message?: string;
-  };
+  }
 
-  type BaseResponsePageAppVO = {
+  interface BaseResponsePageAppVo {
     code?: number;
-    data?: PageAppVO;
+    data?: PageAppVo;
     message?: string;
-  };
+  }
 
-  type BaseResponsePageChatHistory = {
+  interface BaseResponsePageChatHistory {
     code?: number;
     data?: PageChatHistory;
     message?: string;
-  };
+  }
 
-  type BaseResponsePageUserVO = {
+  interface BaseResponsePageUserVo {
     code?: number;
-    data?: PageUserVO;
+    data?: PageUserVo;
     message?: string;
-  };
+  }
 
-  type BaseResponseString = {
+  interface BaseResponseString {
     code?: number;
     data?: string;
     message?: string;
-  };
+  }
 
-  type BaseResponseUser = {
+  interface BaseResponseUser {
     code?: number;
     data?: User;
     message?: string;
-  };
+  }
 
-  type BaseResponseUserVO = {
+  interface BaseResponseUserVo {
     code?: number;
-    data?: UserVO;
+    data?: UserVo;
     message?: string;
-  };
+  }
 
-  type ChatHistory = {
+  interface ChatHistory {
     id?: number;
     message?: string;
     messageType?: string;
@@ -118,9 +118,9 @@ declare namespace API {
     createTime?: string;
     updateTime?: string;
     isDelete?: number;
-  };
+  }
 
-  type ChatHistoryQueryRequest = {
+  interface ChatHistoryQueryRequest {
     pageNum?: number;
     pageSize?: number;
     sortField?: string;
@@ -131,44 +131,44 @@ declare namespace API {
     appId?: number;
     userId?: number;
     lastCreateTime?: string;
-  };
+  }
 
-  type chatToGenCodeParams = {
+  interface ChatToGenCodeParams {
     appId: number;
     message: string;
-  };
+  }
 
-  type DeleteRequest = {
+  interface DeleteRequest {
     id?: number;
-  };
+  }
 
-  type downloadAppCodeParams = {
+  interface DownloadAppCodeParams {
     appId: number;
-  };
+  }
 
-  type getAppVOByIdByAdminParams = {
+  interface GetAppVoByIdByAdminParams {
     id: number;
-  };
+  }
 
-  type getAppVOByIdParams = {
+  interface GetAppVoByIdParams {
     id: number;
-  };
+  }
 
-  type getUserByIdParams = {
+  interface GetUserByIdParams {
     id: number;
-  };
+  }
 
-  type getUserVOByIdParams = {
+  interface GetUserVoByIdParams {
     id: number;
-  };
+  }
 
-  type listAppChatHistoryParams = {
+  interface ListAppChatHistoryParams {
     appId: number;
     pageSize?: number;
     lastCreateTime?: string;
-  };
+  }
 
-  type LoginUserVO = {
+  interface LoginUserVo {
     id?: number;
     userAccount?: string;
     userName?: string;
@@ -177,42 +177,42 @@ declare namespace API {
     userRole?: string;
     createTime?: string;
     updateTime?: string;
-  };
+  }
 
-  type PageAppVO = {
-    records?: AppVO[];
+  interface PageAppVo {
+    records?: AppVo[];
     pageNumber?: number;
     pageSize?: number;
     totalPage?: number;
     totalRow?: number;
     optimizeCountQuery?: boolean;
-  };
+  }
 
-  type PageChatHistory = {
+  interface PageChatHistory {
     records?: ChatHistory[];
     pageNumber?: number;
     pageSize?: number;
     totalPage?: number;
     totalRow?: number;
     optimizeCountQuery?: boolean;
-  };
+  }
 
-  type PageUserVO = {
-    records?: UserVO[];
+  interface PageUserVo {
+    records?: UserVo[];
     pageNumber?: number;
     pageSize?: number;
     totalPage?: number;
     totalRow?: number;
     optimizeCountQuery?: boolean;
-  };
+  }
 
   type ServerSentEventString = true;
 
-  type serveStaticResourceParams = {
+  interface ServeStaticResourceParams {
     deployKey: string;
-  };
+  }
 
-  type User = {
+  interface User {
     id?: number;
     userAccount?: string;
     userPassword?: string;
@@ -224,22 +224,22 @@ declare namespace API {
     createTime?: string;
     updateTime?: string;
     isDelete?: number;
-  };
+  }
 
-  type UserAddRequest = {
+  interface UserAddRequest {
     userName?: string;
     userAccount?: string;
     userAvatar?: string;
     userProfile?: string;
     userRole?: string;
-  };
+  }
 
-  type UserLoginRequest = {
+  interface UserLoginRequest {
     userAccount?: string;
     userPassword?: string;
-  };
+  }
 
-  type UserQueryRequest = {
+  interface UserQueryRequest {
     pageNum?: number;
     pageSize?: number;
     sortField?: string;
@@ -249,23 +249,23 @@ declare namespace API {
     userAccount?: string;
     userProfile?: string;
     userRole?: string;
-  };
+  }
 
-  type UserRegisterRequest = {
+  interface UserRegisterRequest {
     userAccount?: string;
     userPassword?: string;
     checkPassword?: string;
-  };
+  }
 
-  type UserUpdateRequest = {
+  interface UserUpdateRequest {
     id?: number;
     userName?: string;
     userAvatar?: string;
     userProfile?: string;
     userRole?: string;
-  };
+  }
 
-  type UserVO = {
+  interface UserVo {
     id?: number;
     userAccount?: string;
     userName?: string;
@@ -273,5 +273,5 @@ declare namespace API {
     userProfile?: string;
     userRole?: string;
     createTime?: string;
-  };
+  }
 }

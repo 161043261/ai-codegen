@@ -78,11 +78,11 @@ export default function AppManagePage() {
     setSearchParams((prev) => ({ ...prev, pageNum: 1 }));
   };
 
-  const editApp = (app: API.AppVO) => {
+  const editApp = (app: ApiNs.AppVo) => {
     navigate(`/app/edit/${app.id}`);
   };
 
-  const toggleFeatured = (app: API.AppVO) => {
+  const toggleFeatured = (app: ApiNs.AppVo) => {
     if (!app.id) return;
     const newPriority = app.priority === 99 ? 0 : 99;
     updateAppByAdminMutation.mutate(

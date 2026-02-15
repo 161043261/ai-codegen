@@ -144,7 +144,7 @@ export default function AppChatPage() {
           queryParams.lastCreateTime = lastCreateTime;
         }
 
-        const res = await request<API.BaseResponsePageChatHistory>(
+        const res = await request<ApiNs.BaseResponsePageChatHistory>(
           `/chatHistory/app/${appId}`,
           { method: "GET", params: queryParams },
         );
@@ -328,7 +328,7 @@ export default function AppChatPage() {
       const app = appInfo;
 
       // Load chat history
-      const historyRes = await request<API.BaseResponsePageChatHistory>(
+      const historyRes = await request<ApiNs.BaseResponsePageChatHistory>(
         `/chatHistory/app/${appId}`,
         { method: "GET", params: { pageSize: "10" } },
       );

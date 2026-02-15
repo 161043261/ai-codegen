@@ -6,7 +6,7 @@ export function useLoginUser() {
   return useQuery({
     queryKey: queryKeys.user.loginUser,
     queryFn: async () => {
-      const res = await request<API.BaseResponseLoginUserVO>(
+      const res = await request<ApiNs.BaseResponseLoginUserVo>(
         "/user/get/login",
         {
           method: "GET",
@@ -30,7 +30,7 @@ export function useUserVoByPage(params: {
   return useQuery({
     queryKey: queryKeys.user.listPage(params),
     queryFn: async () => {
-      const res = await request<API.BaseResponsePageUserVO>(
+      const res = await request<ApiNs.BaseResponsePageUserVo>(
         "/user/list/page/vo",
         {
           method: "POST",
@@ -41,7 +41,7 @@ export function useUserVoByPage(params: {
       if (res.data.code === 0 && res.data.data) {
         return res.data.data;
       }
-      return { records: [], totalRow: 0 } as API.PageUserVO;
+      return { records: [], totalRow: 0 } as ApiNs.PageUserVo;
     },
   });
 }

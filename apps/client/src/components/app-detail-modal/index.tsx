@@ -25,7 +25,7 @@ import UserInfo from "../user-info";
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  app?: API.AppVO;
+  app?: ApiNs.AppVo;
   showActions?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;

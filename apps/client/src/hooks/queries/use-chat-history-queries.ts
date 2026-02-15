@@ -9,7 +9,7 @@ export function useAppChatHistory(
   return useQuery({
     queryKey: [...queryKeys.chatHistory.byApp(appId ?? 0), params],
     queryFn: async () => {
-      const res = await request<API.BaseResponsePageChatHistory>(
+      const res = await request<ApiNs.BaseResponsePageChatHistory>(
         `/chat-history/app/${appId}`,
         {
           method: "GET",
@@ -19,7 +19,7 @@ export function useAppChatHistory(
       if (res.data.code === 0 && res.data.data) {
         return res.data.data;
       }
-      return { records: [], totalRow: 0 } as API.PageChatHistory;
+      return { records: [], totalRow: 0 } as ApiNs.PageChatHistory;
     },
     enabled: !!appId,
   });
@@ -36,7 +36,7 @@ export function useAdminChatHistoryByPage(params: {
   return useQuery({
     queryKey: queryKeys.chatHistory.adminList(params),
     queryFn: async () => {
-      const res = await request<API.BaseResponsePageChatHistory>(
+      const res = await request<ApiNs.BaseResponsePageChatHistory>(
         "/chat-history/admin/list/page/vo",
         {
           method: "POST",
@@ -47,7 +47,7 @@ export function useAdminChatHistoryByPage(params: {
       if (res.data.code === 0 && res.data.data) {
         return res.data.data;
       }
-      return { records: [], totalRow: 0 } as API.PageChatHistory;
+      return { records: [], totalRow: 0 } as ApiNs.PageChatHistory;
     },
   });
 }

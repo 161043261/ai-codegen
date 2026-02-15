@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib";
 
 interface Props {
-  user?: API.UserVO;
+  user?: ApiNs.UserVo;
   size?: "sm" | "default" | "lg";
   showName?: boolean;
 }

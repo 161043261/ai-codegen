@@ -5,8 +5,8 @@ import { queryKeys } from "@/lib/query-client";
 export function useLoginMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: API.UserLoginRequest) => {
-      const res = await request<API.BaseResponseLoginUserVO>("/user/login", {
+    mutationFn: async (body: ApiNs.UserLoginRequest) => {
+      const res = await request<ApiNs.BaseResponseLoginUserVo>("/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: body,
@@ -23,8 +23,8 @@ export function useLoginMutation() {
 
 export function useRegisterMutation() {
   return useMutation({
-    mutationFn: async (body: API.UserRegisterRequest) => {
-      const res = await request<API.BaseResponseLong>("/user/register", {
+    mutationFn: async (body: ApiNs.UserRegisterRequest) => {
+      const res = await request<ApiNs.BaseResponseNumber>("/user/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: body,
@@ -38,7 +38,7 @@ export function useLogoutMutation() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async () => {
-      const res = await request<API.BaseResponseBoolean>("/user/logout", {
+      const res = await request<ApiNs.BaseResponseBoolean>("/user/logout", {
         method: "POST",
       });
       return res.data;
@@ -55,8 +55,8 @@ export function useLogoutMutation() {
 export function useDeleteUserMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (body: API.DeleteRequest) => {
-      const res = await request<API.BaseResponseBoolean>("/user/delete", {
+    mutationFn: async (body: ApiNs.DeleteRequest) => {
+      const res = await request<ApiNs.BaseResponseBoolean>("/user/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: body,

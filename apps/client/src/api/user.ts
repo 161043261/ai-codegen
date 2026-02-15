@@ -5,134 +5,130 @@ import request from "@/api/request";
 
 /** Add user POST /user/add */
 export async function addUser(
-  body: API.UserAddRequest,
+  body: ApiNs.UserAddRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseLong>("/user/add", {
+  return request<ApiNs.BaseResponseNumber>("/user/add", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** Delete user POST /user/delete */
 export async function deleteUser(
-  body: API.DeleteRequest,
+  body: ApiNs.DeleteRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseBoolean>("/user/delete", {
+  return request<ApiNs.BaseResponseBoolean>("/user/delete", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** Get user by id GET /user/get */
 export async function getUserById(
-  params: API.getUserByIdParams,
+  params: ApiNs.GetUserByIdParams,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseUser>("/user/get", {
+  return request<ApiNs.BaseResponseUser>("/user/get", {
     method: "GET",
-    params: {
-      ...params,
-    },
-    ...(options || {}),
+    params,
+    ...(options ?? {}),
   });
 }
 
 /** Get login user GET /user/get/login */
 export async function getLoginUser(options?: { [key: string]: unknown }) {
-  return request<API.BaseResponseLoginUserVO>("/user/get/login", {
+  return request<ApiNs.BaseResponseLoginUserVo>("/user/get/login", {
     method: "GET",
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
-/** Get user VO by id GET /user/get/vo */
+/** Get userVo by id GET /user/get/vo */
 export async function getUserVoById(
-  params: API.getUserVOByIdParams,
+  params: ApiNs.GetUserVoByIdParams,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseUserVO>("/user/get/vo", {
+  return request<ApiNs.BaseResponseUserVo>("/user/get/vo", {
     method: "GET",
-    params: {
-      ...params,
-    },
-    ...(options || {}),
+    params,
+    ...(options ?? {}),
   });
 }
 
-/** List user VO by page POST /user/list/page/vo */
+/** List userVo by page POST /user/list/page/vo */
 export async function listUserVoByPage(
-  body: API.UserQueryRequest,
+  body: ApiNs.UserQueryRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponsePageUserVO>("/user/list/page/vo", {
+  return request<ApiNs.BaseResponsePageUserVo>("/user/list/page/vo", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** User login POST /user/login */
 export async function userLogin(
-  body: API.UserLoginRequest,
+  body: ApiNs.UserLoginRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseLoginUserVO>("/user/login", {
+  return request<ApiNs.BaseResponseLoginUserVo>("/user/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** User logout POST /user/logout */
 export async function userLogout(options?: { [key: string]: unknown }) {
-  return request<API.BaseResponseBoolean>("/user/logout", {
+  return request<ApiNs.BaseResponseBoolean>("/user/logout", {
     method: "POST",
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** User register POST /user/register */
 export async function userRegister(
-  body: API.UserRegisterRequest,
+  body: ApiNs.UserRegisterRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseLong>("/user/register", {
+  return request<ApiNs.BaseResponseNumber>("/user/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** Update user POST /user/update */
 export async function updateUser(
-  body: API.UserUpdateRequest,
+  body: ApiNs.UserUpdateRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseBoolean>("/user/update", {
+  return request<ApiNs.BaseResponseBoolean>("/user/update", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }

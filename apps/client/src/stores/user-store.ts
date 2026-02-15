@@ -3,9 +3,9 @@ import request from "@/api/request";
 import { queryClient, queryKeys } from "@/lib/query-client";
 
 interface UserState {
-  loginUser: API.LoginUserVO;
+  loginUser: ApiNs.LoginUserVo;
   fetchLoginUser: () => Promise<void>;
-  setLoginUser: (user: API.LoginUserVO) => void;
+  setLoginUser: (user: ApiNs.LoginUserVo) => void;
 }
 
 export const useUserStore = create<UserState>((set) => ({
@@ -14,7 +14,7 @@ export const useUserStore = create<UserState>((set) => ({
   },
   fetchLoginUser: async () => {
     try {
-      const res = await request<API.BaseResponseLoginUserVO>(
+      const res = await request<ApiNs.BaseResponseLoginUserVo>(
         "/user/get/login",
         { method: "GET" },
       );

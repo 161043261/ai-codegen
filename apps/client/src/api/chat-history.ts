@@ -5,10 +5,10 @@ import request from "@/api/request";
 
 /** List all chat history by page (admin) POST /chatHistory/admin/list/page/vo */
 export async function listAllChatHistoryByPageForAdmin(
-  body: API.ChatHistoryQueryRequest,
+  body: ApiNs.ChatHistoryQueryRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponsePageChatHistory>(
+  return request<ApiNs.BaseResponsePageChatHistory>(
     "/chat-history/admin/list/page/vo",
     {
       method: "POST",
@@ -16,18 +16,18 @@ export async function listAllChatHistoryByPageForAdmin(
         "Content-Type": "application/json",
       },
       data: body,
-      ...(options || {}),
+      ...(options ?? {}),
     },
   );
 }
 
 /** List app chat history GET /chatHistory/app/${param0} */
 export async function listAppChatHistory(
-  params: API.listAppChatHistoryParams,
+  params: ApiNs.ListAppChatHistoryParams,
   options?: { [key: string]: unknown },
 ) {
   const { appId: param0, ...queryParams } = params;
-  return request<API.BaseResponsePageChatHistory>(
+  return request<ApiNs.BaseResponsePageChatHistory>(
     `/chat-history/app/${param0}`,
     {
       method: "GET",
@@ -35,7 +35,7 @@ export async function listAppChatHistory(
         pageSize: "10",
         ...queryParams,
       },
-      ...(options || {}),
+      ...(options ?? {}),
     },
   );
 }

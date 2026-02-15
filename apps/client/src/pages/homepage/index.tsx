@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getDeployUrl } from "@/config";
 import { useAddAppMutation } from "@/hooks/mutations/use-app-mutations";
 import {
-  useFeaturedAppVoByPage,
+  useAwesomeAppVoByPage,
   useMyAppVoByPage,
 } from "@/hooks/queries/use-app-queries";
 import { useUserStore } from "@/stores/user-store";
@@ -46,7 +46,7 @@ export default function HomePage() {
     !!loginUser?.id,
   );
 
-  const featuredAppsQuery = useFeaturedAppVoByPage({
+  const featuredAppsQuery = useAwesomeAppVoByPage({
     pageNum: 1,
     pageSize: 6,
     sortField: "createTime",
@@ -88,7 +88,7 @@ export default function HomePage() {
     if (appId) navigate(`/app/chat/${appId}?view=1`);
   };
 
-  const viewWork = (app: API.AppVO) => {
+  const viewWork = (app: ApiNs.AppVo) => {
     if (app.deployKey) {
       window.open(getDeployUrl(app.deployKey), "_blank");
     }
@@ -199,7 +199,7 @@ export default function HomePage() {
               <AppCard
                 key={app.id}
                 app={app}
-                featured
+                awesome
                 onViewChat={viewChat}
                 onViewWork={viewWork}
               />

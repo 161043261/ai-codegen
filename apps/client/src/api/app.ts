@@ -5,190 +5,184 @@ import request from "@/api/request";
 
 /** Add app POST /app/add */
 export async function addApp(
-  body: API.AppAddRequest,
+  body: ApiNs.AppAddRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseLong>("/app/add", {
+  return request<ApiNs.BaseResponseNumber>("/app/add", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** Delete app by admin POST /app/admin/delete */
 export async function deleteAppByAdmin(
-  body: API.DeleteRequest,
+  body: ApiNs.DeleteRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseBoolean>("/app/admin/delete", {
+  return request<ApiNs.BaseResponseBoolean>("/app/admin/delete", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
-/** Get app VO by id (admin) GET /app/admin/get/vo */
+/** Get appVo by id (admin) GET /app/admin/get/vo */
 export async function getAppVoByIdByAdmin(
-  params: API.getAppVOByIdByAdminParams,
+  params: ApiNs.GetAppVoByIdByAdminParams,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseAppVO>("/app/admin/get/vo", {
+  return request<ApiNs.BaseResponseAppVo>("/app/admin/get/vo", {
     method: "GET",
-    params: {
-      ...params,
-    },
-    ...(options || {}),
+    params,
+    ...(options ?? {}),
   });
 }
 
-/** List app VO by page (admin) POST /app/admin/list/page/vo */
+/** List appVo by page (admin) POST /app/admin/list/page/vo */
 export async function listAppVoByPageByAdmin(
-  body: API.AppQueryRequest,
+  body: ApiNs.AppQueryRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponsePageAppVO>("/app/admin/list/page/vo", {
+  return request<ApiNs.BaseResponsePageAppVo>("/app/admin/list/page/vo", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** Update app by admin POST /app/admin/update */
 export async function updateAppByAdmin(
-  body: API.AppAdminUpdateRequest,
+  body: ApiNs.AppAdminUpdateRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseBoolean>("/app/admin/update", {
+  return request<ApiNs.BaseResponseBoolean>("/app/admin/update", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** Chat to generate code GET /app/chat/codegen */
 export async function chatToGenCode(
-  params: API.chatToGenCodeParams,
+  params: ApiNs.ChatToGenCodeParams,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.ServerSentEventString[]>("/app/chat/codegen", {
+  return request<ApiNs.ServerSentEventString[]>("/app/chat/codegen", {
     method: "GET",
-    params: {
-      ...params,
-    },
-    ...(options || {}),
+    params,
+    ...(options ?? {}),
   });
 }
 
 /** Delete app POST /app/delete */
 export async function deleteApp(
-  body: API.DeleteRequest,
+  body: ApiNs.DeleteRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseBoolean>("/app/delete", {
+  return request<ApiNs.BaseResponseBoolean>("/app/delete", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** Deploy app POST /app/deploy */
 export async function deployApp(
-  body: API.AppDeployRequest,
+  body: ApiNs.AppDeployRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseString>("/app/deploy", {
+  return request<ApiNs.BaseResponseString>("/app/deploy", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** Download app code GET /app/download/${param0} */
 export async function downloadAppCode(
-  params: API.downloadAppCodeParams,
+  params: ApiNs.DownloadAppCodeParams,
   options?: { [key: string]: unknown },
 ) {
   const { appId: param0, ...queryParams } = params;
   return request<unknown>(`/app/download/${param0}`, {
     method: "GET",
     params: { ...queryParams },
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
-/** Get app VO by id GET /app/get/vo */
+/** Get appVo by id GET /app/get/vo */
 export async function getAppVoById(
-  params: API.getAppVOByIdParams,
+  params: ApiNs.GetAppVoByIdParams,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseAppVO>("/app/get/vo", {
+  return request<ApiNs.BaseResponseAppVo>("/app/get/vo", {
     method: "GET",
-    params: {
-      ...params,
-    },
-    ...(options || {}),
+    params,
+    ...(options ?? {}),
   });
 }
 
-/** List awesome app VO by page POST /app/awesome/list/page/vo */
+/** List awesome appVo by page POST /app/awesome/list/page/vo */
 export async function listGoodAppVoByPage(
-  body: API.AppQueryRequest,
+  body: ApiNs.AppQueryRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponsePageAppVO>("/app/awesome/list/page/vo", {
+  return request<ApiNs.BaseResponsePageAppVo>("/app/awesome/list/page/vo", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
-/** List my app VO by page POST /app/my/list/page/vo */
+/** List my appVo by page POST /app/my/list/page/vo */
 export async function listMyAppVoByPage(
-  body: API.AppQueryRequest,
+  body: ApiNs.AppQueryRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponsePageAppVO>("/app/my/list/page/vo", {
+  return request<ApiNs.BaseResponsePageAppVo>("/app/my/list/page/vo", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
 /** Update app POST /app/update */
 export async function updateApp(
-  body: API.AppUpdateRequest,
+  body: ApiNs.AppUpdateRequest,
   options?: { [key: string]: unknown },
 ) {
-  return request<API.BaseResponseBoolean>("/app/update", {
+  return request<ApiNs.BaseResponseBoolean>("/app/update", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
