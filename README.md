@@ -9,6 +9,8 @@ ollama pull qwen3
 ollama pull qwen2.5
 
 ollama serve
+
+docker exec -i mysql mysql -uroot -ppass < ./sql/main.sql
 ```
 
 .git/hooks/pre-commit
